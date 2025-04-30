@@ -1,0 +1,37 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.dao.MemberDAO">
+
+	<!-- 회원 가입 -->
+    <insert id="registUser">
+		insert into EV_user (user_id, user_password, user_name, user_email, area_ctpy_nm, area_sgg_nm, area_emd_nm) 
+		values
+		(#{user_id}, #{user_password}, #{user_name}, #{user_email}, #{area_ctpy_nm}, #{area_sgg_nm}, #{area_emd_nm})
+    </insert>
+    
+    <!-- 아이디 중복 체크 -->
+    <select id="user_id_check">
+    	select count(*) from EV_user where user_id=#{user_id}
+    </select>
+
+    <!-- 로그인 -->
+    <select id="login" resultType="int">
+    	select count(*) from EV_user where user_id=#{user_id} and user_password=#{user_password}
+    </select>
+    
+<!--    회원정보 수정-->
+    <update id="update_ok">
+		update EV_user set user_password=#{user_password}, user_name=#{user_name},
+		user_email=#{user_email}, area_ctpy_nm=#{area_ctpy_nm}, area_sgg_nm=#{area_sgg_nm}, area_emd_nm=#{area_emd_nm}
+		<where>
+			user_no = #{user_no}
+		</where>
+	</update>
+	
+    <select id="member_find" resultType="com.boot.dto.MemberDTO" >
+    	select * from EV_user where user_id=#{user_id};
+    </select>
+    
+</mapper>
