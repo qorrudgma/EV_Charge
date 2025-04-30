@@ -1,4 +1,5 @@
-# EV_Charge <img src="EV_Charge/src/main/resources/static/image/EV_Charge.png" alt="EV Charge 로고" width="50"/>
+# EV_Charge 
+<img src="EV_Charge/src/main/resources/static/image/EV_Charge.png" alt="EV Charge 로고" width="200"/>
 
 **EV_Charge**는 전국의 전기차 충전소 위치 및 실시간 충전 가능 여부를 확인할 수 있는 웹사이트입니다.  
 사용자는 지도를 통해 가까운 충전소를 쉽게 찾고, 실시간 상태를 확인하여 효율적으로 충전소를 이용할 수 있습니다.
