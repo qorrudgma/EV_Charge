@@ -20,8 +20,8 @@
 
 - **Frontend:** HTML, CSS, JavaScript
 - **Backend:** Spring Boot
-- **Database:** MySQL, MongoDB
-- **지도 API:** Kakao Map API / Tmap API 등
+- **Database:** MySQL
+- **지도 API:** Kakao Map API
 - **빌드 도구:** Gradle
 
 ---
