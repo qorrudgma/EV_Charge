@@ -7,10 +7,13 @@
 		<mapper resource="mybatis/mappers/member.xml"/>
 		<mapper resource="mybatis/mappers/FavoritesMapper.xml"/>
 		
+		<mapper resource="mybatis/mappers/area.xml"/>
+		
 <!--		게시판 mapper-->
 		<mapper resource="mybatis/mappers/board.xml"/>
 		<mapper resource="mybatis/mappers/comment.xml"/>
 		<mapper resource="mybatis/mappers/upload.xml"/>
 		<mapper resource="mybatis/mappers/page.xml"/>
+
 	</mappers>
 </configuration>
