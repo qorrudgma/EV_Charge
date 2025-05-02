@@ -22,8 +22,6 @@ public class ProvincesServiceImpl implements ProvincesService {
 		ProvincesDAO dao = sqlSession.getMapper(ProvincesDAO.class);
 		List<ProvincesDTO> provinces_list = dao.getAllProvinces();
 
-		log.info("" + provinces_list);
-
 		return provinces_list;
 	}
 }

@@ -235,67 +235,6 @@ public class FindLocationController {
 
 		log.info("@# area_ctpy_nm =>" + area_ctpy_nm);
 		log.info("@# area_sgg_nm =>" + area_sgg_nm);
-		String metroCd;
-		switch (area_ctpy_nm) {
-		case "서울특별시":
-			metroCd = "11";
-			break;
-		case "부산광역시":
-			metroCd = "21";
-			break;
-		case "대구광역시":
-			metroCd = "22";
-			break;
-		case "인천광역시":
-			metroCd = "23";
-			break;
-		case "광주광역시":
-			metroCd = "24";
-			break;
-		case "대전광역시":
-			metroCd = "25";
-			break;
-		case "울산광역시":
-			metroCd = "26";
-			break;
-		case "경기도":
-			metroCd = "31";
-			break;
-		case "강원도":
-			metroCd = "32";
-			break;
-		case "충청북도":
-			metroCd = "33";
-			break;
-		case "충청남도":
-			metroCd = "34";
-			break;
-		case "전라북도":
-			metroCd = "35";
-			break;
-		case "전라남도":
-			metroCd = "36";
-			break;
-		case "경상북도":
-			metroCd = "37";
-			break;
-		case "경상남도":
-			metroCd = "38";
-			break;
-		case "제주도":
-			metroCd = "39";
-			break;
-		case "세종특별자치시":
-			metroCd = "41";
-			break;
-		default:
-			metroCd = "알 수 없는 코드";
-			break;
-		}
-
-		String cityCd = "11";
-		log.info(metroCd);
-		log.info(cityCd);
 
 		// 결과를 담을 리스트
 		List<List<String>> addr_place_list = new ArrayList<>();
@@ -303,7 +242,7 @@ public class FindLocationController {
 		try {
 			// URL 연결
 			String p_url = "https://bigdata.kepco.co.kr/openapi/v1/EVcharge.do?apiKey=" + key
-					+ "&returnType=json&metroCd=" + metroCd + "&cityCd=" + cityCd;
+					+ "&returnType=json&metroCd=" + area_ctpy_nm + "&cityCd=" + area_sgg_nm;
 			URL url = new URL(p_url);
 			log.info(p_url + "");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();

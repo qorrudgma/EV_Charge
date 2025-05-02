@@ -542,23 +542,23 @@
                                 <label for="area_ctpy_nm">시/도</label>
                                 <select id="area_ctpy_nm" name="area_ctpy_nm" onchange="updatearea_sgg_nm()">
                                     <option value="">시/도</option>
-                                    <option value="서울특별시">서울특별시</option>
-                                    <option value="부산광역시">부산광역시</option>
-                                    <option value="대구광역시">대구광역시</option>
-                                    <option value="인천광역시">인천광역시</option>
-                                    <option value="광주광역시">광주광역시</option>
-                                    <option value="대전광역시">대전광역시</option>
-                                    <option value="울산광역시">울산광역시</option>
-                                    <option value="경기도">경기도</option>
-                                    <option value="강원도">강원도</option>
-                                    <option value="충청북도">충청북도</option>
-                                    <option value="충청남도">충청남도</option>
-                                    <option value="전라북도">전라북도</option>
-                                    <option value="전라남도">전라남도</option>
-                                    <option value="경상북도">경상북도</option>
-                                    <option value="경상남도">경상남도</option>
-                                    <option value="제주도">제주도</option>
-                                    <option value="세종특별자치시">세종특별자치시</option>
+<!--                                    <option value="서울특별시">서울특별시</option>-->
+<!--                                    <option value="부산광역시">부산광역시</option>-->
+<!--                                    <option value="대구광역시">대구광역시</option>-->
+<!--                                    <option value="인천광역시">인천광역시</option>-->
+<!--                                    <option value="광주광역시">광주광역시</option>-->
+<!--                                    <option value="대전광역시">대전광역시</option>-->
+<!--                                    <option value="울산광역시">울산광역시</option>-->
+<!--                                    <option value="경기도">경기도</option>-->
+<!--                                    <option value="강원도">강원도</option>-->
+<!--                                    <option value="충청북도">충청북도</option>-->
+<!--                                    <option value="충청남도">충청남도</option>-->
+<!--                                    <option value="전라북도">전라북도</option>-->
+<!--                                    <option value="전라남도">전라남도</option>-->
+<!--                                    <option value="경상북도">경상북도</option>-->
+<!--                                    <option value="경상남도">경상남도</option>-->
+<!--                                    <option value="제주도">제주도</option>-->
+<!--                                    <option value="세종특별자치시">세종특별자치시</option>-->
                                 </select>
                             </div>
                             
@@ -661,23 +661,23 @@
                         <label for="area_ctpy_nm_mobile">시/도</label>
                         <select id="area_ctpy_nm_mobile" name="area_ctpy_nm" onchange="updatearea_sgg_nm_mobile()">
                             <option value="">시/도 선택</option>
-                            <option value="서울특별시">서울특별시</option>
-                            <option value="부산광역시">부산광역시</option>
-                            <option value="대구광역시">대구광역시</option>
-                            <option value="인천광역시">인천광역시</option>
-                            <option value="광주광역시">광주광역시</option>
-                            <option value="대전광역시">대전광역시</option>
-                            <option value="울산광역시">울산광역시</option>
-                            <option value="경기도">경기도</option>
-                            <option value="강원도">강원도</option>
-                            <option value="충청북도">충청북도</option>
-                            <option value="충청남도">충청남도</option>
-                            <option value="전라북도">전라북도</option>
-                            <option value="전라남도">전라남도</option>
-                            <option value="경상북도">경상북도</option>
-                            <option value="경상남도">경상남도</option>
-                            <option value="제주도">제주도</option>
-                            <option value="세종특별자치시">세종특별자치시</option>
+<!--                            <option value="서울특별시">서울특별시</option>-->
+<!--                            <option value="부산광역시">부산광역시</option>-->
+<!--                            <option value="대구광역시">대구광역시</option>-->
+<!--                            <option value="인천광역시">인천광역시</option>-->
+<!--                            <option value="광주광역시">광주광역시</option>-->
+<!--                            <option value="대전광역시">대전광역시</option>-->
+<!--                            <option value="울산광역시">울산광역시</option>-->
+<!--                            <option value="경기도">경기도</option>-->
+<!--                            <option value="강원도">강원도</option>-->
+<!--                            <option value="충청북도">충청북도</option>-->
+<!--                            <option value="충청남도">충청남도</option>-->
+<!--                            <option value="전라북도">전라북도</option>-->
+<!--                            <option value="전라남도">전라남도</option>-->
+<!--                            <option value="경상북도">경상북도</option>-->
+<!--                            <option value="경상남도">경상남도</option>-->
+<!--                            <option value="제주도">제주도</option>-->
+<!--                            <option value="세종특별자치시">세종특별자치시</option>-->
                         </select>
                     </div>
                     
@@ -711,6 +711,152 @@
 
 <!-- 자바스크립트 -->
 <script>
+	// ------------------------------------------------------------------
+	// 페이지 로드 시 시/도 데이터 가져오기
+	// $(document).ready(function() {
+	//     // 서버에서 시/도 데이터 가져오기
+	//     $.ajax({
+	//         type: "get",
+	//         url: "/provinces_list", // ProvincesController에 정의된 엔드포인트
+	//         success: function(data) {
+    //             console.log("시/도 데이터 가져왔음");
+	//             var area_ctpy_nmSelect = $("#area_ctpy_nm");
+	//             // 기본 옵션
+	//             area_ctpy_nmSelect.html('<option value="">시/도</option>');
+	            
+	//             // 받아온 데이터로 옵션 추가 (코드를 value로, 이름을 텍스트로)
+	//             $.each(data, function(index, province) {
+	//                 area_ctpy_nmSelect.append($('<option>', {
+	//                     value: province.provinces_code, // 시/도 코드를 value로
+	//                     text: province.provinces_name   // 시/도 이름을 텍스트로
+	//                 }));
+	//             });
+	            
+	//             // 모바일 버전도 동일하게 적용
+	//             var area_ctpy_nm_mobileSelect = $("#area_ctpy_nm_mobile");
+	//             area_ctpy_nm_mobileSelect.html('<option value="">시/도 선택</option>');
+	            
+	//             $.each(data, function(index, province) {
+	//                 area_ctpy_nm_mobileSelect.append($('<option>', {
+	//                     value: province.provinces_code,
+	//                     text: province.provinces_name
+	//                 }));
+	//             });
+	//         },
+	//         error: function(xhr, status, error) {
+	//             console.error("시/도 데이터를 가져오는 중 오류가 발생했습니다:", error);
+	//         }
+	//     });
+	// });
+    $(document).ready(function() {
+    // 서버에서 시/도 데이터 가져오기
+    $.ajax({
+        type: "get",
+        url: "/provinces_list", // ProvincesController에 정의된 엔드포인트
+        success: function(data) {
+            console.log("시/도 데이터 가져왔음");
+            var area_ctpy_nmSelect = $("#area_ctpy_nm");
+            // 기본 옵션
+            area_ctpy_nmSelect.html('<option value="">시/도</option>');
+            
+            // 받아온 데이터로 옵션 추가 (코드를 value로, 이름을 텍스트로)
+            $.each(data, function(index, province) {
+                area_ctpy_nmSelect.append($('<option>', {
+                    value: province.provinces_code, // 시/도 코드를 value로
+                    text: province.provinces_name   // 시/도 이름을 텍스트로
+                }));
+            });
+            
+            // 시/도 선택 시 이벤트 리스너 추가
+            area_ctpy_nmSelect.on("change", function() {
+                var selectedProvinceCode = $(this).val();
+                if(selectedProvinceCode) {
+                    // 선택된 시/도 코드가 있으면 함수 실행
+                    updatearea_sgg_nm(selectedProvinceCode);
+                } else {
+                    // 선택이 취소되면 시/군/구 드롭다운 초기화
+                    $("#area_sgg_nm").html('<option value="">군/구</option>');
+                    $("#area_emd_nm").html('<option value="">읍/면/동</option>');
+                }
+            });
+            
+            // 모바일 버전도 동일하게 적용
+            var area_ctpy_nm_mobileSelect = $("#area_ctpy_nm_mobile");
+            area_ctpy_nm_mobileSelect.html('<option value="">시/도 선택</option>');
+            
+            $.each(data, function(index, province) {
+                area_ctpy_nm_mobileSelect.append($('<option>', {
+                    value: province.provinces_code,
+                    text: province.provinces_name
+                }));
+            });
+            
+            // 모바일 버전 시/도 선택 시 이벤트 리스너 추가
+            area_ctpy_nm_mobileSelect.on("change", function() {
+                var selectedProvinceCode = $(this).val();
+                if(selectedProvinceCode) {
+                    // 선택된 시/도 코드가 있으면 함수 실행
+                    updatearea_sgg_nm_mobile(selectedProvinceCode);
+                } else {
+                    // 선택이 취소되면 시/군/구 드롭다운 초기화
+                    $("#area_sgg_nm_mobile").html('<option value="">군/구 선택</option>');
+                    $("#area_emd_nm_mobile").html('<option value="">읍/면/동 선택</option>');
+                }
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error("시/도 데이터를 가져오는 중 오류가 발생했습니다:", error);
+        }
+    });
+// });
+
+// 시/도 선택 시 해당 시/군/구 데이터 가져오기
+function updatearea_sgg_nm(provinces_code) {
+    console.log("시/도 선택해서 시/군/구 가야한다.(1)");
+    var area_sgg_nmSelect = $("#area_sgg_nm");
+    var area_emd_nmSelect = $("#area_emd_nm");
+
+    // 시/군/구와 읍/면/동 초기화
+    area_sgg_nmSelect.html('<option value="">군/구</option>');
+    area_emd_nmSelect.html('<option value="">읍/면/동</option>');
+
+    if (!provinces_code) {
+        return;
+    }
+
+    // 서버에서 시/군/구 데이터 가져오기
+    $.ajax({
+        type: "get",
+        url: "/districts_list",
+        data: { provinces_code: provinces_code },
+        success: function(data) {
+            console.log("시/도 선택해서 시/군/구 가야한다.(2)");
+            // 받아온 데이터로 옵션 추가 (코드를 value로, 이름을 텍스트로)
+            $.each(data, function(index, district) {
+                // "미분류" 항목은 제외
+                if (district.districts_name !== "미분류") {
+                    area_sgg_nmSelect.append($('<option>', {
+                        value: district.districts_code, // 시/군/구 코드를 value로
+                        text: district.districts_name   // 시/군/구 이름을 텍스트로
+                    }));
+                }
+            });
+        },
+        error: function(xhr, status, error) {
+            console.error("시/군/구 데이터를 가져오는 중 오류가 발생했습니다:", error);
+        }
+    });
+}
+});
+
+// 모바일 버전 함수도 동일하게 구현
+function updatearea_sgg_nm_mobile(provinces_code) {
+    // 위와 유사한 구현...
+}
+
+
+	// ------------------------------------------------------------------
+	
     // 모바일 메뉴 토글
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const mobileMenu = document.getElementById('mobileMenu');
@@ -771,14 +917,13 @@
     
     // 검색 버튼 이벤트
     document.getElementById('search_btn').addEventListener('click', function() {
-        // 검색 로직 구현
-        console.log("데스크톱 검색 버튼 클릭  function() {
+       
         // 검색 로직 구현
         console.log("데스크톱 검색 버튼 클릭됨");
         
         const area_ctpy_nm = document.getElementById('area_ctpy_nm').value;
         const area_sgg_nm = document.getElementById('area_sgg_nm').value;
-        const area_emd_nm = document.getElementById('area_emd_nm').value;
+        // const area_emd_nm = document.getElementById('area_emd_nm').value;
         
         if (!area_ctpy_nm || !area_sgg_nm) {
             alert("시/도와 군/구를 선택해주세요.");
@@ -786,7 +931,8 @@
         }
         
         // 여기에 검색 API 호출 로직 추가
-        searchChargingStations(area_ctpy_nm, area_sgg_nm, area_emd_nm);
+        // searchChargingStations(area_ctpy_nm, area_sgg_nm, area_emd_nm);
+        searchChargingStations(area_ctpy_nm, area_sgg_nm);
     });
     
     document.getElementById('search_btn_mobile').addEventListener('click', function() {
@@ -811,9 +957,10 @@
         mobileMenuButton.querySelector('i').classList.add('fa-bars');
     });
     
-    function searchChargingStations(area_ctpy_nm, area_sgg_nm, area_emd_nm) {
+    // function searchChargingStations(area_ctpy_nm, area_sgg_nm, area_emd_nm) {
+    function searchChargingStations(area_ctpy_nm, area_sgg_nm) {
         // 충전소 검색 API 호출 함수
-        console.log(`지역 검색: ${area_ctpy_nm} ${area_sgg_nm} ${area_emd_nm}`);
+        console.log(`지역 검색: ${area_ctpy_nm} ${area_sgg_nm}`);
         
         // 여기에 실제 API 호출 코드 추가
         // 예: fetch('/findStationsNear', {...})

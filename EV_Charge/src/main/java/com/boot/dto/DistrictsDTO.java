@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class FavoritesDTO {
-	private int user_no;
-	private String user_id;
-	private int station_id;
+public class DistrictsDTO {
+	private String districts_code;
+	private String districts_name;
+	private String provinces_code;
 }

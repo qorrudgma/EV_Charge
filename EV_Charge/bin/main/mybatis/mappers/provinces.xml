@@ -4,8 +4,8 @@
 
 <mapper namespace="com.boot.dao.ProvincesDAO">
     
-    <select id="provinces_all" resultType="com.boot.dto.ProvincesDTO">
-		select provinces_code
+    <select id="getAllProvinces" resultType="com.boot.dto.ProvincesDTO">
+		select provinces_code,
 			   provinces_name
 		  from provinces
     </select>

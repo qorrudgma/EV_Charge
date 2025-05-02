@@ -17,9 +17,10 @@
 	  <!-- 헤더 -->
       <jsp:include page="/WEB-INF/views/header.jsp" />
 	  <!-- 사이드바 -->
-      <jsp:include page="/WEB-INF/views/sidebar.jsp" />
+      <jsp:include page="/WEB-INF/views/favorites_sidebar.jsp"/>
+      <jsp:include page="/WEB-INF/views/station_detail.jsp"/>
       <!-- 지도 표시 -->
-      <div id="map" style="width:100%;height:900px;"></div>
+      <div id="map" style="width:100%;height:879px;"></div>
 
       <!-- 추후에 사용자 세션 받아서 blind 및 display 처리 요망. -->
       <!-- 사용자 세션 받으면 center_lat과 center_lng는 사용자 가입시 설정되는 area 값으로 지정 -->
@@ -49,27 +50,6 @@
          });
       </script>
       <script>
-         // 군/구 옵션 업데이트 함수
-         function updatearea_sgg_nm() {
-            const area_ctpy_nm = document.getElementById("area_ctpy_nm").value;
-            const area_sgg_nmSelect = document.getElementById("area_sgg_nm");
-            const area_emd_nmSelect = document.getElementById("area_emd_nm");
-
-            // 군/구와 읍/면/동 초기화
-            area_sgg_nmSelect.innerHTML = '<option value="">선택하세요</option>';
-            area_emd_nmSelect.innerHTML = '<option value="">선택하세요</option>';
-
-            if (area_ctpy_nm && regions[area_ctpy_nm]) {
-               // 군/구 옵션 추가
-               for (const area_sgg_nm in regions[area_ctpy_nm]) {
-                  const option = document.createElement("option");
-                  option.value = area_sgg_nm;
-                  option.text = area_sgg_nm;
-                  area_sgg_nmSelect.appendChild(option);
-               }
-            }
-         }
-
          // 읍/면/동 옵션 업데이트 함수
          function updatearea_emd_nm() {
             const area_ctpy_nm = document.getElementById("area_ctpy_nm").value;
@@ -106,6 +86,7 @@
 
             let isOpen = false;
 
+            // 마커 클릭
             kakao.maps.event.addListener(marker, 'click', function() {
                if (isOpen) {
                   infowindow.close();
@@ -115,31 +96,31 @@
                   isOpen = true;
                }
 			   // 마커 클릭했을때 사이드바 생성
+   			   // $(".station-sidebar").toggleClass("active");
    			   $(".station-sidebar").toggleClass("active");
-
+   			   $(".station-sidebarA").toggleClass("active");
             });
 
 			// 지도 클릭 액션
             kakao.maps.event.addListener(map, 'click', function() {
                infowindow.close();
 			   isOpen = false;
-			   $(".station-sidebar").removeClass("active");
+			   $(".station-sidebarA").removeClass("active");
 			   // 마커지우기
                // for (var i = 0; i < markers.length; i++) {
                //    markers[i].setMap(null);
                // }
                // markers = [];
             });
-			
-			
-            
          }
 
          // 검색 클릭
          $(document).ready(function () {
             $("#search_btn").on("click", function () {
-               const area_ctpy_nm = $("#area_ctpy_nm").val();
-               const area_sgg_nm = $("#area_sgg_nm").val();
+               const area_ctpy_nm_val = $("#area_ctpy_nm").val();
+               const area_sgg_nm_val = $("#area_sgg_nm").val();
+               const area_ctpy_nm = $("#area_ctpy_nm option:selected").text();
+               const area_sgg_nm = $("#area_sgg_nm option:selected").text();
                const area_emd_nm = $("#area_emd_nm").val();
 
                if (!area_ctpy_nm || !area_sgg_nm || !area_emd_nm) {
@@ -152,8 +133,8 @@
                   type: "post",
                   url: "/findStationsNear",
                   data: {
-                     area_ctpy_nm: area_ctpy_nm,
-                     area_sgg_nm: area_sgg_nm
+                     area_ctpy_nm: area_ctpy_nm_val,
+                     area_sgg_nm: area_sgg_nm_val
                   },
                   success: function (addr_place_list) {
                      // alert("1단계 성공: " + JSON.stringify(addr_list));

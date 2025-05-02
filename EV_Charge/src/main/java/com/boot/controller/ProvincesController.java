@@ -20,6 +20,7 @@ public class ProvincesController {
 
 	@RequestMapping("/provinces_list")
 	public List<ProvincesDTO> getAllProvinces() {
+		log.info("provinces_list()");
 		List<ProvincesDTO> provinces = provincesService.getAllProvinces();
 		log.info(provinces + "");
 		return provinces;
