@@ -225,7 +225,7 @@
         top: 80px;
         left: 0;
         width: 380px;
-        height: 850px;
+        height: 88%;
         background-color: var(--white);
         box-shadow: var(--shadow-lg);
         z-index: 1010;
@@ -811,7 +811,7 @@
         var lng = markerData.lng;
         var rapid = markerData.rapid;
         var slow = markerData.slow;
-        var car = markerData.car;
+        var cars = markerData.car;
 
         document.getElementById("station-name").textContent = name;
         document.getElementById("station-address").textContent = address;
@@ -819,6 +819,12 @@
         document.getElementById("station_lng").textContent = lng;
         document.getElementById("strong_rapid").textContent = rapid;
         document.getElementById("strong_slow").textContent = slow;
-        document.getElementById("supported-vehicles").textContent = car;
+        // document.getElementById("supported-vehicles").textContent = car;
+        const car_list = cars.split(",");
+        console.log(car_list);
+		for(let car of car_list){			
+        document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">`+car+`</div>`;
+        //document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">${car}</div>`;
+		}
     }
 </script>
