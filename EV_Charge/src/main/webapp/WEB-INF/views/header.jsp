@@ -43,6 +43,7 @@
         
         /* Header Styles */
         .ev-header {
+            height: 7%;
             background-color: var(--white);
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             position: sticky;
@@ -52,8 +53,9 @@
         }
         
         .ev-container {
-            max-width: 1200px;
-            margin: 0 auto;
+            /* max-width: 1200px; */
+            margin: 0 50px;
+            /* margin-right: 10%; */
             padding: 0 1rem;
         }
         
@@ -62,6 +64,14 @@
             align-items: center;
             justify-content: space-between;
             height: 64px;
+        }
+
+        #bars{
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding-right: 80px;
+            /* margin-right: 30%; */
         }
         
         /* Logo Styles */
@@ -164,6 +174,7 @@
         .ev-user-section {
             display: flex;
             align-items: center;
+            padding-right: 100px;
         }
         
         .ev-welcome-text {
@@ -513,6 +524,7 @@
 <header class="ev-header">
     <div class="ev-container">
         <div class="ev-navbar">
+            <i class="fa-solid fa-bars" id="bars"></i>
             <!-- 로고 및 브랜드 -->
             <a href="${pageContext.request.contextPath}/main" class="ev-brand">
                 <i class="fas fa-charging-station"></i>

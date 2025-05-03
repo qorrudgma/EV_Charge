@@ -180,7 +180,7 @@
         top: 64px;
         left: 0;
         width: 380px;
-        height: 880px;
+        height: 93%;
         background-color: var(--white);
         box-shadow: var(--shadow-lg);
         z-index: 1020;
@@ -679,19 +679,19 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // 사이드바 토글
-        const sidebar = document.getElementById('station-sidebar');
-        const closeSidebarBtn = document.getElementById('close-sidebar');
+        // // 사이드바 토글
+        // const sidebar = document.getElementById('station-sidebar');
+        // const closeSidebarBtn = document.getElementById('close-sidebar');
         
-        // 사이드바 열기 함수 (외부에서 호출 가능)
-        window.openSidebar = function() {
-            sidebar.classList.add('active');
-        };
+        // // 사이드바 열기 함수 (외부에서 호출 가능)
+        // window.openSidebar = function() {
+        //     sidebar.classList.add('active');
+        // };
         
-        // 사이드바 닫기
-        closeSidebarBtn.addEventListener('click', function() {
-            sidebar.classList.remove('active');
-        });
+        // // 사이드바 닫기
+        // closeSidebarBtn.addEventListener('click', function() {
+        //     sidebar.classList.remove('active');
+        // });
         
         // 검색 입력 지우기
         const searchInput = document.getElementById('station-search');

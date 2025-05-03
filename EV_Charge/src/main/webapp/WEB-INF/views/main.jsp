@@ -8,6 +8,14 @@
       <title>Document</title>
       <script src="${pageContext.request.contextPath}/js/jquery.js"></script>
       <script src="${pageContext.request.contextPath}/js/region.js"></script>
+      <style>
+         html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            /* overflow: hidden; */
+            }
+      </style>
    </head>
 
    <body>
@@ -20,7 +28,7 @@
       <jsp:include page="/WEB-INF/views/favorites_sidebar.jsp"/>
       <jsp:include page="/WEB-INF/views/station_detail.jsp"/>
       <!-- 지도 표시 -->
-      <div id="map" style="width:100%;height:879px;"></div>
+      <div id="map" style="width:100%;height:93%;"></div>
 
       <!-- 추후에 사용자 세션 받아서 blind 및 display 처리 요망. -->
       <!-- 사용자 세션 받으면 center_lat과 center_lng는 사용자 가입시 설정되는 area 값으로 지정 -->
@@ -102,8 +110,8 @@
 				}
 				
 				// 마커 클릭했을때 사이드바 생성 및 데이터 전달
-				$(".station-sidebar").toggleClass("active");
-				$(".station-sidebarA").toggleClass("active");
+				$(".station-sidebar").addClass("active");
+				$(".station-sidebarA").addClass("active");
             var markerData = {
                 name: name
                ,address: address
@@ -122,6 +130,7 @@
             kakao.maps.event.addListener(map, 'click', function() {
                infowindow.close();
 			   isOpen = false;
+			   // $(".station-sidebar").removeClass("active");
 			   $(".station-sidebarA").removeClass("active");
 			   // 마커지우기
                // for (var i = 0; i < markers.length; i++) {
@@ -131,8 +140,22 @@
             });
          }
 
-         // 검색 클릭
          $(document).ready(function () {
+            // 사이드바 관련 닫기
+            $("#close-sidebar").on("click", function () {
+               $(".station-sidebar").removeClass("active");
+               $(".station-sidebarA").removeClass("active");
+            });
+
+            // 사이드바 관련 열기
+            $("#bars").on("click", function () {
+               $(".station-sidebar").toggleClass("active");
+               if( $(".station-sidebarA").hasClass("active")){
+                  $(".station-sidebarA").removeClass("active");                  
+               }
+            });
+
+            // 검색 클릭
             $("#search_btn").on("click", function () {
                const area_ctpy_nm_val = $("#area_ctpy_nm").val();
                const area_sgg_nm_val = $("#area_sgg_nm").val();
