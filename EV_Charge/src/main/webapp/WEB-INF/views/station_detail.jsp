@@ -28,8 +28,11 @@
             
             <!-- 충전소 기본 정보 -->
             <div class="detail-section">
+                <div id="station_lat"></div>
+                <div id="station_lng"></div>
+
                 <div class="station-header">
-                    <h2 id="station-name" class="station-title">충전소 이름</h2>
+                    <h2 id="station-name" class="station-title"></h2>
                     <button id="toggle-favorite" class="favorite-btn" title="즐겨찾기">
                         <i class="fas fa-star"></i>
                     </button>
@@ -37,7 +40,7 @@
                 
                 <div class="station-address-container">
                     <i class="fas fa-map-marker-alt"></i>
-                    <p id="station-address" class="station-address">충전소 주소</p>
+                    <p id="station-address" class="station-address"></p>
                 </div>
                 
                 <div class="action-buttons">
@@ -66,7 +69,7 @@
                         </div>
                         <div class="charger-details">
                             <h4>급속 충전기</h4>
-                            <p id="fast-charger-count"><strong>2</strong>대</p>
+                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대</p>
                         </div>
                     </div>
                     
@@ -76,7 +79,7 @@
                         </div>
                         <div class="charger-details">
                             <h4>완속 충전기</h4>
-                            <p id="slow-charger-count"><strong>4</strong>대</p>
+                            <p id="slow-charger-count"><strong id="strong_slow"></strong>대</p>
                         </div>
                     </div>
                 </div>
@@ -109,11 +112,11 @@
                 </h3>
                 
                 <div id="supported-vehicles" class="supported-vehicles">
-                    <div class="vehicle-chip">현대</div>
+                    <!-- <div class="vehicle-chip">현대</div>
                     <div class="vehicle-chip">기아</div>
                     <div class="vehicle-chip">테슬라</div>
                     <div class="vehicle-chip">BMW</div>
-                    <div class="vehicle-chip">벤츠</div>
+                    <div class="vehicle-chip">벤츠</div> -->
                 </div>
             </div>
             
@@ -211,6 +214,10 @@
         --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
         --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         --transition: all 0.2s ease;
+    }
+
+    #station_lat, #station_lng{
+        display: none;
     }
 
     .station-sidebarA { 
@@ -794,5 +801,24 @@
         const stationAddress = document.getElementById('station-address').textContent;
         
         console.log(`공유하기: ${stationName} (${stationAddress})`);
+    }
+	
+	// 마커 클릭
+	function updateStationDetail(markerData) {
+        var name = markerData.name;
+        var address = markerData.address;
+        var lat = markerData.lat;
+        var lng = markerData.lng;
+        var rapid = markerData.rapid;
+        var slow = markerData.slow;
+        var car = markerData.car;
+
+        document.getElementById("station-name").textContent = name;
+        document.getElementById("station-address").textContent = address;
+        document.getElementById("station_lat").textContent = lat;
+        document.getElementById("station_lng").textContent = lng;
+        document.getElementById("strong_rapid").textContent = rapid;
+        document.getElementById("strong_slow").textContent = slow;
+        document.getElementById("supported-vehicles").textContent = car;
     }
 </script>

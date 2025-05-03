@@ -39,11 +39,11 @@ public class FindLocationController {
 	@PostMapping("/updateMapCoordinates_two")
 	public String updateMapCoordinates_two(@RequestBody List<List<String>> address) {
 		log.info("변환하러 오긴했음");
-		log.info(address + "");
+		log.info("@# 받은값 =>" + address);
 
 		// getJSONResponse_two 호출하여 좌표 정보 가져오기
 		JSONArray resultArray = getJSONResponse_two(address);
-		log.info(resultArray + "");
+		log.info("@# 좌표정보에 있는 데이터들 => " + resultArray);
 
 		if (resultArray == null || resultArray.length() == 0) {
 			return new JSONObject().put("error", "주소에 대한 좌표를 찾을 수 없습니다.(two)").toString();
@@ -73,6 +73,18 @@ public class FindLocationController {
 					if (addressResult.has("name")) {
 						coordObj.put("name", addressResult.getString("name"));
 					}
+					// 급속 충전기
+					if (addressResult.has("rapid")) {
+						coordObj.put("rapid", addressResult.getString("rapid"));
+					}
+					// 완속 충전기
+					if (addressResult.has("slow")) {
+						coordObj.put("slow", addressResult.getString("slow"));
+					}
+					// 지원 차종
+					if (addressResult.has("car")) {
+						coordObj.put("car", addressResult.getString("car"));
+					}
 
 					coordinatesArray.put(coordObj);
 				}
@@ -83,6 +95,7 @@ public class FindLocationController {
 		}
 
 		result.put("coordinates", coordinatesArray);
+		log.info("@# updateMapCoordinates_two() 가 보내는값 =>" + result.toString());
 		return result.toString();
 	}
 
@@ -133,10 +146,14 @@ public class FindLocationController {
 						resultItem.put("latitude", firstDocument.getString("y"));
 					}
 
-					// 장소명 정보가 있는 경우 (두 번째 요소)
-					if (addr_item.size() > 1) {
-						resultItem.put("name", addr_item.get(1));
-					}
+					// 장소명
+					resultItem.put("name", addr_item.get(1));
+					// 급속 충전기
+					resultItem.put("rapid", addr_item.get(2));
+					// 완속 충전기
+					resultItem.put("slow", addr_item.get(3));
+					// 지원 차종
+					resultItem.put("car", addr_item.get(4));
 
 					resultArray.put(resultItem);
 				}
@@ -146,7 +163,7 @@ public class FindLocationController {
 			}
 		}
 
-		log.info(resultArray + "");
+		log.info("@# getJSONResponse_two() 에서 보내는 데이터 => " + resultArray);
 		return resultArray; // 모든 주소 처리 후 결과 반환
 	}
 
@@ -243,6 +260,7 @@ public class FindLocationController {
 			// URL 연결
 			String p_url = "https://bigdata.kepco.co.kr/openapi/v1/EVcharge.do?apiKey=" + key
 					+ "&returnType=json&metroCd=" + area_ctpy_nm + "&cityCd=" + area_sgg_nm;
+
 			URL url = new URL(p_url);
 			log.info(p_url + "");
 			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -266,15 +284,21 @@ public class FindLocationController {
 				JSONObject item = dataArr.getJSONObject(i);
 				String addr = item.getString("stnAddr");
 				String place = item.getString("stnPlace");
+				String rapid = Integer.toString(item.getInt("rapidCnt"));
+				String slow = Integer.toString(item.getInt("slowCnt"));
+				String car = item.getString("carType");
 				addr_place.add(addr);
 				addr_place.add(place);
+				addr_place.add(rapid);
+				addr_place.add(slow);
+				addr_place.add(car);
 				addr_place_list.add(addr_place);
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		log.info(addr_place_list + "");
+		log.info("findStationsNear() : " + addr_place_list);
 		return addr_place_list;
 	}
 
