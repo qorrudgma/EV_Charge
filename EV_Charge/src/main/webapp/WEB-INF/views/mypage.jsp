@@ -252,7 +252,7 @@
             font-size: 0.75rem;
         }
         
-        .btn-group {
+        .btn_group {
             display: flex;
             gap: 1rem;
             margin-top: 2rem;
@@ -562,7 +562,7 @@
         
         /* 반응형 디자인 */
         @media (max-width: 768px) {
-            .btn-group {
+            .btn_group {
                 flex-direction: column;
             }
             
@@ -648,7 +648,7 @@
                         </li>
                     </ul>
                     
-                    <div class="btn-group">
+                    <div class="btn_group">
                         <a href="editInfo" class="btn btn-primary">
                             <i class="fas fa-user-edit"></i> 회원정보 수정
                         </a>

@@ -63,7 +63,7 @@
         
         .login-container {
             width: 100%;
-            max-width: 450px;
+            max-width: 460px;
             margin: 0 auto;
         }
         
@@ -137,10 +137,11 @@
             font-size: 0.9rem;
         }
         
-        .form-control {
+        .form_control {
             width: 100%;
             padding: 0.75rem 1rem;
             padding-left: 3rem;
+            margin-bottom: 10px;
             border: 1px solid var(--gray-300);
             border-radius: 0.5rem;
             font-family: inherit;
@@ -388,7 +389,7 @@
                                 <label for="user_id" class="form-label">아이디</label>
                                 <div class="input-group">
                                     <i class="fas fa-user input-icon"></i>
-                                    <input type="text" id="user_id" name="user_id" class="form-control" placeholder="아이디를 입력하세요" required autocomplete="username">
+                                    <input type="text" id="user_id" name="user_id" class="form_control" placeholder="아이디를 입력하세요" required autocomplete="username">
                                 </div>
                             </div>
                             
@@ -396,7 +397,7 @@
                                 <label for="user_password" class="form-label">비밀번호</label>
                                 <div class="input-group">
                                     <i class="fas fa-lock input-icon"></i>
-                                    <input type="password" id="user_password" name="user_password" class="form-control" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
+                                    <input type="password" id="user_password" name="user_password" class="form_control" placeholder="비밀번호를 입력하세요" required autocomplete="current-password">
                                 </div>
                             </div>
                             
@@ -435,7 +436,7 @@
                 </div>
                 
                 <div class="login-footer fade-in delay-200">
-                    <p>아직 계정이 없으신가요? <a href="register">회원가입</a></p>
+                    <p>아직 계정이 없으신가요? <a href="${pageContext.request.contextPath}/registe">회원가입</a></p>
                 </div>
             </div>
         </div>
