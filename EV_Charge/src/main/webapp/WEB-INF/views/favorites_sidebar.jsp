@@ -130,10 +130,6 @@
         <div class="footer-info">
             <p>마지막 업데이트: <span id="last-updated">2023-10-25 14:30</span></p>
         </div>
-        <button id="load-more" class="load-more-btn">
-            <i class="fas fa-plus"></i>
-            <span>더 보기</span>
-        </button>
     </div>
 </div>
 
