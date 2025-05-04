@@ -169,6 +169,11 @@
             display: flex;
             align-items: center;
         }
+
+        #user_id, #user_password, #user_password_check
+        , #user_name, #user_email{
+            padding-left: 35px;
+        }
         
         .form-text i {
             margin-right: 0.25rem;
