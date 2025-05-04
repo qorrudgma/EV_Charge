@@ -31,6 +31,7 @@ public class SearchEvseLocationController {
 	public List<EvseLocationDto> searchNearbyStations(@RequestParam("address") String address,
 			@RequestParam("radiusKm") String radiusKm, Model model, HttpServletRequest request) {
 		SearchStationsDto dto = new SearchStationsDto();
+		log.info("@# address => " + address);
 		dto.setAddress(address);
 		dto.setRadiusKm(Integer.parseInt(radiusKm));
 
