@@ -10,4 +10,10 @@
         from districts
         where provinces_code = #{provinces_code}
     </select>
+    
+    <select id="getDistrictsCode" resultType="String">
+		select districts_code
+		  from districts
+		 where provinces_code =#{provinces} and districts_name = #{F_cityCd}
+    </select>
 </mapper>

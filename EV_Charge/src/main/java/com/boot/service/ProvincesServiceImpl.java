@@ -24,4 +24,12 @@ public class ProvincesServiceImpl implements ProvincesService {
 
 		return provinces_list;
 	}
+
+	@Override
+	public String getProvincesCode(String metroCd) {
+		ProvincesDAO dao = sqlSession.getMapper(ProvincesDAO.class);
+		String provinces_code = dao.getProvincesCode(metroCd);
+
+		return provinces_code;
+	}
 }

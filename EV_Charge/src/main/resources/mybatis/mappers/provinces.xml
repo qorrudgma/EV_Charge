@@ -9,5 +9,11 @@
 			   provinces_name
 		  from provinces
     </select>
+
+    <select id="getProvincesCode" resultType="String">
+		select provinces_code
+		  from provinces
+		 where provinces_name like concat(#{metroCd}, '%')
+    </select>
     
 </mapper>
