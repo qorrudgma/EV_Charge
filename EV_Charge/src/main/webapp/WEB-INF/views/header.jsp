@@ -536,15 +536,36 @@
                 <a href="${pageContext.request.contextPath}/main" class="ev-nav-item">
                     <i class="fas fa-home"></i>홈
                 </a>
-                <a href="${pageContext.request.contextPath}/favorites" class="ev-nav-item">
-                    <i class="fas fa-heart"></i>즐겨찾기
-                </a>
+
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <a href="${pageContext.request.contextPath}/favorites" class="ev-nav-item">
+                            <i class="fas fa-heart"></i>즐겨찾기
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/login" class="ev-nav-item">
+                            <i class="fas fa-heart"></i>즐겨찾기
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+
                 <a href="${pageContext.request.contextPath}/notice" class="ev-nav-item">
                     <i class="fas fa-bell"></i>공지사항
                 </a>
-                <a href="${pageContext.request.contextPath}/list" class="ev-nav-item">
-                    <i class="fa-solid fa-comment"></i>게시판
-                </a>
+
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <a href="${pageContext.request.contextPath}/list" class="ev-nav-item">
+                            <i class="fa-solid fa-comment"></i>게시판
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/login" class="ev-nav-item">
+                            <i class="fa-solid fa-comment"></i>게시판
+                        </a>
+                    </c:otherwise>
+                </c:choose>
             </nav>
             
             <!-- 검색, 로그인, 프로필 섹션 -->
