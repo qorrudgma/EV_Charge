@@ -2,6 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
+<c:if test="${not empty sessionScope.user}">
+    <script>
+        const userNo = ${sessionScope.user.user_no};
+    </script>
+</c:if>
+
 <div id="station-sidebar" class="station-sidebar active">
     <div class="sidebar-header">
         <div class="sidebar-title">
@@ -47,6 +53,7 @@
                 <span>즐겨찾기</span>
                 <i class="fas fa-star"></i>
             </button>
+			
         </div>
     </div>
     
@@ -70,9 +77,9 @@
                             <div class="station-content">
                                 <div class="station-header">
                                     <h4 class="station-name">${station.stationName}</h4>
-                                    <button class="favorite-btn ${status.index % 5 == 0 ? 'active' : ''}" title="즐겨찾기">
-                                        <i class="fas fa-star"></i>
-                                    </button>
+										<button class="favorite-btn ${status.index % 5 == 0 ? 'active' : ''}" title="즐겨찾기">
+											<i class="fas fa-star"></i>
+										</button>
                                 </div>
                                 
                                 <div class="station-address">
@@ -951,10 +958,19 @@
                     
                     <div class="station-content">
                         <div class="station-header">
-                            <h4 class="station-name">` + stationList[index].stationName + `</h4>    
-                            <button class="favorite-btn ${favoriteActive}" title="즐겨찾기">
-                                <i class="fas fa-star"></i>
-                            </button>
+                            <h4 class="station-name">` + stationList[index].stationName + `</h4>
+							
+							    <button 
+							        class="favorite-btn ${station.favoriteActive}"
+									data-stnaddr="` + stationList[index].stationAddress + `"
+									data-stnplace="` + stationList[index].stationName + `"
+									data-rapidcnt="` + stationList[index].rapid + `"
+									data-slowcnt="` + stationList[index].slow + `"
+									data-cartype="` + stationList[index].car + `"
+							        onclick="saveFavorite(event)">
+							        <i class="fas fa-star"></i>
+							    </button>
+
                         </div>
                         
                         <div class="station-address">
@@ -1041,4 +1057,66 @@
         }
     });
 }
+
+
+// 모든 즐겨찾기 버튼에 클릭 이벤트를 추가
+document.querySelectorAll('.filter-chip').forEach(button => {
+    button.addEventListener('click', function() {
+        // 버튼의 data-filter 값이 'favorite'인 경우만 처리
+        if (this.dataset.filter === 'favorite') {
+            saveFavorite();
+        }
+    });
+});
+
+// 모든 즐겨찾기 버튼에 클릭 이벤트를 추가
+document.querySelectorAll('.filter-chip').forEach(button => {
+    button.addEventListener('click', function() {
+        if (this.dataset.filter === 'favorite') {
+            const favoriteData = {
+                userNo: 1,  // 실제 사용자 번호 예시임
+                stnAddr: this.dataset.stnaddr,  // 버튼의 data-stnAddr 속성 값
+                stnPlace: this.dataset.stnplace,  // 버튼의 data-stnPlace 속성 값
+                rapidCnt: this.dataset.rapidcnt,  // 버튼의 data-rapidCnt 속성 값
+                slowCnt: this.dataset.slowcnt,   // 버튼의 data-slowCnt 속성 값
+                carType: this.dataset.cartype    // 버튼의 data-carType 속성 값
+            };
+
+            // 서버로 즐겨찾기 데이터 전송
+            saveFavorite(favoriteData);
+        }
+    });
+});
+
+//					여기 추가\
+
+function saveFavorite(e) {
+    const button = e.target.closest('.favorite-btn');
+
+    const data = {
+        userNo: userNo, // JSP에서 정의한 전역 변수 사용
+        stnAddr: button.dataset.stnaddr,
+        stnPlace: button.dataset.stnplace,
+        rapidCnt: parseInt(button.dataset.rapidcnt),
+        slowCnt: parseInt(button.dataset.slowcnt),
+        carType: button.dataset.cartype
+    };
+
+    fetch('/favorite/add', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(res => res.text())
+    .then(result => {
+        console.log('서버 응답:', result);
+        if (result === 'success') {
+            button.classList.toggle('active'); // 즐겨찾기 UI 토글 등
+        }
+    });
+}
+
+
 </script>

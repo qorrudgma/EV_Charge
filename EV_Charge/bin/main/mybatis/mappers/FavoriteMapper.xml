@@ -2,35 +2,15 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.boot.dao.FavoriteDAO">
 
-    <!-- 즐겨찾기 추가 -->
-    <insert id="addFavorite" parameterType="com.boot.dto.FavoriteDTO">
-        INSERT INTO ev_user_favorites (user_no, user_id, station_address)
-        VALUES (#{userNo}, #{userId}, #{stationAddress})
+<mapper namespace="FavoriteMapper">
+
+    <insert id="insertFavorite" parameterType="com.boot.dto.FavoriteDTO">
+        INSERT INTO ev_favorite (
+            user_no, stnAddr, stnPlace, rapidCnt, slowCnt, carType
+        ) VALUES (
+            #{userNo}, #{stnAddr}, #{stnPlace}, #{rapidCnt}, #{slowCnt}, #{carType}
+        )
     </insert>
-
-    <!-- 즐겨찾기 삭제 -->
-    <delete id="removeFavorite" parameterType="com.boot.dto.FavoriteDTO">
-        DELETE FROM ev_user_favorites
-         WHERE user_no = #{userNo}
-           AND station_address = #{stationAddress}
-    </delete>
-
-    <!-- 즐겨찾기 존재 여부 확인 -->
-    <select id="getFavoriteCount" parameterType="com.boot.dto.FavoriteDTO" resultType="int">
-        SELECT COUNT(*) FROM ev_user_favorites
-         WHERE user_no = #{userNo}
-           AND station_address = #{stationAddress}
-    </select>
-
-    <!-- 사용자의 즐겨찾기 목록 조회 -->
-    <select id="listFavorites" parameterType="int" resultType="com.boot.dto.FavoriteDTO">
-        SELECT user_no         AS userNo,
-               user_id         AS userId,
-               station_address AS stationAddress
-          FROM ev_user_favorites
-         WHERE user_no = #{userNo}
-    </select>
-
+    
 </mapper>
