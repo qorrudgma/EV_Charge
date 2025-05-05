@@ -991,6 +991,21 @@
                 </div>`;
                 
                 $list.append(html);
+				
+                console.log("사이드바 마커 찍기~");
+                console.log("index => "+stationList[index].stationAddress);
+                
+                var address = stationList[index].stationAddress;
+                var lat = stationList[index].evseLocationLatitude;
+                var lng = stationList[index].evseLocationLongitude;
+                var name = stationList[index].stationName;
+                var rapid = stationList[index].rapid;
+                var slow = stationList[index].slow;
+                var car = stationList[index].car;
+                console.log(address);
+	            // window.addMarker(stationList[index].stationAddress, stationList[index].evseLocationLatitude, stationList[index].evseLocationLongitude, stationList[index].stationName, "0", "0", "0");
+	            window.addMarker(address, lat, lng, name, rapid, slow, car);
+
             });
             
             // 이벤트 리스너 다시 연결

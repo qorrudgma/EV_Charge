@@ -79,7 +79,7 @@
            }
          }
 
-         function addMarker(address, lat, lng, name, rapid, slow, car) {
+         window.addMarker = function(address, lat, lng, name, rapid, slow, car) {
             const position = new kakao.maps.LatLng(lat, lng);
             const marker = new kakao.maps.Marker({
                position: position,
@@ -97,55 +97,67 @@
 
             // 마커 클릭
             kakao.maps.event.addListener(marker, 'click', function() {
-				console.log("마커를 클릭했습니다. 위치: " + lat + ", " + lng + ", 이름: " + name);
-    
-				map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
-				map.setLevel(3);
-				
-				if (isOpen) {
-					infowindow.close();
-					isOpen = false;
-				} else {
-					infowindow.open(map, marker);
-					isOpen = true;
-				}
-				
-				// 마커 클릭했을때 사이드바 생성 및 데이터 전달
-				$(".station-sidebar").addClass("active");
-				$(".station-sidebarA").addClass("active");
-            var markerData = {
-                name: name
-               ,address: address
-               ,lat: lat
-               ,lng: lng
-               ,rapid: rapid
-               ,slow: slow
-               ,car: car
-            }
-				console.log(markerData);
-				// 충전소 상세 정보 업데이트
-				updateStationDetail(markerData);
-			});
+               console.log("마커를 클릭했습니다. 위치: " + lat + ", " + lng + ", 이름: " + name);
+      
+               map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
+               map.setLevel(3);
 
-			// 지도 클릭 액션
+               infowindow.open(map, marker);
+
+               $("#close-detail-sidebar,#close-sidebar").on("click", function () {
+                  infowindow.close();
+               });
+               
+               // if (isOpen) {
+               //    infowindow.close();
+               //    isOpen = false;
+               // } else {
+               //    infowindow.open(map, marker);
+               //    isOpen = true;
+               // }
+               
+               // 마커 클릭했을때 사이드바 생성 및 데이터 전달
+               $(".station-sidebar").addClass("active");
+               $(".station-sidebarA").addClass("active");
+               var markerData = {
+                  name: name
+                  ,address: address
+                  ,lat: lat
+                  ,lng: lng
+                  ,rapid: rapid
+                  ,slow: slow
+                  ,car: car
+               }
+               
+               console.log(markerData);
+               // 충전소 상세 정보 업데이트
+               updateStationDetail(markerData);
+            });
+
+			   // 지도 클릭 액션
             kakao.maps.event.addListener(map, 'click', function() {
                infowindow.close();
-			   isOpen = false;
-			   // $(".station-sidebar").removeClass("active");
-			   $(".station-sidebarA").removeClass("active");
-			   // 마커지우기
+               isOpen = false;
+               // $(".station-sidebar").removeClass("active");
+               $(".station-sidebarA").removeClass("active");
+               // 마커지우기
                // for (var i = 0; i < markers.length; i++) {
                //    markers[i].setMap(null);
                // }
                // markers = [];
             });
-         }
+            return marker;
+         };
+
+         window.map = map;
+         window.markers = markers;
 
          $(document).ready(function () {
             // 사이드바 관련 닫기
             $("#close-sidebar").on("click", function () {
                $(".station-sidebar").removeClass("active");
                $(".station-sidebarA").removeClass("active");
+               // infowindow.close();
             });
 
             // 사이드바 관련 열기

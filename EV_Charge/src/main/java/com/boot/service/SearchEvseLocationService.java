@@ -58,6 +58,7 @@ public class SearchEvseLocationService {
 //		cityCd = "11"; // 예: 종로구
 
 //		List<EvseLocationDto> allStations = kepcoEvseProvider.getStationsByRegion(metroCd, cityCd);
+		// 여기서 코드를 활용해 데이터
 		List<EvseLocationDto> allStations = kepcoEvseProvider.getStationsByRegion(provinces, districts);
 
 		return allStations.stream().filter(station -> haversine(userLat, userLng, station.getEvseLocationLatitude(),

@@ -13,4 +13,7 @@ public class EvseLocationDto {
 	private String stationAddress;
 	private double evseLocationLatitude;
 	private double evseLocationLongitude;
+	private String rapid;
+	private String slow;
+	private String car;
 }

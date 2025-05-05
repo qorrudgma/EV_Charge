@@ -822,9 +822,11 @@
         // document.getElementById("supported-vehicles").textContent = car;
         const car_list = cars.split(",");
         console.log(car_list);
-		for(let car of car_list){			
-        document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">`+car+`</div>`;
-        //document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">${car}</div>`;
+		
+        document.getElementById("supported-vehicles").textContent = "";
+        for(let car of car_list){
+            document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">`+car+`</div>`;
+            //document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">${car}</div>`;
 		}
     }
 </script>
