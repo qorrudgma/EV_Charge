@@ -5,12 +5,12 @@
 
 <mapper namespace="FavoriteMapper">
 
-    <insert id="insertFavorite" parameterType="com.boot.dto.FavoriteDTO">
+    <insert id="insertFavorite" parameterType="com.boot.dto.Favorite">
         INSERT INTO ev_favorite (
             user_no, stnAddr, stnPlace, rapidCnt, slowCnt, carType
         ) VALUES (
             #{userNo}, #{stnAddr}, #{stnPlace}, #{rapidCnt}, #{slowCnt}, #{carType}
         )
     </insert>
-    
+
 </mapper>

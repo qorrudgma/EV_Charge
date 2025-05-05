@@ -3,7 +3,7 @@ package com.boot.dto;
 import lombok.Data;
 
 @Data
-public class FavoriteDTO {
+public class Favorite {
 	private int userNo;
 	private String stnAddr;
 	private String stnPlace;

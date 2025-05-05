@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.boot.dto.FavoriteDTO;
+import com.boot.dto.Favorite;
 import com.boot.service.FavoriteService;
 
 @RestController
@@ -25,7 +25,7 @@ public class FavoriteController {
 	}
 
 	@PostMapping("/add")
-	public ResponseEntity<Map<String, String>> addFavorite(@RequestBody FavoriteDTO favorite) {
+	public ResponseEntity<Map<String, String>> addFavorite(@RequestBody Favorite favorite) {
 		// 받은 즐겨찾기 정보 출력 (디버깅용)
 		System.out.println("받은 즐겨찾기 정보: " + favorite);
 
