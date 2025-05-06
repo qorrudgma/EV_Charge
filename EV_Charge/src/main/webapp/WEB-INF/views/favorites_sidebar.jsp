@@ -44,11 +44,9 @@
         <div class="filter-chips">
             <button class="filter-chip active" data-filter="all">
                 <span>전체</span>
-                <span class="count">${stationList.size()}</span>
             </button>
             <button class="filter-chip" data-filter="available">
                 <span>사용가능</span>
-                <span class="count" id="available-count">0</span>
             </button>
             <button class="filter-chip" data-filter="favorite">
                 <span>즐겨찾기</span>
@@ -71,7 +69,7 @@
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i classㅋㅋer-alt"></i>
+                                <i class="fas fa-map-marker-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -749,7 +747,8 @@
         function applyFilter(filter) {
             const stations = document.querySelectorAll('.station-item');
             let visibleCount = 0;
-            
+			let hasFavorite = false;
+
             stations.forEach(station => {
                 if (filter === 'all') {
                     station.style.display = '';
@@ -782,11 +781,112 @@
             // 결과 카운트 업데이트
             document.querySelector('.results-count').textContent = visibleCount + '개';
         }
-        
-        // 즐겨찾기 리스트
-        function myFavoriteList() {
-            console.log("myFavoriteList() 실행");
-        }
+		
+		function myFavoriteList() {
+			console.log("myFavoriteList() 실행");
+			console.log("@# userNo =>" + userNo);
+			
+		    if (!userNo) {
+		        alert("로그인이 필요합니다.");
+		        return;
+		    }
+
+            // $.ajax({
+            //      type:"post"
+            //     ,url: "/favorite/list"
+            //     ,data: { userNo: userNo }
+            //     ,success: function (stationList) {
+            //         console.log("받은 stationList => " + stationList);
+            //     }
+            //     ,error: function() {
+            //         console.error("실패");
+            //     }
+            // });
+
+		    fetch('/favorite/list?userNo=' + userNo)
+		        .then(response => response.json())
+				.then(stationList => {
+				    console.log("@# test2 =>" + JSON.stringify(stationList));
+		            // const $list = document.querySelector('#sidebar-list');
+                    const $list = $('#sidebar-list');
+                    $list.empty();
+		            // $list.innerHTML = '';
+		            document.querySelector('.results-count').textContent = stationList.length + '개';
+
+		            stationList.forEach((station, index) => {
+		                const statusIndex = index % 3;
+		                const statusClass = statusIndex === 0 ? 'available' : (statusIndex === 1 ? 'busy' : 'offline');
+		                const statusText = statusIndex === 0 ? '사용가능' : (statusIndex === 1 ? '사용중' : '점검중');
+		                const statusIcon = statusIndex === 0 ? 'fa-check-circle' : (statusIndex === 1 ? 'fa-clock' : 'fa-exclamation-circle');
+		                const availableText = index % 2 === 0 ? '2/4' : '1/2';
+		                const distance = (index * 0.5 + 0.5).toFixed(1);
+						
+		                const html = `
+		                <div class="station-item" data-id="${station.stationId || ''}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
+		                    <div class="station-status ${statusClass}">
+		                        <i class="fas ${statusIcon}"></i>
+		                        <span>${statusText}</span>
+		                    </div>
+		                    
+		                    <div class="station-content">
+		                        <div class="station-header">
+		                            <h4 class="station-name">${station.stnPlace}</h4>
+		                            <button 
+		                                class="favorite-btn active"
+		                                data-stnaddr="${station.stnAddr}"
+		                                data-stnplace="${station.stnPlace}"
+		                                data-rapidcnt="${station.rapidCnt}"
+		                                data-slowcnt="${station.slowCnt}"
+		                                data-cartype="${station.carType}"
+		                                onclick="saveFavorite(event)">
+		                                <i class="fas fa-star"></i>
+		                            </button>
+		                        </div>
+		                        
+		                        <div class="station-address">
+		                            <i class="fas fa-map-marker-alt"></i>
+		                            <span>${station.stnAddr}</span>
+		                        </div>
+		                        
+		                        <div class="station-details">
+		                            <div class="detail-item">
+		                                <i class="fas fa-bolt"></i>
+		                                <span>DC콤보 (100kW)</span>
+		                            </div>
+		                            <div class="detail-item">
+		                                <i class="fas fa-plug"></i>
+		                                <span>${availableText} 사용가능</span>
+		                            </div>
+		                            <div class="detail-item">
+		                                <i class="fas fa-route"></i>
+		                                <span>${distance}km</span>
+		                            </div>
+		                        </div>
+		                    </div>
+		                    
+		                    <div class="station-actions">
+		                        <button class="action-button primary" onclick="navigateToStation('${station.evseLocationLatitude}', '${station.evseLocationLongitude}')">
+		                            <i class="fas fa-directions"></i>
+		                            <span>길찾기</span>
+		                        </button>
+		                        <button class="action-button secondary" onclick="showStationDetail('${station.evseLocationLatitude}', '${station.evseLocationLongitude}', '${station.stnPlace}', ${station.rapidCnt}, ${station.slowCnt}, '${station.carType}')">
+		                            <i class="fas fa-info-circle"></i>
+		                            <span>상세정보</span>
+		                        </button>
+		                    </div>
+		                </div>`;
+
+                        // $list.innerHTML = '';
+                        $list.append(html);
+		                // $list.insertAdjacentHTML('beforeend', html);
+		            });
+		        })
+		        .catch(error => {
+		            console.error("즐겨찾기 목록 가져오기 실패:", error);
+		        });
+		}
+
+		
         
         // 즐겨찾기 토글
         const favoriteButtons = document.querySelectorAll('.favorite-btn');

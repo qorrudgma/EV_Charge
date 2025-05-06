@@ -1,18 +1,25 @@
 package com.boot.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.boot.dto.FavoriteDTO;
 import com.boot.service.FavoriteService;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/favorite")
 public class FavoriteController {
@@ -45,4 +52,19 @@ public class FavoriteController {
 		resp.put(null, "즐겨찾기 삭제 완료!");
 		return ResponseEntity.ok(resp);
 	}
+
+	@GetMapping("/list")
+	@ResponseBody
+	public List<FavoriteDTO> getFavoriteList(@RequestParam("userNo") int userNo) {
+		log.info("getFavoriteList() userNo => " + userNo);
+		log.info("" + favoriteService.getFavoritesByUserNo(userNo));
+		return favoriteService.getFavoritesByUserNo(userNo);
+	}
+
+//	@PostMapping("/list")
+//	public List<FavoriteDTO> getFavoriteList(@RequestBody Map<String, Integer> user) {
+//		int userNo = user.get("userNo");
+//		log.info("userNo = " + userNo);
+//		return favoriteService.getFavoritesByUserNo(userNo);
+//	}
 }

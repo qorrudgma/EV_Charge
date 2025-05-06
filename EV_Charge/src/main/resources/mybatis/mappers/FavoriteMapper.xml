@@ -13,12 +13,23 @@
         )
     </insert>
     
-     <!-- 삭제 쿼리 추가 -->
+    <!-- 삭제 쿼리 추가 -->
 	<delete id="deleteFavorite" parameterType="com.boot.dto.FavoriteDTO">
-		DELETE FROM ev_favorite
-		 WHERE user_no = #{userNo}
-		   AND stnAddr = #{stnAddr}
-		   AND stnPlace = #{stnPlace}
+	DELETE FROM ev_favorite
+	 WHERE user_no = #{userNo}
+	   AND stnAddr = #{stnAddr}
+	   AND stnPlace = #{stnPlace}
 	</delete>
-    
+	
+	<select id="getFavoritesByUserNo" parameterType="int" resultType="com.boot.dto.FavoriteDTO">
+		select user_no
+			 , stnAddr
+			 , stnPlace
+			 , rapidCnt
+		     , slowCnt
+		     , carType
+		  from EV_favorite
+		 where user_no = #{userNo}
+	</select>
+
 </mapper>

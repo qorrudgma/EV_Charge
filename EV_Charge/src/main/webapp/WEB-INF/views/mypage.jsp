@@ -830,6 +830,12 @@
     </div>
     
     <script>
+        $(document).ready(function () {
+            $.ajax({
+                
+            });
+        });
+
         // 탭 전환 기능
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab-button');
