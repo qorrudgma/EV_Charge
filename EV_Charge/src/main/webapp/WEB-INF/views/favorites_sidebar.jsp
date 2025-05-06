@@ -66,21 +66,12 @@
     
     <div class="sidebar-content">
         <div id="station-list" class="station-list">
-			<c:choose>
-                <c:when test="${not empty sessionScope.user}">
-					<!-- 여기가 로그인시 나오는부분 즐겨찾기 된 내용들 -->
-                </c:when>
-                <c:otherwise>					
-					<!-- 여기가 로그인 안했을시 나오는부분 -->
-                </c:otherwise>
-            </c:choose>
-			<!-- 여기부터가 원래 코드 삭제 할 예정 -->
             <c:choose>
                 <c:when test="${not empty stationList}">
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <i classㅋㅋer-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -127,7 +118,6 @@
                     </div>
                 </c:otherwise>
             </c:choose>
-			<!-- 여기 까지가 원래 코드 삭제 할 예정 -->
         </div>
     </div>
     
@@ -864,8 +854,15 @@
         window.open(url, '_blank');
     }
     
-	//------------------------------여기가 상세정보 나오게 하기
     // 충전소 상세정보 표시 함수
+    // function showStationDetail(stationId) {
+    //     console.log(`충전소 상세정보: ${stationId}`);
+    //     // 상세정보 모달 또는 새 페이지로 이동
+    //     // 예시: 모달 표시
+    //     if (window.showStationDetailModal) {
+    //         window.showStationDetailModal(stationId);
+    //     }
+    // }
     function showStationDetail(lat, lng, name, rapid, slow, car) {
         console.log("충전소 상세정보 => "+lat+", "+lng+", "+ name+", "+rapid+", "+slow+", "+car);
         
@@ -905,6 +902,7 @@
             window.updateStationDetail(markerData);
         }
     }
+
     
     // 검색 초기화 함수
     function resetSearch() {
@@ -964,9 +962,9 @@
 
             // 지역 중심으로 이동
             map.setCenter(new kakao.maps.LatLng(stationList[0].evseLocationLatitude, stationList[0].evseLocationLongitude));
-            map.setLevel(3);
+            map.setLevel(5);
             //----------------//
-
+            
             const $list = $('#station-list');
             $list.empty();
 
@@ -1061,6 +1059,7 @@
                     </div>
                 </div>`;
                 
+                // <button class="action-button secondary" onclick="showStationDetail('${station.stationId}')">
                 $list.append(html);
 				
                 console.log("사이드바 마커 찍기~");
