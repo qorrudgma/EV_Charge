@@ -669,6 +669,7 @@
 </style>
 
 <script>
+
     document.addEventListener('DOMContentLoaded', function() {
         // // 사이드바 토글
         // const sidebar = document.getElementById('station-sidebar');
@@ -764,14 +765,27 @@
                     if (station.querySelector('.favorite-btn.active')) {
                         station.style.display = '';
                         visibleCount++;
+                        // console.log("favorite");
+                        hasFavorite = true;
                     } else {
                         station.style.display = 'none';
                     }
                 }
             });
+
+            if (filter === "favorite" && hasFavorite) {
+                // 즐겨찾기 리스트 호출
+                console.log("myFavoriteList() 준비!");
+                myFavoriteList();
+            }
             
             // 결과 카운트 업데이트
             document.querySelector('.results-count').textContent = visibleCount + '개';
+        }
+        
+        // 즐겨찾기 리스트
+        function myFavoriteList() {
+            console.log("myFavoriteList() 실행");
         }
         
         // 즐겨찾기 토글
@@ -1165,7 +1179,7 @@ function saveFavorite(e) {
         if (result === 'success') {
             button.classList.toggle('active');
         } else {
-            alert('서버 오류: ' + result);
+            alert(result);
         }
     })
     .catch(err => {

@@ -729,34 +729,18 @@
                                     <label class="form-label">지역 선택</label>
                                     <div class="select-group">
                                         <div>
-                                            <select id="area_ctpy_nm" name="area_ctpy_nm" onchange="updatearea_sgg_nm()">
-                                                <option value="">시/도 선택</option>
-                                                <option value="서울특별시">서울특별시</option>
-                                                <option value="부산광역시">부산광역시</option>
-                                                <option value="대구광역시">대구광역시</option>
-                                                <option value="인천광역시">인천광역시</option>
-                                                <option value="광주광역시">광주광역시</option>
-                                                <option value="대전광역시">대전광역시</option>
-                                                <option value="울산광역시">울산광역시</option>
-                                                <option value="경기도">경기도</option>
-                                                <option value="강원도">강원도</option>
-                                                <option value="충청북도">충청북도</option>
-                                                <option value="충청남도">충청남도</option>
-                                                <option value="전라북도">전라북도</option>
-                                                <option value="전라남도">전라남도</option>
-                                                <option value="경상북도">경상북도</option>
-                                                <option value="경상남도">경상남도</option>
-                                                <option value="제주도">제주도</option>
+                                            <select id="register_area_ctpy_nm" name="area_ctpy_nm" onchange="updateRegisterAreaSggNm()">
+                                                <option value="">시/도</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <select id="area_sgg_nm" name="area_sgg_nm" onchange="updatearea_emd_nm()">
-                                                <option value="">군/구 선택</option>
+                                            <select id="register_area_sgg_nm" name="area_sgg_nm" onchange="updatearea_emd_nm_register()">
+                                                <option value="">군/구</option>
                                             </select>
                                         </div>
                                         <div>
-                                            <select id="area_emd_nm" name="area_emd_nm">
-                                                <option value="">읍/면/동 선택</option>
+                                            <select id="register_area_emd_nm" name="area_emd_nm">
+                                                <option value="">읍/면/동</option>
                                             </select>
                                         </div>
                                     </div>
@@ -873,7 +857,7 @@
                     }
                     
                     // 지역 선택 확인
-                    if (!$("#area_ctpy_nm").val() || !$("#area_sgg_nm").val() || !$("#area_emd_nm").val()) {
+                    if (!$("#register_area_ctpy_nm").val() || !$("#register_area_sgg_nm").val() || !$("#register_area_emd_nm").val()) {
                         alert("지역을 모두 선택해주세요.");
                         return;
                     }
@@ -883,9 +867,9 @@
                     $("#confirm_name").text($("#user_name").val());
                     $("#confirm_email").text($("#user_email").val());
                     $("#confirm_address").text(
-                        $("#area_ctpy_nm").val() + " " + 
-                        $("#area_sgg_nm").val() + " " + 
-                        $("#area_emd_nm").val()
+                        $("#register_area_ctpy_nm").val() + " " + 
+                        $("#register_area_sgg_nm").val() + " " + 
+                        $("#register_area_emd_nm").val()
                     );
                 }
                 
@@ -1038,46 +1022,125 @@
                 }
             });
         });
-        
-        // 군/구 옵션 업데이트 함수
-        function updatearea_sgg_nm() {
-            const area_ctpy_nm = document.getElementById("area_ctpy_nm").value;
-            const area_sgg_nmSelect = document.getElementById("area_sgg_nm");
-            const area_emd_nmSelect = document.getElementById("area_emd_nm");
 
-            // 군/구와 읍/면/동 초기화
-            area_sgg_nmSelect.innerHTML = '<option value="">군/구 선택</option>';
-            area_emd_nmSelect.innerHTML = '<option value="">읍/면/동 선택</option>';
-
-            if (area_ctpy_nm && regions[area_ctpy_nm]) {
-                // 군/구 옵션 추가
-                for (const area_sgg_nm in regions[area_ctpy_nm]) {
-                    const option = document.createElement("option");
-                    option.value = area_sgg_nm;
-                    option.text = area_sgg_nm;
-                    area_sgg_nmSelect.appendChild(option);
+        $(".btn-primary").on("click", function() {
+        // 서버에서 시/도 데이터 가져오기
+            $.ajax({
+                type: "get",
+                url: "/provinces_list", // ProvincesController에 정의된 엔드포인트
+                success: function(data) {
+                    console.log("시/도 데이터 가져왔음");
+                    var area_ctpy_nmSelect = $("#register_area_ctpy_nm");
+                    // 기본 옵션
+                    area_ctpy_nmSelect.html('<option value="">시/도</option>');
+                    
+                    // 받아온 데이터로 옵션 추가 (코드를 value로, 이름을 텍스트로)
+                    $.each(data, function(index, province) {
+                        area_ctpy_nmSelect.append($('<option>', {
+                            value: province.provinces_code, // 시/도 코드를 value로
+                            text: province.provinces_name   // 시/도 이름을 텍스트로
+                        }));
+                    });
+                    
+                    // 시/도 선택 시 이벤트 리스너 추가
+                    area_ctpy_nmSelect.on("change", function() {
+                        var selectedProvinceCode = $(this).val();
+                        if(selectedProvinceCode) {
+                            // 선택된 시/도 코드가 있으면 함수 실행
+                            updateRegisterAreaSggNm(selectedProvinceCode);
+                        } else {
+                            // 선택이 취소되면 시/군/구 드롭다운 초기화
+                            $("#register_area_sgg_nm").html('<option value="">군/구</option>');
+                            $("#register_area_emd_nm").html('<option value="">읍/면/동</option>');
+                        }
+                    });
+                    
+                    // 모바일 버전도 동일하게 적용
+                    // var area_ctpy_nm_mobileSelect = $("#area_ctpy_nm_mobile");
+                    // area_ctpy_nm_mobileSelect.html('<option value="">시/도 선택</option>');
+                    
+                    // $.each(data, function(index, province) {
+                    //     area_ctpy_nm_mobileSelect.append($('<option>', {
+                    //         value: province.provinces_code,
+                    //         text: province.provinces_name
+                    //     }));
+                    // });
+                    
+                    // // 모바일 버전 시/도 선택 시 이벤트 리스너 추가
+                    // area_ctpy_nm_mobileSelect.on("change", function() {
+                    //     var selectedProvinceCode = $(this).val();
+                    //     if(selectedProvinceCode) {
+                    //         // 선택된 시/도 코드가 있으면 함수 실행
+                    //         updatearea_sgg_nm_mobile(selectedProvinceCode);
+                    //     } else {
+                    //         // 선택이 취소되면 시/군/구 드롭다운 초기화
+                    //         $("#area_sgg_nm_mobile").html('<option value="">군/구 선택</option>');
+                    //         $("#area_emd_nm_mobile").html('<option value="">읍/면/동 선택</option>');
+                    //     }
+                    // });
+                },
+                error: function(xhr, status, error) {
+                    console.error("시/도 데이터를 가져오는 중 오류가 발생했습니다:", error);
                 }
-            }
-        }
+            });
+            // });
 
-        // 읍/면/동 옵션 업데이트 함수
-        function updatearea_emd_nm() {
-            const area_ctpy_nm = document.getElementById("area_ctpy_nm").value;
-            const area_sgg_nm = document.getElementById("area_sgg_nm").value;
-            const area_emd_nmSelect = document.getElementById("area_emd_nm");
+            // 시/도 선택 시 해당 시/군/구 데이터 가져오기
+            function updateRegisterAreaSggNm(provinces_code) {
+                console.log("시/도 선택해서 시/군/구 가야한다.(1)");
+                var area_sgg_nmSelect = $("#register_area_sgg_nm");
+                var area_emd_nmSelect = $("#register_area_emd_nm");
 
-            // 읍/면/동 초기화
-            area_emd_nmSelect.innerHTML = '<option value="">읍/면/동 선택</option>';
+                // 시/군/구와 읍/면/동 초기화
+                area_sgg_nmSelect.html('<option value="">군/구</option>');
+                area_emd_nmSelect.html('<option value="">읍/면/동</option>');
 
-            if (area_ctpy_nm && area_sgg_nm && regions[area_ctpy_nm] && regions[area_ctpy_nm][area_sgg_nm]) {
-                const area_emd_nms = regions[area_ctpy_nm][area_sgg_nm];
-                area_emd_nms.forEach(area_emd_nm => {
-                    const option = document.createElement("option");
-                    option.value = area_emd_nm;
-                    option.text = area_emd_nm;
-                    area_emd_nmSelect.appendChild(option);
+                if (!provinces_code) {
+                    return;
+                }
+
+                // 서버에서 시/군/구 데이터 가져오기
+                $.ajax({
+                    type: "get",
+                    url: "/districts_list",
+                    data: { provinces_code: provinces_code },
+                    success: function(data) {
+                        console.log("시/도 선택해서 시/군/구 가야한다.(2)");
+                        // 받아온 데이터로 옵션 추가 (코드를 value로, 이름을 텍스트로)
+                        $.each(data, function(index, district) {
+                            // "미분류" 항목은 제외
+                            if (district.districts_name !== "미분류") {
+                                area_sgg_nmSelect.append($('<option>', {
+                                    value: district.districts_code, // 시/군/구 코드를 value로
+                                    text: district.districts_name   // 시/군/구 이름을 텍스트로
+                                }));
+                            }
+                        });
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("시/군/구 데이터를 가져오는 중 오류가 발생했습니다:", error);
+                    }
                 });
             }
+        });
+        // 읍/면/동 옵션 업데이트 함수
+        function updatearea_emd_nm_register() {
+            const area_ctpy_nm = document.getElementById("register_area_ctpy_nm").value;
+           const area_sgg_nm = document.getElementById("register_area_sgg_nm").value;
+            const area_emd_nmSelect = document.getElementById("register_area_emd_nm");
+
+            // 읍/면/동 초기화
+           area_emd_nmSelect.innerHTML = '<option value="">읍/면/동</option>';
+
+          if (area_ctpy_nm && area_sgg_nm && regions[area_ctpy_nm] && regions[area_ctpy_nm][area_sgg_nm]) {
+              const area_emd_nms = regions[area_ctpy_nm][area_sgg_nm];
+               area_emd_nms.forEach(area_emd_nm => {
+                  const option = document.createElement("option");
+               option.value = area_emd_nm;
+                 option.text = area_emd_nm;
+                  area_emd_nmSelect.appendChild(option);
+               });
+           }
         }
         
         function validateForm() {
@@ -1087,9 +1150,9 @@
             var passwordCheck = document.getElementById("user_password_check").value.trim();
             var name = document.getElementById("user_name").value.trim();
             var email = document.getElementById("user_email").value.trim();
-            var province = document.getElementById("area_ctpy_nm").value.trim();
-            var city = document.getElementById("area_sgg_nm").value.trim();
-            var town = document.getElementById("area_emd_nm").value.trim();
+            var province = document.getElementById("register_area_ctpy_nm").value.trim();
+            var city = document.getElementById("register_area_sgg_nm").value.trim();
+            var town = document.getElementById("register_area_emd_nm").value.trim();
 
             // 아이디 중복 확인 여부
             if (!document.getElementById("user_id").readOnly) {
