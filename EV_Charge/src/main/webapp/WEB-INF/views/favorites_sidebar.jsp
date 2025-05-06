@@ -24,7 +24,6 @@
         </div>
     </div>
 
-    <!-- <form id="station_searchfrm" onsubmit="event.preventDefault(); search(); return false;"> -->
     <form id="station_searchfrm">
         <div class="sidebar-search">
             <div class="search-container">
@@ -66,23 +65,25 @@
     
     <div class="sidebar-content">
         <div id="station-list" class="station-list">
-			<c:choose>
-                <c:when test="${not empty sessionScope.user}">
-					<!-- 여기가 로그인시 나오는부분 즐겨찾기 된 내용들 -->
-					
-                </c:when>
-                <c:otherwise>					
-					<!-- 여기가 로그인 안했을시 나오는부분 -->
-					<div>로그인 해주세요</div>
-                </c:otherwise>
-            </c:choose>
-			<!-- 여기부터가 원래 코드 삭제 할 예정 -->
             <c:choose>
                 <c:when test="${not empty stationList}">
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <i class="fas ${status.index % 3 == 0 ? 'fa-check-circle' : (status.index % 3 == 1 ? 'fa-clock' : 'fa-exclamation-circle')}"></i>
+                                <span>${status.index % 3 == 0 ? '사용가능' : (status.index % 3 == 1 ? '사용중' : '점검중')}</span>
+                            </div>
+                            
+                            <div class="station-content">
+                                <div class="station-header">
+                                    <h4 class="station-name">${station.stationName}</h4>
+										<button class="favorite-btn ${status.index % 5 == 0 ? 'active' : ''}" title="즐겨찾기">
+											<i class="fas fa-star"></i>
+										</button>
+                                </div>
+                                
+                                <div class="station-address">
+                                    <i class="fas fa-map-marker-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -129,7 +130,6 @@
                     </div>
                 </c:otherwise>
             </c:choose>
-			<!-- 여기 까지가 원래 코드 삭제 할 예정 -->
         </div>
     </div>
     
@@ -707,10 +707,27 @@
         });
         
         // 검색 기능
-        searchInput.addEventListener('input', function(e) {
-            // console.log("검색 클릭");
-            // e.preventDefault();
-            filterStations(this.value.toLowerCase());
+        // searchInput.addEventListener('input', function() {
+        //     // console.log("검색 클릭");
+        //     filterStations(this.value.toLowerCase());
+        // });
+
+        $(document).ready(function() {
+            // 폼 제출 이벤트 처리
+            $("#station_searchfrm").on("submit", function(e) {
+                e.preventDefault();
+                search();
+                return false;
+            });
+            
+            // 검색 입력 필드에서 엔터 키 처리
+            $("#station-search").on("keydown", function(e) {
+                if (e.key === "Enter") {
+                    e.preventDefault();
+                    search();
+                    return false;
+                }
+            });
         });
         
         function filterStations(query) {
@@ -837,6 +854,23 @@
                 }
             });
         });
+        
+        // 더 보기 버튼
+        const loadMoreBtn = document.getElementById('load-more');
+        if (loadMoreBtn) {
+            loadMoreBtn.addEventListener('click', function() {
+                // 여기에 추가 데이터 로드 로직 구현
+                console.log('더 많은 충전소 로드');
+                this.disabled = true;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>로딩 중...</span>';
+                
+                // 예시: 3초 후 버튼 상태 복원
+                setTimeout(() => {
+                    this.disabled = false;
+                    this.innerHTML = '<i class="fas fa-plus"></i> <span>더 보기</span>';
+                }, 3000);
+            });
+        }
     });
     
     // 길찾기 함수
@@ -849,10 +883,11 @@
         window.open(url, '_blank');
     }
     
-	//------------------------------여기가 상세정보 나오게 하기
     // 충전소 상세정보 표시 함수
-    function showStationDetail() {
-        console.log("상세정보 클릭");
+    function showStationDetail(stationId) {
+        console.log(`충전소 상세정보: ${stationId}`);
+        // 상세정보 모달 또는 새 페이지로 이동
+        // 예시: 모달 표시
         if (window.showStationDetailModal) {
             window.showStationDetailModal(stationId);
         }
@@ -883,23 +918,8 @@
     }
 </script>
 <script>
-    $(document).ready(function() {
-        // 폼 제출 이벤트 처리
-        $("#station_searchfrm").on("submit", function(e) {
-            e.preventDefault();
-            search();
-            return false;
-        });
-        
-        // 검색 입력 필드에서 엔터 키 처리
-        $("#station-search").on("keydown", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                search();
-                return false;
-            }
-        });
-    });
+
+
 
     function search() {
     const address = $('#station-search').val();
@@ -952,7 +972,7 @@
                 console.log(stationList[index].stationName);
 
                 const html = `
-                <div class="station-item" data-id="${stationList.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
+                <div class="station-item" data-id="${stationList.stationId}" data-lat="`+stationList[index].evseLocationLatitude+`" data-lng="`+stationList[index].evseLocationLongitude+`">
                     <div class="station-status ${statusClass}">
                         <i class="fas ${statusIcon}"></i>
                         <span>${statusText}</span>  
@@ -961,6 +981,7 @@
                     <div class="station-content">
                         <div class="station-header">
                             <h4 class="station-name">` + stationList[index].stationName + `</h4>
+							
 							    <button 
 							        class="favorite-btn ${station.favoriteActive}"
 									data-stnaddr="` + stationList[index].stationAddress + `"
@@ -1025,7 +1046,25 @@
 
             });
             
-            
+            // 이벤트 리스너 다시 연결
+            // 즐겨찾기 토글
+            const favoriteButtons = document.querySelectorAll('.favorite-btn');
+            favoriteButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    this.classList.toggle('active');
+                    
+                    const stationId = this.closest('.station-item').getAttribute('data-id');
+                    const isFavorite = this.classList.contains('active');
+                    
+                    console.log(`충전소 ${stationId} 즐겨찾기 ${isFavorite ? '추가' : '제거'}`);
+                    
+                    const activeFilter = document.querySelector('.filter-chip.active');
+                    if (activeFilter && activeFilter.getAttribute('data-filter') === 'favorite') {
+                        applyFilter('favorite');
+                    }
+                });
+            });
             
             // 사용 가능한 충전소 수 업데이트
             const availableStations = document.querySelectorAll('.station-status.available');
@@ -1062,48 +1101,32 @@ document.querySelectorAll('.filter-chip').forEach(button => {
     });
 });
 
-//--------------------------여기 추가
+//              여기 추가
 function saveFavorite(e) {
     const button = e.target.closest('.favorite-btn');
 
-    // 1) payload 구성
     const data = {
-        userNo: userNo,   // JSP에서 정의한 전역 변수
+        userNo: userNo, // JSP에서 정의한 전역 변수 사용
         stnAddr: button.dataset.stnaddr,
         stnPlace: button.dataset.stnplace,
-        rapidCnt: parseInt(button.dataset.rapidcnt, 10),
-        slowCnt: parseInt(button.dataset.slowcnt, 10),
+        rapidCnt: parseInt(button.dataset.rapidcnt),
+        slowCnt: parseInt(button.dataset.slowcnt),
         carType: button.dataset.cartype
     };
 
-    // 2) active 여부에 따라 URL 결정
-    const isActive = button.classList.contains('active');
-    const url = isActive ? '/favorite/delete' : '/favorite/add';
-
-    // 3) fetch 호출
-    fetch(url, {
+    fetch('/favorite/add', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify(data)
     })
     .then(res => res.text())
     .then(result => {
         console.log('서버 응답:', result);
-
-        // 4) 서버에서 "success" 반환 시에만 UI 토글
         if (result === 'success') {
-            button.classList.toggle('active');
-        } else {
-            alert('서버 오류: ' + result);
+            button.classList.toggle('active'); // 즐겨찾기 UI 토글 등
         }
-    })
-    .catch(err => {
-        console.error('통신 오류:', err);
-        alert('서버와 통신 중 오류가 발생했습니다.');
     });
 }
-
-    // 모든 .favorite-btn 에 이 함수 바인딩 (inline onclick 대신 사용 가능)
-    document.querySelectorAll('.favorite-btn')
-            .forEach(btn => btn.addEventListener('click', saveFavorite));
 </script>
