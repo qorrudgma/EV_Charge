@@ -750,7 +750,7 @@
 	//         }
 	//     });
 	// });
-    $(document).ready(function() {
+    $(document).ready(function(e) {
     // 서버에서 시/도 데이터 가져오기
     $.ajax({
         type: "get",

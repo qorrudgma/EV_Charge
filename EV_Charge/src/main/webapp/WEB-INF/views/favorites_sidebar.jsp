@@ -24,6 +24,7 @@
         </div>
     </div>
 
+    <!-- <form id="station_searchfrm" onsubmit="event.preventDefault(); search(); return false;"> -->
     <form id="station_searchfrm">
         <div class="sidebar-search">
             <div class="search-container">
@@ -707,7 +708,9 @@
         });
         
         // 검색 기능
-        searchInput.addEventListener('input', function() {
+        searchInput.addEventListener('input', function(e) {
+            // console.log("검색 클릭");
+            // e.preventDefault();
             filterStations(this.value.toLowerCase());
         });
         
@@ -899,6 +902,24 @@
     }
 </script>
 <script>
+    $(document).ready(function() {
+        // 폼 제출 이벤트 처리
+        $("#station_searchfrm").on("submit", function(e) {
+            e.preventDefault();
+            search();
+            return false;
+        });
+        
+        // 검색 입력 필드에서 엔터 키 처리
+        $("#station-search").on("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                search();
+                return false;
+            }
+        });
+    });
+
     function search() {
     const address = $('#station-search').val();
     const radiusKm = $('input[name="radiusKm"]').val();
@@ -1073,23 +1094,13 @@ document.querySelectorAll('.filter-chip').forEach(button => {
 document.querySelectorAll('.filter-chip').forEach(button => {
     button.addEventListener('click', function() {
         if (this.dataset.filter === 'favorite') {
-            const favoriteData = {
-                userNo: 1,  // 실제 사용자 번호 예시임
-                stnAddr: this.dataset.stnaddr,  // 버튼의 data-stnAddr 속성 값
-                stnPlace: this.dataset.stnplace,  // 버튼의 data-stnPlace 속성 값
-                rapidCnt: this.dataset.rapidcnt,  // 버튼의 data-rapidCnt 속성 값
-                slowCnt: this.dataset.slowcnt,   // 버튼의 data-slowCnt 속성 값
-                carType: this.dataset.cartype    // 버튼의 data-carType 속성 값
-            };
-
             // 서버로 즐겨찾기 데이터 전송
             saveFavorite(favoriteData);
         }
     });
 });
 
-//					여기 추가\
-
+//              여기 추가
 function saveFavorite(e) {
     const button = e.target.closest('.favorite-btn');
 
@@ -1117,6 +1128,4 @@ function saveFavorite(e) {
         }
     });
 }
-
-
 </script>
