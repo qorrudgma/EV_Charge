@@ -45,5 +45,4 @@ public class SearchEvseLocationController {
 		log.info("@# ELList =>" + ELList);
 		return ELList;
 	}
-
 }

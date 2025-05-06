@@ -49,7 +49,7 @@ public class KepcoEvseProvider {
 				double lat = coords[0];
 				double lng = coords[1];
 
-				result.add(new EvseLocationDto("1", place, addr, lat, lng, rapid, slow, car));
+				result.add(new EvseLocationDto(Integer.toString(i), place, addr, lat, lng, rapid, slow, car));
 			}
 		} catch (Exception e) {
 			log.error("Error while fetching stations", e);

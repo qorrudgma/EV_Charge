@@ -24,6 +24,7 @@
         </div>
     </div>
 
+    <!-- <form id="station_searchfrm" onsubmit="event.preventDefault(); search(); return false;"> -->
     <form id="station_searchfrm">
         <div class="sidebar-search">
             <div class="search-container">
@@ -65,25 +66,21 @@
     
     <div class="sidebar-content">
         <div id="station-list" class="station-list">
+			<c:choose>
+                <c:when test="${not empty sessionScope.user}">
+					<!-- 여기가 로그인시 나오는부분 즐겨찾기 된 내용들 -->
+                </c:when>
+                <c:otherwise>					
+					<!-- 여기가 로그인 안했을시 나오는부분 -->
+                </c:otherwise>
+            </c:choose>
+			<!-- 여기부터가 원래 코드 삭제 할 예정 -->
             <c:choose>
                 <c:when test="${not empty stationList}">
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i class="fas ${status.index % 3 == 0 ? 'fa-check-circle' : (status.index % 3 == 1 ? 'fa-clock' : 'fa-exclamation-circle')}"></i>
-                                <span>${status.index % 3 == 0 ? '사용가능' : (status.index % 3 == 1 ? '사용중' : '점검중')}</span>
-                            </div>
-                            
-                            <div class="station-content">
-                                <div class="station-header">
-                                    <h4 class="station-name">${station.stationName}</h4>
-										<button class="favorite-btn ${status.index % 5 == 0 ? 'active' : ''}" title="즐겨찾기">
-											<i class="fas fa-star"></i>
-										</button>
-                                </div>
-                                
-                                <div class="station-address">
-                                    <i class="fas fa-map-marker-alt"></i>
+                                <i class="fas fa-map-marker-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -130,6 +127,7 @@
                     </div>
                 </c:otherwise>
             </c:choose>
+			<!-- 여기 까지가 원래 코드 삭제 할 예정 -->
         </div>
     </div>
     
@@ -707,27 +705,10 @@
         });
         
         // 검색 기능
-        // searchInput.addEventListener('input', function() {
-        //     // console.log("검색 클릭");
-        //     filterStations(this.value.toLowerCase());
-        // });
-
-        $(document).ready(function() {
-            // 폼 제출 이벤트 처리
-            $("#station_searchfrm").on("submit", function(e) {
-                e.preventDefault();
-                search();
-                return false;
-            });
-            
-            // 검색 입력 필드에서 엔터 키 처리
-            $("#station-search").on("keydown", function(e) {
-                if (e.key === "Enter") {
-                    e.preventDefault();
-                    search();
-                    return false;
-                }
-            });
+        searchInput.addEventListener('input', function(e) {
+            // console.log("검색 클릭");
+            // e.preventDefault();
+            filterStations(this.value.toLowerCase());
         });
         
         function filterStations(query) {
@@ -883,13 +864,45 @@
         window.open(url, '_blank');
     }
     
+	//------------------------------여기가 상세정보 나오게 하기
     // 충전소 상세정보 표시 함수
-    function showStationDetail(stationId) {
-        console.log(`충전소 상세정보: ${stationId}`);
-        // 상세정보 모달 또는 새 페이지로 이동
-        // 예시: 모달 표시
-        if (window.showStationDetailModal) {
-            window.showStationDetailModal(stationId);
+    function showStationDetail(lat, lng, name, rapid, slow, car) {
+        console.log("충전소 상세정보 => "+lat+", "+lng+", "+ name+", "+rapid+", "+slow+", "+car);
+        
+        // 지도 중심 이동 (카카오맵 API 사용)
+        if (map) {
+            // 지도 중심 이동 (약간 아래쪽으로 이동하여 마커가 중앙에 오도록)
+            map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
+            map.setLevel(3); // 줌 레벨 설정 (낮을수록 더 확대됨)
+            
+            // 해당 위치의 마커 찾기 및 정보창 열기
+            for (var i = 0; i < markers.length; i++) {
+                var markerPosition = markers[i].getPosition();
+                if (markerPosition.getLat() == lat && markerPosition.getLng() == lng) {
+                    // 마커 위치에 정보창 열기
+                    var infowindow = new kakao.maps.InfoWindow({
+                        content: '<div style="padding:5px;font-size:12px;">' + name + '</div>'
+                    });
+                    infowindow.open(map, markers[i]);
+                    break;
+                }
+            }
+        }
+        
+        // 상세 정보 사이드바 표시 (있는 경우)
+        $(".station-sidebarA").addClass("active");
+        
+        // 충전소 상세 정보 업데이트 (있는 경우)
+        if (window.updateStationDetail) {
+            var markerData = {
+                name: name,
+                lat: lat,
+                lng: lng,
+                rapid: rapid,
+                slow: slow,
+                car: car
+            };
+            window.updateStationDetail(markerData);
         }
     }
     
@@ -918,8 +931,23 @@
     }
 </script>
 <script>
-
-
+    $(document).ready(function() {
+        // 폼 제출 이벤트 처리
+        $("#station_searchfrm").on("submit", function(e) {
+            e.preventDefault();
+            search();
+            return false;
+        });
+        
+        // 검색 입력 필드에서 엔터 키 처리
+        $("#station-search").on("keydown", function(e) {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                search();
+                return false;
+            }
+        });
+    });
 
     function search() {
     const address = $('#station-search').val();
@@ -932,8 +960,13 @@
         dataType: "json", // 응답 데이터 타입을 JSON으로 지정
         success: function(stationList) {
             console.log("서버 응답:", stationList); // 응답 데이터 확인용
-			console.log("결과 확인용"+stationList[0].stationId);
-            
+			console.log("결과 확인용"+stationList[0].evseLocationLatitude+", "+stationList[0].evseLocationLongitude);
+
+            // 지역 중심으로 이동
+            map.setCenter(new kakao.maps.LatLng(stationList[0].evseLocationLatitude, stationList[0].evseLocationLongitude));
+            map.setLevel(3);
+            //----------------//
+
             const $list = $('#station-list');
             $list.empty();
 
@@ -972,7 +1005,7 @@
                 console.log(stationList[index].stationName);
 
                 const html = `
-                <div class="station-item" data-id="${stationList.stationId}" data-lat="`+stationList[index].evseLocationLatitude+`" data-lng="`+stationList[index].evseLocationLongitude+`">
+                <div class="station-item" data-id="${stationList.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                     <div class="station-status ${statusClass}">
                         <i class="fas ${statusIcon}"></i>
                         <span>${statusText}</span>  
@@ -1021,7 +1054,7 @@
                             <i class="fas fa-directions"></i>
                             <span>길찾기</span>
                         </button>
-                        <button class="action-button secondary" onclick="showStationDetail('${station.stationId}')">
+                        <button class="action-button secondary" onclick="showStationDetail('`+stationList[index].evseLocationLatitude+`', '`+stationList[index].evseLocationLongitude+`', '`+stationList[index].stationName+`', ` + stationList[index].rapid + `, ` + stationList[index].slow + `, '` + stationList[index].car + `')">
                             <i class="fas fa-info-circle"></i>
                             <span>상세정보</span>
                         </button>
@@ -1101,32 +1134,48 @@ document.querySelectorAll('.filter-chip').forEach(button => {
     });
 });
 
-//              여기 추가
+//--------------------------여기 추가
 function saveFavorite(e) {
     const button = e.target.closest('.favorite-btn');
 
+    // 1) payload 구성
     const data = {
-        userNo: userNo, // JSP에서 정의한 전역 변수 사용
+        userNo: userNo,   // JSP에서 정의한 전역 변수
         stnAddr: button.dataset.stnaddr,
         stnPlace: button.dataset.stnplace,
-        rapidCnt: parseInt(button.dataset.rapidcnt),
-        slowCnt: parseInt(button.dataset.slowcnt),
+        rapidCnt: parseInt(button.dataset.rapidcnt, 10),
+        slowCnt: parseInt(button.dataset.slowcnt, 10),
         carType: button.dataset.cartype
     };
 
-    fetch('/favorite/add', {
+    // 2) active 여부에 따라 URL 결정
+    const isActive = button.classList.contains('active');
+    const url = isActive ? '/favorite/delete' : '/favorite/add';
+
+    // 3) fetch 호출
+    fetch(url, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
     .then(res => res.text())
     .then(result => {
         console.log('서버 응답:', result);
+
+        // 4) 서버에서 "success" 반환 시에만 UI 토글
         if (result === 'success') {
-            button.classList.toggle('active'); // 즐겨찾기 UI 토글 등
+            button.classList.toggle('active');
+        } else {
+            alert('서버 오류: ' + result);
         }
+    })
+    .catch(err => {
+        console.error('통신 오류:', err);
+        alert('서버와 통신 중 오류가 발생했습니다.');
     });
 }
+
+// 모든 .favorite-btn 에 이 함수 바인딩 (inline onclick 대신 사용 가능)
+document.querySelectorAll('.favorite-btn')
+        .forEach(btn => btn.addEventListener('click', saveFavorite));
 </script>
