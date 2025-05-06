@@ -5,12 +5,19 @@
 
 <mapper namespace="FavoriteMapper">
 
-    <insert id="insertFavorite" parameterType="com.boot.dto.Favorite">
+    <insert id="insertFavorite" parameterType="com.boot.dto.FavoriteDTO">
         INSERT INTO ev_favorite (
             user_no, stnAddr, stnPlace, rapidCnt, slowCnt, carType
         ) VALUES (
             #{userNo}, #{stnAddr}, #{stnPlace}, #{rapidCnt}, #{slowCnt}, #{carType}
         )
     </insert>
-
+    
+     <!-- 삭제 쿼리 추가 -->
+  <delete id="deleteFavorite" parameterType="com.boot.dto.FavoriteDTO">
+    DELETE FROM ev_favorite
+    WHERE user_no = #{userNo}
+      AND stnAddr = #{stnAddr}
+  </delete>
+    
 </mapper>

@@ -71,20 +71,7 @@
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i class="fas ${status.index % 3 == 0 ? 'fa-check-circle' : (status.index % 3 == 1 ? 'fa-clock' : 'fa-exclamation-circle')}"></i>
-                                <span>${status.index % 3 == 0 ? '사용가능' : (status.index % 3 == 1 ? '사용중' : '점검중')}</span>
-                            </div>
-                            
-                            <div class="station-content">
-                                <div class="station-header">
-                                    <h4 class="station-name">${station.stationName}</h4>
-										<button class="favorite-btn ${status.index % 5 == 0 ? 'active' : ''}" title="즐겨찾기">
-											<i class="fas fa-star"></i>
-										</button>
-                                </div>
-                                
-                                <div class="station-address">
-                                    <i class="fas fa-map-marker-alt"></i>
+                                <i classㅋㅋer-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -1100,32 +1087,48 @@ document.querySelectorAll('.filter-chip').forEach(button => {
     });
 });
 
-//              여기 추가
+//--------------------------여기 추가
 function saveFavorite(e) {
     const button = e.target.closest('.favorite-btn');
 
+    // 1) payload 구성
     const data = {
-        userNo: userNo, // JSP에서 정의한 전역 변수 사용
+        userNo: userNo,   // JSP에서 정의한 전역 변수
         stnAddr: button.dataset.stnaddr,
         stnPlace: button.dataset.stnplace,
-        rapidCnt: parseInt(button.dataset.rapidcnt),
-        slowCnt: parseInt(button.dataset.slowcnt),
+        rapidCnt: parseInt(button.dataset.rapidcnt, 10),
+        slowCnt: parseInt(button.dataset.slowcnt, 10),
         carType: button.dataset.cartype
     };
 
-    fetch('/favorite/add', {
+    // 2) active 여부에 따라 URL 결정
+    const isActive = button.classList.contains('active');
+    const url = isActive ? '/favorite/delete' : '/favorite/add';
+
+    // 3) fetch 호출
+    fetch(url, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     })
     .then(res => res.text())
     .then(result => {
         console.log('서버 응답:', result);
+
+        // 4) 서버에서 "success" 반환 시에만 UI 토글
         if (result === 'success') {
-            button.classList.toggle('active'); // 즐겨찾기 UI 토글 등
+            button.classList.toggle('active');
+        } else {
+            alert('서버 오류: ' + result);
         }
+    })
+    .catch(err => {
+        console.error('통신 오류:', err);
+        alert('서버와 통신 중 오류가 발생했습니다.');
     });
 }
+
+// 모든 .favorite-btn 에 이 함수 바인딩 (inline onclick 대신 사용 가능)
+document.querySelectorAll('.favorite-btn')
+        .forEach(btn => btn.addEventListener('click', saveFavorite));
 </script>
