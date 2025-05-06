@@ -66,12 +66,23 @@
     
     <div class="sidebar-content">
         <div id="station-list" class="station-list">
+			<c:choose>
+                <c:when test="${not empty sessionScope.user}">
+					<!-- 여기가 로그인시 나오는부분 즐겨찾기 된 내용들 -->
+					
+                </c:when>
+                <c:otherwise>					
+					<!-- 여기가 로그인 안했을시 나오는부분 -->
+					<div>로그인 해주세요</div>
+                </c:otherwise>
+            </c:choose>
+			<!-- 여기부터가 원래 코드 삭제 할 예정 -->
             <c:choose>
                 <c:when test="${not empty stationList}">
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i classㅋㅋer-alt"></i>
+                                <i class="fas fa-map-marker-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -118,6 +129,7 @@
                     </div>
                 </c:otherwise>
             </c:choose>
+			<!-- 여기 까지가 원래 코드 삭제 할 예정 -->
         </div>
     </div>
     
@@ -825,23 +837,6 @@
                 }
             });
         });
-        
-        // 더 보기 버튼
-        const loadMoreBtn = document.getElementById('load-more');
-        if (loadMoreBtn) {
-            loadMoreBtn.addEventListener('click', function() {
-                // 여기에 추가 데이터 로드 로직 구현
-                console.log('더 많은 충전소 로드');
-                this.disabled = true;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>로딩 중...</span>';
-                
-                // 예시: 3초 후 버튼 상태 복원
-                setTimeout(() => {
-                    this.disabled = false;
-                    this.innerHTML = '<i class="fas fa-plus"></i> <span>더 보기</span>';
-                }, 3000);
-            });
-        }
     });
     
     // 길찾기 함수
@@ -854,11 +849,10 @@
         window.open(url, '_blank');
     }
     
+	//------------------------------여기가 상세정보 나오게 하기
     // 충전소 상세정보 표시 함수
-    function showStationDetail(stationId) {
-        console.log(`충전소 상세정보: ${stationId}`);
-        // 상세정보 모달 또는 새 페이지로 이동
-        // 예시: 모달 표시
+    function showStationDetail() {
+        console.log("상세정보 클릭");
         if (window.showStationDetailModal) {
             window.showStationDetailModal(stationId);
         }
@@ -967,7 +961,6 @@
                     <div class="station-content">
                         <div class="station-header">
                             <h4 class="station-name">` + stationList[index].stationName + `</h4>
-							
 							    <button 
 							        class="favorite-btn ${station.favoriteActive}"
 									data-stnaddr="` + stationList[index].stationAddress + `"
@@ -1032,25 +1025,7 @@
 
             });
             
-            // 이벤트 리스너 다시 연결
-            // 즐겨찾기 토글
-            const favoriteButtons = document.querySelectorAll('.favorite-btn');
-            favoriteButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    this.classList.toggle('active');
-                    
-                    const stationId = this.closest('.station-item').getAttribute('data-id');
-                    const isFavorite = this.classList.contains('active');
-                    
-                    console.log(`충전소 ${stationId} 즐겨찾기 ${isFavorite ? '추가' : '제거'}`);
-                    
-                    const activeFilter = document.querySelector('.filter-chip.active');
-                    if (activeFilter && activeFilter.getAttribute('data-filter') === 'favorite') {
-                        applyFilter('favorite');
-                    }
-                });
-            });
+            
             
             // 사용 가능한 충전소 수 업데이트
             const availableStations = document.querySelectorAll('.station-status.available');
@@ -1128,7 +1103,7 @@ function saveFavorite(e) {
     });
 }
 
-// 모든 .favorite-btn 에 이 함수 바인딩 (inline onclick 대신 사용 가능)
-document.querySelectorAll('.favorite-btn')
-        .forEach(btn => btn.addEventListener('click', saveFavorite));
+    // 모든 .favorite-btn 에 이 함수 바인딩 (inline onclick 대신 사용 가능)
+    document.querySelectorAll('.favorite-btn')
+            .forEach(btn => btn.addEventListener('click', saveFavorite));
 </script>
