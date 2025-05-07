@@ -24,6 +24,10 @@
 ![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jquery&logoColor=white)
 
 - **Backend**<br>
+![Java](https://img.shields.io/badge/Java-17-007396?style=flat&logo=java&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white)
+![AJAX](https://img.shields.io/badge/AJAX-0054A6?style=flat&logo=code&logoColor=white)
+
 - **Database:** MySQL
 - **지도 API:** Kakao Map API
 - **빌드 도구:** Gradle
