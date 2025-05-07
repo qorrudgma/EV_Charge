@@ -1,18 +1,29 @@
 -- 유저 테이블
 create table EV_user (
-			user_no int auto_increment primary key,  -- 순서를 위한 자동 증가 번호
-		    user_id varchar(50) not null unique,    -- 사용자 ID
-		    user_password varchar(100) not null,         -- 비밀번호
-			user_name varchar(20) not null,         	    -- 이름
-			user_email varchar(50),            	-- 이메일
-			user_province VARCHAR(50),                   -- 도
-			user_city VARCHAR(50)                    -- 시
-		);
+    user_no int auto_increment primary key,  -- 순서를 위한 자동 증가 번호
+    user_id varchar(50) not null unique,     -- 사용자 ID
+    user_password varchar(100) not null,     -- 비밀번호
+    user_name varchar(20) not null,          -- 이름
+    user_email varchar(50),            	     -- 이메일
+    user_province VARCHAR(50),               -- 도
+    user_city VARCHAR(50)                    -- 시
+);
+
+--즐겨찾기 테이블
+CREATE TABLE EV_favorite (
+    favorite_no int primary key auto_increment,
+    user_no INT,
+    stnAddr VARCHAR(255),
+    stnPlace VARCHAR(255),
+    rapidCnt INT,
+    slowCnt INT,
+    carType VARCHAR(255)
+);
 
 -- 시/도 테이블
 CREATE TABLE provinces (
-    provinces_code VARCHAR(2) PRIMARY KEY,
-    provinces_name VARCHAR(20) NOT NULL
+    provinces_code VARCHAR(2) PRIMARY KEY,  -- 시/도 코드
+    provinces_name VARCHAR(20) NOT NULL     -- 시/도 명
 );
 
 -- 시/도 테이블 데이터
@@ -37,9 +48,9 @@ INSERT INTO provinces (provinces_code, provinces_name) VALUES
 
 -- 시/군/구 테이블
 CREATE TABLE districts (
-    districts_code VARCHAR(2) NOT NULL,
-    districts_name VARCHAR(30) NOT NULL,
-    provinces_code VARCHAR(2) NOT NULL
+    districts_code VARCHAR(2) NOT NULL,	    -- 시/군/구 코드
+    districts_name VARCHAR(30) NOT NULL,    -- 시/군/구 명
+    provinces_code VARCHAR(2) NOT NULL      -- 시/도 코드드
 );
 
 -- 시/군/구 테이블 데이터
@@ -367,3 +378,31 @@ INSERT INTO districts (districts_code, districts_name, provinces_code) VALUES
 -- 세종특별자치시
 ('11', '세종시', '41'),
 ('99', '미분류', '41');
+
+-- 게시글 테이블
+CREATE TABLE tbl_board (
+    boardNo int auto_increment NOT NULL PRIMARY KEY,   -- 게시글 번호
+    boardName VARCHAR(20),			       -- 게시글 이름
+    boardTitle VARCHAR(100),			       -- 게시글 제목
+    boardContent VARCHAR(300),			       -- 게시글 내용
+    boardDate DATETIME DEFAULT CURRENT_TIMESTAMP,      -- 게시글 생성 날짜
+    boardHit int DEFAULT 0			       -- 게시글 조회수
+);
+
+-- 댓글 테이블
+CREATE TABLE board_comment (
+    commentNo int auto_increment NOT NULL PRIMARY KEY,   -- 댓글 번호
+    commentWriter VARCHAR(20),			         -- 댓글 작성자
+    commentContent VARCHAR(300),			 -- 댓글 내용
+    boardNo int,				         -- 게시글 번호
+    comentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP -- 댓글 생성 날짜
+);
+
+-- 파일 업로드 테이블
+CREATE TABLE board_attach (
+    commentNo int VARCHAR(100),		-- 파일 식별자
+    commentWriter VARCHAR(200),		-- 업로드 경로
+    commentContent VARCHAR(100),        -- 파일 이름
+    boardNo char(1),			-- 파일 타입(이미지 판별)
+    boardNo int				-- 게시글 번호
+);
