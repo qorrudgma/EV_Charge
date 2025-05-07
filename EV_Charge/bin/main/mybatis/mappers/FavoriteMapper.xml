@@ -9,14 +9,14 @@
         INSERT INTO ev_favorite (
             user_no, stnAddr, stnPlace, rapidCnt, slowCnt, carType
         ) VALUES (
-            #{userNo}, #{stnAddr}, #{stnPlace}, #{rapidCnt}, #{slowCnt}, #{carType}
+            #{user_no}, #{stnAddr}, #{stnPlace}, #{rapidCnt}, #{slowCnt}, #{carType}
         )
     </insert>
     
     <!-- 삭제 쿼리 추가 -->
 	<delete id="deleteFavorite" parameterType="com.boot.dto.FavoriteDTO">
 	DELETE FROM ev_favorite
-	 WHERE user_no = #{userNo}
+	 WHERE user_no = #{user_no}
 	   AND stnAddr = #{stnAddr}
 	   AND stnPlace = #{stnPlace}
 	</delete>
@@ -29,7 +29,7 @@
 		     , slowCnt
 		     , carType
 		  from EV_favorite
-		 where user_no = #{userNo}
+		 where user_no = #{user_no}
 	</select>
 
 </mapper>

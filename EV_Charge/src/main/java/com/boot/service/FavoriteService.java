@@ -26,9 +26,9 @@ public class FavoriteService {
 		sqlSession.delete("FavoriteMapper.deleteFavorite", favorite);
 	}
 
-	public List<FavoriteDTO> getFavoritesByUserNo(int userNo) {
-		log.info("FavoriteService userNo => " + userNo);
-		log.info("return => " + sqlSession.selectList("FavoriteMapper.getFavoritesByUserNo", userNo));
-		return sqlSession.selectList("FavoriteMapper.getFavoritesByUserNo", userNo);
+	public List<FavoriteDTO> getFavoritesByUserNo(int user_no) {
+		log.info("FavoriteService userNo => " + user_no);
+		log.info("return => " + sqlSession.selectList("FavoriteMapper.getFavoritesByUserNo", user_no));
+		return sqlSession.selectList("FavoriteMapper.getFavoritesByUserNo", user_no);
 	}
 }

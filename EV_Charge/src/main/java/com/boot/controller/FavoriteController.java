@@ -55,10 +55,10 @@ public class FavoriteController {
 
 	@GetMapping("/list")
 	@ResponseBody
-	public List<FavoriteDTO> getFavoriteList(@RequestParam("userNo") int userNo) {
-		log.info("getFavoriteList() userNo => " + userNo);
-		log.info("" + favoriteService.getFavoritesByUserNo(userNo));
-		return favoriteService.getFavoritesByUserNo(userNo);
+	public List<FavoriteDTO> getFavoriteList(@RequestParam("user_no") int user_no) {
+		log.info("getFavoriteList() userNo => " + user_no);
+		log.info("" + favoriteService.getFavoritesByUserNo(user_no));
+		return favoriteService.getFavoritesByUserNo(user_no);
 	}
 
 //	@PostMapping("/list")

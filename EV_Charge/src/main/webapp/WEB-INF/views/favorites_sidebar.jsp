@@ -4,7 +4,7 @@
 
 <c:if test="${not empty sessionScope.user}">
     <script>
-        const userNo = ${sessionScope.user.user_no};
+        const user_no = ${sessionScope.user.user_no};
     </script>
 </c:if>
 
@@ -44,9 +44,11 @@
         <div class="filter-chips">
             <button class="filter-chip active" data-filter="all">
                 <span>전체</span>
+                <span class="count">${stationList.size()}</span>
             </button>
             <button class="filter-chip" data-filter="available">
                 <span>사용가능</span>
+                <span class="count" id="available-count">0</span>
             </button>
             <button class="filter-chip" data-filter="favorite">
                 <span>즐겨찾기</span>
@@ -69,7 +71,7 @@
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i class="fas fa-map-marker-alt"></i>
+                                <i classㅋㅋer-alt"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 
@@ -775,45 +777,31 @@
             if (filter === "favorite" && hasFavorite) {
                 // 즐겨찾기 리스트 호출
                 console.log("myFavoriteList() 준비!");
-                myFavoriteList();
+                myFavoriteList(user_no);
             }
             
             // 결과 카운트 업데이트
             document.querySelector('.results-count').textContent = visibleCount + '개';
         }
 		
-		function myFavoriteList() {
-			console.log("myFavoriteList() 실행");
-			console.log("@# userNo =>" + userNo);
-			
-		    if (!userNo) {
-		        alert("로그인이 필요합니다.");
-		        return;
-		    }
+		function myFavoriteList(userNo) {
+       console.log("myFavoriteList() 실행");
+       console.log("@# userNo =>"+userNo);
+       
+       if (!userNo) {
+           alert("로그인이 필요합니다.");
+           return;
+       }
 
-            // $.ajax({
-            //      type:"post"
-            //     ,url: "/favorite/list"
-            //     ,data: { userNo: userNo }
-            //     ,success: function (stationList) {
-            //         console.log("받은 stationList => " + stationList);
-            //     }
-            //     ,error: function() {
-            //         console.error("실패");
-            //     }
-            // });
+       fetch(`/favorite/list?user_no=${userNo}`)
+           .then(response => response.json())
+           .then(stationList => {
+               console.log("@# test2 =>");
+               const $list = document.querySelector('#station-list');
+               $list.innerHTML = '';
+               document.querySelector('.results-count').textContent = stationList.length + '개';
 
-		    fetch('/favorite/list?userNo=' + userNo)
-		        .then(response => response.json())
-				.then(stationList => {
-				    console.log("@# test2 =>" + JSON.stringify(stationList));
-		            // const $list = document.querySelector('#sidebar-list');
-                    const $list = $('#sidebar-list');
-                    $list.empty();
-		            // $list.innerHTML = '';
-		            document.querySelector('.results-count').textContent = stationList.length + '개';
-
-		            stationList.forEach((station, index) => {
+               stationList.forEach((station, index) => {
 		                const statusIndex = index % 3;
 		                const statusClass = statusIndex === 0 ? 'available' : (statusIndex === 1 ? 'busy' : 'offline');
 		                const statusText = statusIndex === 0 ? '사용가능' : (statusIndex === 1 ? '사용중' : '점검중');
@@ -825,7 +813,7 @@
 		                <div class="station-item" data-id="${station.stationId || ''}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
 		                    <div class="station-status ${statusClass}">
 		                        <i class="fas ${statusIcon}"></i>
-		                        <span>${statusText}</span>
+		                        <span>${statusText}</span>  
 		                    </div>
 		                    
 		                    <div class="station-content">
@@ -876,15 +864,24 @@
 		                    </div>
 		                </div>`;
 
-                        // $list.innerHTML = '';
-                        $list.append(html);
-		                // $list.insertAdjacentHTML('beforeend', html);
+		                $list.insertAdjacentHTML('beforeend', html);
+
+		                // 마커 추가 (함수 내부에 정의되어 있어야 함)
+		                window.addMarker(
+		                    station.stnAddr,
+		                    station.evseLocationLatitude,
+		                    station.evseLocationLongitude,
+		                    station.stnPlace,
+		                    station.rapidCnt,
+		                    station.slowCnt,
+		                    station.carType
+		                );
 		            });
-		        })
-		        .catch(error => {
-		            console.error("즐겨찾기 목록 가져오기 실패:", error);
-		        });
-		}
+           })
+           .catch(error => {
+               console.error("즐겨찾기 목록 가져오기 실패:", error);
+           });
+   }
 
 		
         
@@ -1253,7 +1250,7 @@ function saveFavorite(e) {
 
     // 1) payload 구성
     const data = {
-        userNo: userNo,   // JSP에서 정의한 전역 변수
+        user_no: user_no,   // JSP에서 정의한 전역 변수
         stnAddr: button.dataset.stnaddr,
         stnPlace: button.dataset.stnplace,
         rapidCnt: parseInt(button.dataset.rapidcnt, 10),
