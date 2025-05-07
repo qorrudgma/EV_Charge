@@ -21,25 +21,26 @@
 ## 🛠 사용 기술 스택
 
 - **Frontend** <br>
-![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
-![jQuery](https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jquery&logoColor=white)
+<img src="https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white" width="120" />
+<img src="https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white" width="120" />
+<img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black" width="120" />
+<img src="https://img.shields.io/badge/jQuery-0769AD?style=flat&logo=jquery&logoColor=white" width="120" />
 
 - **Backend**<br>
-![Java](https://img.shields.io/badge/Java-17-007396?style=flat&logo=java&logoColor=white)
-![Spring](https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white)
-![AJAX](https://img.shields.io/badge/AJAX-0054A6?style=flat&logo=code&logoColor=white)
+<img src="https://img.shields.io/badge/Java-17-007396?style=flat&logo=java&logoColor=white" width="120" />
+<img src="https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white" width="120" />
+<img src="https://img.shields.io/badge/AJAX-0054A6?style=flat&logo=code&logoColor=white" width="120" />
 
 - **Database** <br>
-![MySQL](https://img.shields.io/badge/MySQL-005C84?style=flat&logo=mysql&logoColor=white)
+<img src="https://img.shields.io/badge/MySQL-005C84?style=flat&logo=mysql&logoColor=white" width="120" />
 
 - **지도 API** <br>
-![Kakao Map](https://img.shields.io/badge/Kakao%20Map-FFCD00?style=flat&logo=kakaotalk&logoColor=black)
-![Public Data](https://img.shields.io/badge/Public%20Data%20API-0064FF?style=flat&logo=data&logoColor=white)
+<img src="https://img.shields.io/badge/Kakao%20Map-FFCD00?style=flat&logo=kakaotalk&logoColor=black" width="120" />
+<img src="https://img.shields.io/badge/Public%20Data%20API-0064FF?style=flat&logo=data&logoColor=white" width="120" />
 
 - **빌드 도구** <br>
-![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)
+<img src="https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white" width="120" />
+
 
 ---
 
