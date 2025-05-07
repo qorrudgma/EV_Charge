@@ -28,17 +28,16 @@
 ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=flat&logo=spring&logoColor=white)
 ![AJAX](https://img.shields.io/badge/AJAX-0054A6?style=flat&logo=code&logoColor=white)
 
-- **Database:** MySQL
-- **지도 API:** Kakao Map API
-- **빌드 도구:** Gradle
+- **Database** <br>
+![MySQL](https://img.shields.io/badge/MySQL-005C84?style=flat&logo=mysql&logoColor=white)
+
+- **지도 API** <br>
+![Kakao Map](https://img.shields.io/badge/Kakao%20Map-FFCD00?style=flat&logo=kakaotalk&logoColor=black)
+![Public Data](https://img.shields.io/badge/Public%20Data%20API-0064FF?style=flat&logo=data&logoColor=white)
+
+- **빌드 도구** <br>
+![Gradle](https://img.shields.io/badge/Gradle-02303A?style=flat&logo=gradle&logoColor=white)
 
 ---
 
 ## 📁 프로젝트 구조
- <img alt="Html" src ="https://img.shields.io/badge/HTML5-E34F26.svg?&style=for-the-badge&logo=HTML5&logoColor=white"/> 
- <img alt="Css" src ="https://img.shields.io/badge/CSS3-1572B6.svg?&style=for-the-badge&logo=CSS3&logoColor=white"/> 
- <img alt="JavaScript" src ="https://img.shields.io/badge/JavaScriipt-F7DF1E.svg?&style=for-the-badge&logo=JavaScript&logoColor=black"/>
-![Java](https://img.shields.io/badge/Java-17-blue?logo=java&logoColor=white)
-![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white)
-![Spring](https://img.shields.io/badge/Spring-6DB33F?logo=spring&logoColor=white)
-![AJAX](https://img.shields.io/badge/AJAX-0054A6?logo=ajax&logoColor=white)
