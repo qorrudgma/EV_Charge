@@ -28,3 +28,7 @@
 
 ## 📁 프로젝트 구조
 
+![Java](https://img.shields.io/badge/Java-17-blue?logo=java&logoColor=white)
+![jQuery](https://img.shields.io/badge/jQuery-0769AD?logo=jquery&logoColor=white)
+![Spring](https://img.shields.io/badge/Spring-6DB33F?logo=spring&logoColor=white)
+![AJAX](https://img.shields.io/badge/AJAX-0054A6?logo=ajax&logoColor=white)
