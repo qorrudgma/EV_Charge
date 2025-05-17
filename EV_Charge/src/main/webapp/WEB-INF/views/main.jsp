@@ -16,6 +16,27 @@
             height: 100%;
             /* overflow: hidden; */
             }
+            #reset{
+               position: fixed;
+               bottom: 50px;
+               left: 1000px;
+               z-index: 1000;
+               padding: 10px 20px;
+               border-radius: 30px;
+               font-weight: bolder;
+               background-color: #0475f4;
+               color: white;
+            }
+            #reset:hover{
+               background-color: #0062d3;
+               cursor: pointer;
+            }
+            #reset i{
+               transition: transform 0.7s ease;
+            }
+            #reset:hover i{
+               transform: rotate(180deg);
+            }
       </style>
    </head>
 
@@ -30,6 +51,9 @@
       <jsp:include page="/WEB-INF/views/station_detail.jsp"/>
       <!-- 지도 표시 -->
       <div id="map" style="width:100%;height:93%;"></div>
+
+      <div id="reset"><i class="fas fa-sync-alt"></i> &nbsp;현 지도에서 검색</i>
+</div>
 
       <!-- 추후에 사용자 세션 받아서 blind 및 display 처리 요망. -->
       <!-- 사용자 세션 받으면 center_lat과 center_lng는 사용자 가입시 설정되는 area 값으로 지정 -->

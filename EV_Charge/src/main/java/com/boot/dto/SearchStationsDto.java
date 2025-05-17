@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchStationsDto {
-
 	private String address;
 	private double radiusKm = 3;
-
 }

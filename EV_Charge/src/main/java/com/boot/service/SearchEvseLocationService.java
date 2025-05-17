@@ -30,6 +30,7 @@ public class SearchEvseLocationService {
 		double userLat = coords[0];
 		double userLng = coords[1];
 		String address = geoCodingService.convertFromAddressToGeoCoordinate_address(request.getAddress());
+		log.info("address => " + address);
 
 //		서울 종로구 관철동
 		log.info("지역코드 짜는데 필요한 주소 => " + address);
