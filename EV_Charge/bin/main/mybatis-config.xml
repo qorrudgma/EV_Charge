@@ -10,6 +10,9 @@
 		<mapper resource="mybatis/mappers/provinces.xml"/>
 		<mapper resource="mybatis/mappers/districts.xml"/>
 		
+		<!-- 충전소 정보 -->
+		<mapper resource="mybatis/mappers/ev_charger_data.xml"/>
+		
 <!--		게시판 mapper-->
 		<mapper resource="mybatis/mappers/board.xml"/>
 		<mapper resource="mybatis/mappers/comment.xml"/>

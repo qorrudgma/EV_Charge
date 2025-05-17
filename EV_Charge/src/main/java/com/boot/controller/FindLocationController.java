@@ -1,12 +1,9 @@
 package com.boot.controller;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -302,21 +299,21 @@ public class FindLocationController {
 		return addr_place_list;
 	}
 
-	@RequestMapping("/update")
-	public void dataUpdate() {
-		// 파일 저장
-		try {
-			String urlString = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus?serviceKey=ha6Vs0w2TW5hmQMnGjVefZDfIMjkFiXLXhNYfw0kPcJd470rlZfa95pVgwgLfQYMXmMVe0%2BjwHptLmAGdhXaCw%3D%3D&pageNo=1&numOfRows=10&period=5&zcode=11";
-			URL url = new URL(urlString);
-
-			InputStream inputStream = url.openStream();
-			String savePath = "C:\\Users\\user\\test.xml"; // 예: "C:/data/page1.xml"
-			Files.copy(inputStream, Paths.get(savePath));
-			inputStream.close();
-
-			System.out.println("파일 저장 완료: " + savePath);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+//	@RequestMapping("/update")
+//	public void dataUpdate() {
+//		// 파일 저장
+//		try {
+//			String urlString = "https://apis.data.go.kr/B552584/EvCharger/getChargerStatus?serviceKey=ha6Vs0w2TW5hmQMnGjVefZDfIMjkFiXLXhNYfw0kPcJd470rlZfa95pVgwgLfQYMXmMVe0%2BjwHptLmAGdhXaCw%3D%3D&pageNo=1&numOfRows=10&period=5&zcode=11";
+//			URL url = new URL(urlString);
+//
+//			InputStream inputStream = url.openStream();
+//			String savePath = "C:\\Users\\user\\test.xml"; // 예: "C:/data/page1.xml"
+//			Files.copy(inputStream, Paths.get(savePath));
+//			inputStream.close();
+//
+//			System.out.println("파일 저장 완료: " + savePath);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
 }
