@@ -81,8 +81,7 @@
             center_lng = latlng.getLng();
             console.log('현재 중심 좌표:', center_lat, center_lng);
          });
-      </script>
-      <script>
+
          // 읍/면/동 옵션 업데이트 함수
          function updatearea_emd_nm() {
             const area_ctpy_nm = document.getElementById("area_ctpy_nm").value;
@@ -289,6 +288,30 @@
             });
          });         
 
+         $(document).on("click", "#reset", function (e) {
+            console.log("현 지도에서 검색 클릭");
+            console.log(center_lat + " / " + center_lng);
+
+            fetch("/search_data", {
+                method: "POST"
+               ,headers: {
+                  "Content-Type": "application/json"
+               }
+               ,body: JSON.stringify({
+                  lat: center_lat,
+                  lng: center_lng
+               })
+            })
+               .then(response => response.json())
+               .then(data => {
+                  console.log("서버 응답 데이터 => " + data);
+               })
+               .catch(error => {
+                  console.error("오류 발생 => " + error);
+               });
+            });
+
+      
       </script>
    </body>
 

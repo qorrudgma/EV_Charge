@@ -92,5 +92,12 @@
 		    traffic_yn = VALUES(traffic_yn),
 		    year = VALUES(year)
     </insert>
+    
+    <select id="ev_list" resultType="com.boot.dto.EvChargerDTO">
+    	SELECT DISTINCT stat_name
+		  FROM ev_charger_data
+		 WHERE lat BETWEEN #{lat} - 0.005 AND #{lat} + 0.005
+		   AND lng BETWEEN #{lng} - 0.01 AND #{lng} + 0.01;
+    </select>
             
 </mapper>

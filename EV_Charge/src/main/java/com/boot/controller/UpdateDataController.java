@@ -6,12 +6,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.boot.dto.EvChargerDTO;
@@ -283,4 +285,18 @@ public class UpdateDataController {
 //		}
 //		log.info("ev_charger_data()");
 //	}
+
+	@RequestMapping("/search_data")
+	public List<EvChargerDTO> search_data(@RequestBody Map<String, Double> map) {
+		log.info("search_data()");
+		log.info("lat => " + map.get("lat"));
+		Double lat = map.get("lat");
+		Double lng = map.get("lng");
+
+		List<EvChargerDTO> ev_list = new ArrayList<>();
+		ev_list = chargerService.ev_list(lat, lng);
+		log.info("ev_list => " + ev_list);
+
+		return ev_list;
+	}
 }

@@ -99,6 +99,7 @@
                             
                             <div class="btn-group">
                                 <button type="button" id="search_btn">검색</button>
+                                <!-- <button type="button" id="search_btn_t">검색2</button> -->
                             </div>
                         </form>
                     </div>
@@ -351,6 +352,8 @@
             });
         }
     });
+
+
 
 // 모바일 버전 함수도 동일하게 구현
 function updatearea_sgg_nm_mobile(provinces_code) {

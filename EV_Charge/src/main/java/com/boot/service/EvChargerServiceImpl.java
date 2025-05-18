@@ -1,5 +1,6 @@
 package com.boot.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -23,5 +24,15 @@ public class EvChargerServiceImpl implements EvChargerService {
 		for (EvChargerDTO dto : ev_charger_data) {
 			dao.ev_charger_update(dto);
 		}
+	}
+
+	// 경도위도 근처 충전소 정보
+	@Override
+	public List<EvChargerDTO> ev_list(Double lat, Double lng) {
+		EvChargerDAO dao = sqlSession.getMapper(EvChargerDAO.class);
+		List<EvChargerDTO> ev_list = new ArrayList<>();
+		ev_list = dao.ev_list(lat, lng);
+
+		return ev_list;
 	}
 }
