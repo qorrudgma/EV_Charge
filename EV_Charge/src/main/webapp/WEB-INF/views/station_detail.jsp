@@ -298,104 +298,128 @@
         var chargerList = markerData.chargerList;
         console.log(chargerList);
         const first = markerData.chargerList[0];
-
-        // 전부다 반복으로 꺼내기
+        var rapid_count;
+        var slow_count;
         // chargerList.forEach(charger => {
-        //     console.log("전부 출력");
-        //     console.log("충전소 이름 => ", charger.stat_name);
-        //     console.log("충전기 타입 => ", charger.chger_type);
-        //     console.log("출력 => ", charger.output);
-        //     console.log("이용 가능 시간 => ", charger.use_time);
-        //     console.log("====================================");
+        //     console.log("!@#$ => ",charger.stat_id,charger.chger_id);
         // });
 
-        // 첫번째 꺼만 꺼내기
-        // console.log("!@#$!@#$", first.parking_free);
-        // console.log("첫 번째 충전소 이름 =>", first.stat_name);
-        // console.log("충전기 타입 =>", first.chger_type);
+        fetch("stat_data", {
+             method: "POST"
+            ,headers: {"Content-Type":"application/json"}
+            ,body: JSON.stringify({stat_id : first.stat_id})
+        })
+        .then(response => response.json())
+        .then(data =>{
+            // console.log("성공", data);
+            console.log("성공", data.rapid_stat_three);
+            rapid_count = data.rapid_stat_three;
+            slow_count = data.slow_stat_three;
+    
+            // 전부다 반복으로 꺼내기
+            // chargerList.forEach(charger => {
+            //     console.log("전부 출력");
+            //     console.log("충전소 이름 => ", charger.stat_name);
+            //     console.log("충전기 타입 => ", charger.chger_type);
+            //     console.log("출력 => ", charger.output);
+            //     console.log("이용 가능 시간 => ", charger.use_time);
+            //     console.log("====================================");
+            // });
 
-        // 이름
-        document.getElementById("station-name").textContent = first.stat_name;
-        // 주소
-        let addressHtml = first.addr;
-        if (first.addr_detail !== "null") {
-            addressHtml += "<br>" + first.addr_detail;
-        }
-        if (first.addr_detail != first.location && first.location !== "null") {
-            addressHtml += "<br>" + first.location;
-        }
-        document.getElementById("station-address").innerHTML = addressHtml;
-        // 경도 위도
-        document.getElementById("station_lat").textContent = first.lat;
-        document.getElementById("station_lng").textContent = first.lng;
-        // 충전기 종류
-        const chger_type_map = {
-                    "01": "B타입 (5핀, AC 완속)",
-                    "02": "C타입 (5핀, AC 완속)",
-                    "03": "BC타입 (5핀, AC 완속)",
-                    "04": "BC타입 (7핀, AC 완속)",
-                    "05": "DC 차데모 (DC CHAdeMO)",
-                    "06": "AC 3상 (3상 교류)",
-                    "07": "DC 콤보 (CCS1/CCS2)",
-                    "08": "DC 차데모 + DC 콤보 복합",
-                    "09": "DC 차데모 + AC 3상 복합",
-                    "10": "DC 차데모 + DC 콤보 + AC3상 복합"
-                };
+            // 첫번째 꺼만 꺼내기
+            // console.log("!@#$!@#$", first.parking_free);
+            // console.log("첫 번째 충전소 이름 =>", first.stat_name);
+            // console.log("충전기 타입 =>", first.chger_type);
 
-        var rapid_c = 0;
-        var slow_c = 0;
-
-        let charger_type_slow = [];
-        let charger_type_rapid = [];
-
-        chargerList.forEach(charger => {
-            var output = charger.output;
-            var chger_type = charger.chger_type;
-            if(output < 50){
-                slow_c ++;
-                // console.log("!@#$@!#$!@#$@", chger_type);
-                const chager = chger_type_map[chger_type];
-                if (chager && !charger_type_slow.includes(chager)) {
-                    charger_type_slow.push(chager);
-                }
-                // console.log("!@#$@!#$!@#$@!#$!@#$!@#$!@$#", chager);
-            }else if(output >= 50){
-                rapid_c ++;
-                const chager = chger_type_map[chger_type];
-                if (chager && !charger_type_rapid.includes(chager)) {
-                    charger_type_rapid.push(chager);
-                }
+            // 이름
+            document.getElementById("station-name").textContent = first.stat_name;
+            // 주소
+            let addressHtml = first.addr;
+            if (first.addr_detail !== "null") {
+                addressHtml += "<br>" + first.addr_detail;
             }
+            if (first.addr_detail != first.location && first.location !== "null") {
+                addressHtml += "<br>" + first.location;
+            }
+            document.getElementById("station-address").innerHTML = addressHtml;
+            // 경도 위도
+            document.getElementById("station_lat").textContent = first.lat;
+            document.getElementById("station_lng").textContent = first.lng;
+            // 충전기 종류
+            const chger_type_map = {
+                        "01": "B타입 (5핀, AC 완속)",
+                        "02": "C타입 (5핀, AC 완속)",
+                        "03": "BC타입 (5핀, AC 완속)",
+                        "04": "BC타입 (7핀, AC 완속)",
+                        "05": "DC 차데모 (DC CHAdeMO)",
+                        "06": "AC 3상 (3상 교류)",
+                        "07": "DC 콤보 (CCS1/CCS2)",
+                        "08": "DC 차데모 + DC 콤보 복합",
+                        "09": "DC 차데모 + AC 3상 복합",
+                        "10": "DC 차데모 + DC 콤보 + AC3상 복합"
+                    };
+
+            var rapid_c = 0;
+            var slow_c = 0;
+
+            let charger_type_slow = [];
+            let charger_type_rapid = [];
+
+            chargerList.forEach(charger => {
+                var output = charger.output;
+                var chger_type = charger.chger_type;
+                if(output < 50){
+                    slow_c ++;
+                    // console.log("!@#$@!#$!@#$@", chger_type);
+                    const chager = chger_type_map[chger_type];
+                    if (chager && !charger_type_slow.includes(chager)) {
+                        charger_type_slow.push(chager);
+                    }
+                    // console.log("!@#$@!#$!@#$@!#$!@#$!@#$!@$#", chager);
+                }else if(output >= 50){
+                    rapid_c ++;
+                    const chager = chger_type_map[chger_type];
+                    if (chager && !charger_type_rapid.includes(chager)) {
+                        charger_type_rapid.push(chager);
+                    }
+                }
+            });
+
+            if (rapid_c === 0) {
+                $(".rapid_div").css("display","none");
+            }else{
+                $(".rapid_div").css("display","");
+            }
+            if (slow_c === 0) {
+                $(".slow_div").css("display","none");
+            }else{
+                $(".slow_div").css("display","");
+            }
+            
+            document.getElementById("strong_rapid").textContent = rapid_c;
+            console.log("!@#$!@#$",rapid_count);
+            document.getElementById("rapid_count").textContent = rapid_count;
+            document.getElementById("strong_slow").textContent = slow_c;
+            document.getElementById("slow_count").textContent = slow_count;
+            // 충전기 타입
+            document.getElementById("rapid_type").textContent = charger_type_rapid.join(", ");
+            document.getElementById("slow_type").textContent = charger_type_slow.join(", ");
+
+
+            // 운영 정보
+            let parking_free;
+            if (first.parking_free === 'Y') {
+                parking_free = "요금 없음";
+            }else{
+                parking_free = "요금 있음";
+            }
+            document.getElementById("operation-hours").textContent = first.use_time;
+            document.getElementById("parking_free").textContent = parking_free;
+            document.getElementById("operation-agency").textContent = first.busi_nm;
+            document.getElementById("contact-number").textContent = first.busi_call;
+        })
+        .catch(error => {
+            console.log(error);
         });
-
-        if (rapid_c === 0) {
-            $(".rapid_div").css("display","none");
-        }else{
-            $(".rapid_div").css("display","");
-        }
-        if (slow_c === 0) {
-            $(".slow_div").css("display","none");
-        }else{
-            $(".slow_div").css("display","");
-        }
-        
-        document.getElementById("strong_rapid").textContent = rapid_c;
-        document.getElementById("strong_slow").textContent = slow_c;
-        // 충전기 타입
-        document.getElementById("rapid_type").textContent = charger_type_rapid.join(", ");
-        document.getElementById("slow_type").textContent = charger_type_slow.join(", ");
-
-
-        // 운영 정보
-        let parking_free;
-        if (first.parking_free === 'Y') {
-            parking_free = "요금 없음";
-        }else{
-            parking_free = "요금 있음";
-        }
-        document.getElementById("operation-hours").textContent = first.use_time;
-        document.getElementById("parking_free").textContent = parking_free;
-        document.getElementById("operation-agency").textContent = first.busi_nm;
-        document.getElementById("contact-number").textContent = first.busi_call;
     }
 </script>
