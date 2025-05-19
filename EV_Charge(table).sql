@@ -1,67 +1,20 @@
 -- 유저 테이블
 create table EV_user (
-    user_no int auto_increment primary key,  -- 순서를 위한 자동 증가 번호
-    user_id varchar(50) not null unique,     -- 사용자 ID
-    user_password varchar(100) not null,     -- 비밀번호
-    user_name varchar(20) not null,          -- 이름
-    user_email varchar(50),            	     -- 이메일
-    user_province VARCHAR(50),               -- 도
-    user_city VARCHAR(50)                    -- 시
-);
-
---즐겨찾기 테이블
-CREATE TABLE EV_favorite (
-    favorite_no int primary key auto_increment,
-    user_no INT,
-    stnAddr VARCHAR(255),
-    stnPlace VARCHAR(255),
-    rapidCnt INT,
-    slowCnt INT,
-    carType VARCHAR(255)
-);
+			user_no int auto_increment primary key, 	-- 순서를 위한 자동 증가 번호
+		    user_id varchar(50) not null unique,    	-- 사용자 ID
+		    user_password varchar(100) not null,        -- 비밀번호
+			user_name varchar(20) not null,         	-- 이름
+			user_email varchar(50),            			-- 이메일
+			user_province VARCHAR(50),                  -- 도
+			user_city VARCHAR(50)                    	-- 시
+		);
 
 -- 시/도 테이블
 CREATE TABLE provinces (
-    provinces_code VARCHAR(2) PRIMARY KEY,  -- 시/도 코드
-    provinces_name VARCHAR(20) NOT NULL     -- 시/도 명
+    provinces_code VARCHAR(2) PRIMARY KEY,
+    provinces_name VARCHAR(20) NOT NULL
 );
 
--- 시/군/구 테이블
-CREATE TABLE districts (
-    districts_code VARCHAR(2) NOT NULL,	    -- 시/군/구 코드
-    districts_name VARCHAR(30) NOT NULL,    -- 시/군/구 명
-    provinces_code VARCHAR(2) NOT NULL      -- 시/도 코드드
-);
-
--- 게시글 테이블
-CREATE TABLE tbl_board (
-    boardNo int auto_increment NOT NULL PRIMARY KEY,   -- 게시글 번호
-    boardName VARCHAR(20),			       -- 게시글 이름
-    boardTitle VARCHAR(100),			       -- 게시글 제목
-    boardContent VARCHAR(300),			       -- 게시글 내용
-    boardDate DATETIME DEFAULT CURRENT_TIMESTAMP,      -- 게시글 생성 날짜
-    boardHit int DEFAULT 0			       -- 게시글 조회수
-);
-
--- 댓글 테이블
-CREATE TABLE board_comment (
-    commentNo int auto_increment NOT NULL PRIMARY KEY,   -- 댓글 번호
-    commentWriter VARCHAR(20),			         -- 댓글 작성자
-    commentContent VARCHAR(300),			 -- 댓글 내용
-    boardNo int,				         -- 게시글 번호
-    comentCreatedTime DATETIME DEFAULT CURRENT_TIMESTAMP -- 댓글 생성 날짜
-);
-
--- 파일 업로드 테이블
-CREATE TABLE board_attach (
-    commentNo int VARCHAR(100),		-- 파일 식별자
-    commentWriter VARCHAR(200),		-- 업로드 경로
-    commentContent VARCHAR(100),        -- 파일 이름
-    boardNo char(1),			-- 파일 타입(이미지 판별)
-    boardNo int				-- 게시글 번호
-);
-
--- INSERT문
 -- 시/도 테이블 데이터
 INSERT INTO provinces (provinces_code, provinces_name) VALUES
 ('11', '서울특별시'),
@@ -81,6 +34,13 @@ INSERT INTO provinces (provinces_code, provinces_name) VALUES
 ('38', '경상남도'),
 ('39', '제주특별자치도'),
 ('41', '세종특별자치시');
+
+-- 시/군/구 테이블
+CREATE TABLE districts (
+    districts_code VARCHAR(2) NOT NULL,
+    districts_name VARCHAR(30) NOT NULL,
+    provinces_code VARCHAR(2) NOT NULL
+);
 
 -- 시/군/구 테이블 데이터
 INSERT INTO districts (districts_code, districts_name, provinces_code) VALUES
@@ -407,3 +367,102 @@ INSERT INTO districts (districts_code, districts_name, provinces_code) VALUES
 -- 세종특별자치시
 ('11', '세종시', '41'),
 ('99', '미분류', '41');
+
+-- 충전소 카테고리 테이블
+CREATE TABLE EV_station_category (
+    station_category INT PRIMARY KEY,
+    station_category_desc VARCHAR(100)
+);
+
+-- 충전기 상태 테이블
+CREATE TABLE EV_charger_stat (
+    charger_stat INT PRIMARY KEY,
+    charger_stat_desc VARCHAR(50)
+);
+
+-- 충전기 타입 테이블
+CREATE TABLE EV_charger_type (
+    charger_type INT PRIMARY KEY,
+    charger_type_desc VARCHAR(100)
+);
+
+
+CREATE TABLE EV_station (
+    station_id INT PRIMARY KEY,
+    station_category INT,
+    charger_id INT,
+    station_name VARCHAR(100),
+    station_lat INT,
+    station_lng INT,
+    station_addr VARCHAR(100),
+    station_addr_detail VARCHAR(150),
+    station_use_time VARCHAR(50),
+    station_traffic_yn CHAR(1),
+    station_parking_free_yn CHAR(1),
+    station_note VARCHAR(200),
+    FOREIGN KEY (charger_id) REFERENCES EV_charger(charger_id),
+    FOREIGN KEY (station_category) REFERENCES EV_station_category(station_category)
+);
+
+-- 충전기 테이블
+CREATE TABLE EV_charger (
+    charger_id INT PRIMARY KEY,
+    charger_stat INT,
+    charger_type INT,
+    FOREIGN KEY (charger_stat) REFERENCES EV_charger_stat(charger_stat),
+    FOREIGN KEY (charger_type) REFERENCES EV_charger_type(charger_type)
+);
+
+-- 즐겨찾기 테이블
+CREATE TABLE ev_user_favorites (
+    favorite_id   INT AUTO_INCREMENT PRIMARY KEY,
+    user_no       INT          NOT NULL,
+    user_id       VARCHAR(50)  NOT NULL,
+    station_id    INT          NOT NULL,
+   
+    UNIQUE KEY uq_ev_user_favorites_user_station (user_no, station_id),
+
+    FOREIGN KEY (user_no)
+      REFERENCES EV_user(user_no)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE,
+
+    FOREIGN KEY (station_id)
+      REFERENCES EV_station(station_id)
+      ON DELETE CASCADE
+      ON UPDATE CASCADE
+);
+
+-- 충전소 위치 테이블
+CREATE TABLE ev_charger_data (
+    ev_charger_id INT AUTO_INCREMENT PRIMARY KEY,		-- 자동증가 기본키
+    stat_id VARCHAR(20) NOT NULL, 						-- 충전소ID
+    chger_id VARCHAR(10) NOT NULL, 						-- 충전기ID
+    stat_name VARCHAR(100), 							-- 충전소명
+    chger_type VARCHAR(10), 							-- 충전기타입
+    addr VARCHAR(200), 									-- 주소
+    addr_detail VARCHAR(200), 							-- 주소상세
+    location VARCHAR(200), 								-- 상세위치
+    lat DOUBLE, 										-- 위도
+    lng DOUBLE, 										-- 경도
+    use_time VARCHAR(100), 								-- 이용가능시간
+    busi_id VARCHAR(10), 								-- 기관 아이디
+    bnm VARCHAR(100), 									-- 기관명
+    busi_nm VARCHAR(100), 								-- 운영기관명
+    busi_call VARCHAR(50), 								-- 운영기관연락처
+    output VARCHAR(10), 								-- 충전용량
+    method VARCHAR(20), 								-- 충전방식
+    zcode VARCHAR(10), 									-- 지역코드
+    zscode VARCHAR(10), 								-- 지역구분 상세 코드
+    kind VARCHAR(10), 									-- 충전소 구분 코드
+    kind_detail VARCHAR(10), 							-- 충전소 구분 상세코드
+    parking_free CHAR(1), 								-- 주차료무료 (Y/N)
+    note TEXT, 											-- 충전소 안내
+    limit_yn CHAR(1), 									-- 이용자 제한 여부 (Y/N)
+    limit_detail TEXT, 									-- 이용제한 사유
+    del_yn CHAR(1), 									-- 삭제 여부 (Y/N)
+    del_detail TEXT,									-- 삭제 사유
+    traffic_yn CHAR(1),									-- 편의제공 여부 (Y/N)
+    year INT, 											-- 설치년도
+    UNIQUE KEY unique_stat_chger (stat_id, chger_id)  	-- stat_id와 chger_id 유니크키
+);
