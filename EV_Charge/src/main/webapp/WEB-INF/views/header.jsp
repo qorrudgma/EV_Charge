@@ -464,14 +464,14 @@ function updatearea_sgg_nm_mobile(provinces_code) {
     });
     
     // function searchChargingStations(area_ctpy_nm, area_sgg_nm, area_emd_nm) {
-    function searchChargingStations(area_ctpy_nm, area_sgg_nm) {
-        // 충전소 검색 API 호출 함수
-        console.log(`지역 검색: ${area_ctpy_nm} ${area_sgg_nm}`);
+//     function searchChargingStations(area_ctpy_nm, area_sgg_nm) {
+//         // 충전소 검색 API 호출 함수
+//         console.log(`지역 검색: ${area_ctpy_nm} ${area_sgg_nm}`);
         
-        // 여기에 실제 API 호출 코드 추가
-        // 예: fetch('/findStationsNear', {...})
-    }
-</script>
+//         // 여기에 실제 API 호출 코드 추가
+//         // 예: fetch('/findStationsNear', {...})
+//     }
+// </script>
 
 </body>
 </html>
