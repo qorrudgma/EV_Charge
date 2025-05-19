@@ -61,27 +61,27 @@
             <div class="detail-section">
                 <h3 class="section-title">
                     <i class="fas fa-plug"></i>
-                    <span>충전기 정보</span>
+                    <span>충전기 정보</span><span>충전기 사용 현황</span>
                 </h3>
                 
                 <div class="charger-info" id="charger-info">
-                    <div class="charger-type" id="rapid_div">
+                    <div class="charger-type rapid_div">
                         <div class="charger-icon fast">
                             <i class="fas fa-bolt"></i>
                         </div>
                         <div class="charger-details">
                             <h4>급속 충전기</h4>
-                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대</p>
+                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대<br>사용가능: <strong id="rapid_count"></strong></p>
                         </div>
                     </div>
                     
-                    <div class="charger-type">
+                    <div class="charger-type slow_div">
                         <div class="charger-icon slow">
                             <i class="fas fa-battery-half"></i>
                         </div>
                         <div class="charger-details">
                             <h4>완속 충전기</h4>
-                            <p id="slow-charger-count"><strong id="strong_slow"></strong>대</p>
+                            <p id="slow-charger-count"><strong id="strong_slow"></strong>대<br>사용가능: <strong id="slow_count"></strong></p>
                         </div>
                     </div>
                 </div>
@@ -112,31 +112,28 @@
                 <h3 class="section-title">
                     <i class="fas fa-car"></i>
                     <!-- <span>지원 차종</span> -->
-                    <span>충전 가능 자리</span>
+                    <span>충전기 타입</span>
                 </h3>
                 
                 <div id="supported-vehicles" class="supported-vehicles">
                     <!-- <div class="vehicle-chip">현대</div>-->
-                    <div id="rapid_car">
-                        <div class="charger-type">
-                            <div class="charger-icon fast">
-                                <i class="fas fa-bolt"></i>
-                            </div>
-                            <div class="charger-details">
-                                <h4>급속 충전기 타입</h4>
-                                <p id="fast-charger-count"><strong id="rapid_type"></strong></p>
-                            </div>
+                    <div class="charger-type rapid_div">
+                        <div class="charger-icon fast">
+                            <i class="fas fa-bolt"></i>
                         </div>
-                    
+                        <div class="charger-details">
+                            <h4>급속</h4>
+                            <p class="type_block" id="fast-charger-count"><strong id="rapid_type"></strong></p>
+                        </div>
                     </div>
-                    
-                    <div class="charger-type">
+
+                    <div class="charger-type slow_div">
                         <div class="charger-icon slow">
                             <i class="fas fa-battery-half"></i>
                         </div>
                         <div class="charger-details">
-                            <h4>완속 충전기 타입</h4>
-                            <p id="slow-charger-count"><strong id="strong_type"></strong></p>
+                            <h4>완속</h4>
+                            <p class="type_block" id="slow-charger-count"><strong id="slow_type"></strong></p>
                         </div>
                     </div>
                 </div>
@@ -300,18 +297,19 @@
 	function updateStationDetailTwo(markerData) {
         var chargerList = markerData.chargerList;
         console.log(chargerList);
+        const first = markerData.chargerList[0];
+
         // 전부다 반복으로 꺼내기
-        chargerList.forEach(charger => {
-            console.log("전부 출력");
-            console.log("충전소 이름 => ", charger.stat_name);
-            console.log("충전기 타입 => ", charger.chger_type);
-            console.log("출력 => ", charger.output);
-            console.log("이용 가능 시간 => ", charger.use_time);
-            console.log("====================================");
-        });
+        // chargerList.forEach(charger => {
+        //     console.log("전부 출력");
+        //     console.log("충전소 이름 => ", charger.stat_name);
+        //     console.log("충전기 타입 => ", charger.chger_type);
+        //     console.log("출력 => ", charger.output);
+        //     console.log("이용 가능 시간 => ", charger.use_time);
+        //     console.log("====================================");
+        // });
 
         // 첫번째 꺼만 꺼내기
-        const first = markerData.chargerList[0];
         // console.log("!@#$!@#$", first.parking_free);
         // console.log("첫 번째 충전소 이름 =>", first.stat_name);
         // console.log("충전기 타입 =>", first.chger_type);
@@ -370,34 +368,22 @@
             }
         });
 
-        // if (rapid_c != 0) {
-        //     document.getElementById("charger-info").innerHTML =`<div class="charger-type" id="rapid_div">
-        //                                                                     <div class="charger-icon fast">
-        //                                                                         <i class="fas fa-bolt"></i>
-        //                                                                     </div>
-        //                                                                     <div class="charger-details">
-        //                                                                         <h4>급속 충전기</h4>
-        //                                                                         <p id="fast-charger-count"><strong id="strong_rapid">`+rapid_c+`</strong>대</p>
-        //                                                                     </div>
-        //                                                                 </div>`;
-        // }
-        // if (slow_c != 0) {
-        //     document.getElementById("charger-info").innerHTML =`<div class="charger-type">
-        //                                                             <div class="charger-icon slow">
-        //                                                                 <i class="fas fa-battery-half"></i>
-        //                                                             </div>
-        //                                                             <div class="charger-details">
-        //                                                                 <h4>완속 충전기</h4>
-        //                                                                 <p id="slow-charger-count"><strong id="strong_slow">`+slow_c+`</strong>대</p>
-        //                                                             </div>
-        //                                                         </div>`;
-        // }
+        if (rapid_c === 0) {
+            $(".rapid_div").css("display","none");
+        }else{
+            $(".rapid_div").css("display","");
+        }
+        if (slow_c === 0) {
+            $(".slow_div").css("display","none");
+        }else{
+            $(".slow_div").css("display","");
+        }
         
         document.getElementById("strong_rapid").textContent = rapid_c;
         document.getElementById("strong_slow").textContent = slow_c;
         // 충전기 타입
         document.getElementById("rapid_type").textContent = charger_type_rapid.join(", ");
-        document.getElementById("strong_type").textContent = charger_type_slow.join(", ");
+        document.getElementById("slow_type").textContent = charger_type_slow.join(", ");
 
 
         // 운영 정보
@@ -411,30 +397,5 @@
         document.getElementById("parking_free").textContent = parking_free;
         document.getElementById("operation-agency").textContent = first.busi_nm;
         document.getElementById("contact-number").textContent = first.busi_call;
-        
-
-        // var name = markerData.name;
-        // var address = markerData.address;
-        // var lat = markerData.lat;
-        // var lng = markerData.lng;
-        // var rapid = markerData.rapid;
-        // var slow = markerData.slow;
-        // var cars = markerData.car;
-
-        // document.getElementById("station-name").textContent = name;
-        // document.getElementById("station-address").textContent = address;
-        // document.getElementById("station_lat").textContent = lat;
-        // document.getElementById("station_lng").textContent = lng;
-        // document.getElementById("strong_rapid").textContent = rapid;
-        // document.getElementById("strong_slow").textContent = slow;
-        // // document.getElementById("supported-vehicles").textContent = car;
-        // const car_list = cars.split(",");
-        // console.log(car_list);
-		
-        // document.getElementById("supported-vehicles").textContent = "";
-        // for(let car of car_list){
-        //     document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">`+car+`</div>`;
-        //     //document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">${car}</div>`;
-		// }
     }
 </script>
