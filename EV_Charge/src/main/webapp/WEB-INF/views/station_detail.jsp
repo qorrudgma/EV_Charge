@@ -23,10 +23,10 @@
     <div class="sidebar-content">
         <div class="station-detail-container">
             <!-- 충전소 상태 배지 -->
-<!--            <div class="status-badge available">-->
-<!--                <i class="fas fa-check-circle"></i>-->
-<!--                <span>사용가능</span>-->
-<!--            </div>-->
+            <!-- <div class="status-badge available"> -->
+                <!-- <i class="fas fa-check-circle"></i> -->
+                <!-- <span>사용가능</span> -->
+            <!-- </div> -->
             
             <!-- 충전소 기본 정보 -->
             <div class="detail-section">
@@ -87,23 +87,23 @@
                 </div>
                 
 				<!-- 충전기 현황 -->
-<!--                <div class="charger-status">-->
-<!--                    <div class="status-item available">-->
-<!--                        <span class="status-dot"></span>-->
-<!--                        <span class="status-label">사용가능</span>-->
-<!--                        <span id="available-count" class="status-count">3</span>-->
-<!--                    </div>-->
-<!--                    <div class="status-item charging">-->
-<!--                        <span class="status-dot"></span>-->
-<!--                        <span class="status-label">충전중</span>-->
-<!--                        <span id="charging-count" class="status-count">2</span>-->
-<!--                    </div>-->
-<!--                    <div class="status-item offline">-->
-<!--                        <span class="status-dot"></span>-->
-<!--                        <span class="status-label">점검중</span>-->
-<!--                        <span id="offline-count" class="status-count">1</span>-->
-<!--                    </div>-->
-<!--                </div>-->
+                <!-- <div class="charger-status">
+                    <div class="status-item available">
+                        <span class="status-dot"></span>
+                        <span class="status-label">사용가능</span>
+                        <span id="available-count" class="status-count">3</span>
+                    </div>
+                    <div class="status-item charging">
+                        <span class="status-dot"></span>
+                        <span class="status-label">충전중</span>
+                        <span id="charging-count" class="status-count">2</span>
+                    </div>
+                    <div class="status-item offline">
+                        <span class="status-dot"></span>
+                        <span class="status-label">점검중</span>
+                        <span id="offline-count" class="status-count">1</span>
+                    </div>
+                </div> -->
             </div>
             
             <!-- 지원 차종 정보 -->
@@ -184,7 +184,6 @@
             <i class="fas fa-exclamation-triangle"></i>
             <span>오류 신고하기</span>
         </button>
-    </div>
     </div>
 </div>
 <script>
@@ -273,5 +272,63 @@
             document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">`+car+`</div>`;
             //document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">${car}</div>`;
 		}
+    }
+	function updateStationDetailTwo(markerData) {
+        var chargerList = markerData.chargerList;
+        console.log(chargerList);
+        // 전부다 반복으로 꺼내기
+        chargerList.forEach(charger => {
+            console.log("전부 출력");
+            console.log("충전소 이름 => ", charger.stat_name);
+            console.log("충전기 타입 => ", charger.chger_type);
+            console.log("출력 => ", charger.output);
+            console.log("이용 가능 시간 => ", charger.use_time);
+            console.log("====================================");
+        });
+
+        // 첫번째 꺼만 꺼내기
+        const first = markerData.chargerList[0];
+        // console.log("하나출력");
+        // console.log("첫 번째 충전소 이름 =>", first.stat_name);
+        // console.log("충전기 타입 =>", first.chger_type);
+
+        // 이름
+        document.getElementById("station-name").textContent = first.stat_name;
+        // 주소
+        let addressHtml = first.addr;
+        if (first.addr_detail !== "null") {
+            addressHtml += "<br>" + first.addr_detail;
+        }
+        if (first.addr_detail != first.location && first.location !== "null") {
+            addressHtml += "<br>" + first.location;
+        }
+        document.getElementById("station-address").innerHTML = addressHtml;
+        // 경도 위도
+        document.getElementById("station_lat").textContent = first.lat;
+        document.getElementById("station_lng").textContent = first.lng;
+
+        // var name = markerData.name;
+        // var address = markerData.address;
+        // var lat = markerData.lat;
+        // var lng = markerData.lng;
+        // var rapid = markerData.rapid;
+        // var slow = markerData.slow;
+        // var cars = markerData.car;
+
+        // document.getElementById("station-name").textContent = name;
+        // document.getElementById("station-address").textContent = address;
+        // document.getElementById("station_lat").textContent = lat;
+        // document.getElementById("station_lng").textContent = lng;
+        // document.getElementById("strong_rapid").textContent = rapid;
+        // document.getElementById("strong_slow").textContent = slow;
+        // // document.getElementById("supported-vehicles").textContent = car;
+        // const car_list = cars.split(",");
+        // console.log(car_list);
+		
+        // document.getElementById("supported-vehicles").textContent = "";
+        // for(let car of car_list){
+        //     document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">`+car+`</div>`;
+        //     //document.getElementById("supported-vehicles").innerHTML += `<div class="vehicle-chip">${car}</div>`;
+		// }
     }
 </script>

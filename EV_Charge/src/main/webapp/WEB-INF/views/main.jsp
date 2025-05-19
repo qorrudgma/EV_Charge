@@ -154,7 +154,7 @@
                
                console.log(markerData);
                // 충전소 상세 정보 업데이트
-               updateStationDetail(markerData);
+               updateStationDetailTwo(markerData);
             });
 
 			   // 지도 클릭 액션
@@ -289,74 +289,96 @@
          });
 
          // 현 지도에서 검색
-         window.addMarker = function(lat, lng, stat_name) {
-            console.log("새로운 마커");
+         // window.addMarker = function(lat, lng, stat_name) {
+         //    console.log("새로운 마커");
+         //    const position = new kakao.maps.LatLng(lat, lng);
+         //    const marker = new kakao.maps.Marker({
+         //       position: position,
+         //       map: map,
+         //       name: stat_name
+         //    });
+         //    console.log("마커를 찍었습니다. => "+lat+", "+lng);
+         //    markers.push(marker); // 마커 배열에 추가
+
+         //    var infowindow = new kakao.maps.InfoWindow({
+         //       content: '<div style="padding:5px;font-size:12px;">'+name+'</div>'
+         //    });
+
+         //    let isOpen = false;
+
+         //    // 마커 클릭
+         //    kakao.maps.event.addListener(marker, 'click', function() {
+         //       console.log("마커를 클릭했습니다. 위치: " + lat + ", " + lng + ", 이름: " + stat_name);
+      
+         //       map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
+         //       map.setLevel(3);
+
+         //       infowindow.open(map, marker);
+
+         //       $("#close-detail-sidebar,#close-sidebar").on("click", function () {
+         //          infowindow.close();
+         //       });
+               
+         //       // 마커 클릭했을때 사이드바 생성 및 데이터 전달
+         //       $(".station-sidebar").addClass("active");
+         //       $(".station-sidebarA").addClass("active");
+         //       var markerData = {
+         //          name: stat_name
+         //          ,lat: lat
+         //          ,lng: lng
+         //       }
+               
+         //       console.log(markerData);
+         //       // 충전소 상세 정보 업데이트
+         //       updateStationDetail(markerData);
+         //    });
+
+			//    // 지도 클릭 액션
+         //    kakao.maps.event.addListener(map, 'click', function() {
+         //       infowindow.close();
+         //       isOpen = false;
+               
+         //       $(".station-sidebarA").removeClass("active");
+         //    });
+         //    return marker;
+         // };
+         // let markers = [];
+         // let markerInfoMap = {};
+
+         window.addMarker = function(lat, lng, chargerList) {
+            console.log("마커찍기");
+            // console.log("chargerList => ", chargerList);
+            const key = lat+","+lng;
             const position = new kakao.maps.LatLng(lat, lng);
+
             const marker = new kakao.maps.Marker({
                position: position,
-               map: map,
-               name: stat_name
-            });
-            console.log("마커를 찍었습니다. => "+lat+", "+lng);
-            markers.push(marker); // 마커 배열에 추가
-
-            var infowindow = new kakao.maps.InfoWindow({
-               content: '<div style="padding:5px;font-size:12px;">'+name+'</div>'
+               map: map
             });
 
-            let isOpen = false;
+            markers.push(marker);
 
-            // 마커 클릭
-            kakao.maps.event.addListener(marker, 'click', function() {
-               console.log("마커를 클릭했습니다. 위치: " + lat + ", " + lng + ", 이름: " + name);
-      
-               map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
+            // 마커 클릭 이벤트
+            kakao.maps.event.addListener(marker, 'click', function () {
+               console.log("마커 클릭됨 =>", lat, lng, chargerList);
+
+               map.setCenter(new kakao.maps.LatLng(lat, lng - 0.003));
                map.setLevel(3);
 
-               infowindow.open(map, marker);
-
-               $("#close-detail-sidebar,#close-sidebar").on("click", function () {
-                  infowindow.close();
-               });
-               
-               // if (isOpen) {
-               //    infowindow.close();
-               //    isOpen = false;
-               // } else {
-               //    infowindow.open(map, marker);
-               //    isOpen = true;
-               // }
-               
-               // 마커 클릭했을때 사이드바 생성 및 데이터 전달
                $(".station-sidebar").addClass("active");
                $(".station-sidebarA").addClass("active");
-               var markerData = {
-                  name: name
-                  ,address: address
-                  ,lat: lat
-                  ,lng: lng
-                  ,rapid: rapid
-                  ,slow: slow
-                  ,car: car
-               }
-               
-               console.log(markerData);
-               // 충전소 상세 정보 업데이트
-               updateStationDetail(markerData);
+
+               // 해당 위치의 모든 충전소 정보 전달
+               const markerData = {
+                     lat: lat,
+                     lng: lng,
+                     // chargers: markerInfoMap[key]  // 리스트 통째로 넘김
+                     chargerList: chargerList
+               };
+
+               updateStationDetailTwo(markerData);
             });
 
-			   // 지도 클릭 액션
-            kakao.maps.event.addListener(map, 'click', function() {
-               infowindow.close();
-               isOpen = false;
-               // $(".station-sidebar").removeClass("active");
-               $(".station-sidebarA").removeClass("active");
-               // 마커지우기
-               // for (var i = 0; i < markers.length; i++) {
-               //    markers[i].setMap(null);
-               // }
-               // markers = [];
-            });
             return marker;
          };
 
@@ -372,21 +394,43 @@
                ,body: JSON.stringify({
                   lat: center_lat,
                   lng: center_lng
-               })
+               }) 
             })
             .then(response => response.json())
             .then(data => {
                console.log("서버 응답 데이터 => ", data);
+               for (var i = 0; i < markers.length; i++) {
+                  markers[i].setMap(null);
+               }
+               // data.forEach(charger => {
+               //    window.addMarker(
+               //              charger.lat,
+               //              charger.lng,
+               //              charger.stat_name
+               //          );
+               // });
+               markers = [];
+               markerInfoMap = {};  // 초기화
+
+               // 같은 위치끼리 그룹핑
                data.forEach(charger => {
-                  window.addMarker(
-                            charger.lat,
-                            charger.lng,
-                            charger.stat_name
-                        );
+                     const key = charger.lat+","+charger.lng;
+                     if (!markerInfoMap[key]) {
+                        markerInfoMap[key] = [];
+                     }
+                     markerInfoMap[key].push(charger);
+                     // console.log(markerInfoMap[key]);
+               });
+
+               // 마커 찍기 (중복 없이)
+               Object.entries(markerInfoMap).forEach(([key, chargers]) => {
+                     const [lat, lng] = key.split(',').map(Number);
+                     window.addMarker(lat, lng, chargers);
+                     // console.log("chargers => ", chargers);
                });
             })
             .catch(error => {
-               console.error("오류 발생 => " + error);
+               console.error("오류 발생 => ", error);
             });
          });
 

@@ -94,10 +94,35 @@
     </insert>
     
     <select id="ev_list" resultType="com.boot.dto.EvChargerDTO">
-    	SELECT DISTINCT stat_id
-    		 , stat_name
-    		 , lat
-    		 , lng
+    	SELECT ev_charger_id,
+		 	   stat_id,
+			   chger_id,
+			   stat_name,
+			   chger_type,
+			   addr,
+			   addr_detail,
+			   location,
+			   lat,
+			   lng,
+			   use_time,
+			   busi_id,
+			   bnm,
+			   busi_nm,
+			   busi_call,
+			   output,
+			   method,
+			   zcode,
+			   zscode,
+			   kind,
+			   kind_detail,
+			   parking_free,
+			   note,
+			   limit_yn,
+			   limit_detail,
+			   del_yn,
+			   del_detail,
+			   traffic_yn,
+			   year
 		  FROM ev_charger_data
 		 WHERE lat BETWEEN #{lat} - 0.005 AND #{lat} + 0.005
 		   AND lng BETWEEN #{lng} - 0.01 AND #{lng} + 0.01;
