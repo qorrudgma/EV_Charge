@@ -111,7 +111,7 @@
 
 .station-detail-container {
     position: relative;
-    padding-bottom: 2rem;
+    padding-bottom: 1rem;
 }
 
 .status-badge {
@@ -151,7 +151,7 @@
 }
 
 .detail-section:first-of-type {
-    padding-top: 3rem;
+    padding-top: 1rem;
 }
 
 .station-header {

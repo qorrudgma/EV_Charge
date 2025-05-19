@@ -270,7 +270,8 @@
                            if (data.coordinates && data.coordinates.length > 0) {
                               // 모든 좌표에 대해 마커 추가
                               data.coordinates.forEach(coord => {
-                                 console.log(`@#@# 마커 추가: ${coord.latitude}, ${coord.longitude}`);
+                                 // console.log(`@#@# 마커 추가: ${coord.latitude}, ${coord.longitude}`);
+                                 console.log("@#@# 마커 추가: ", coord.latitude, ", "+coord.longitude);
                                  addMarker(coord.address, coord.latitude, coord.longitude, coord.name, coord.rapid, coord.slow, coord.car);
                               });
                            } else {
@@ -345,7 +346,7 @@
          // let markers = [];
          // let markerInfoMap = {};
 
-         window.addMarker = function(lat, lng, chargerList) {
+         window.addMarker_two = function(lat, lng, chargerList) {
             console.log("마커찍기");
             // console.log("chargerList => ", chargerList);
             const key = lat+","+lng;
@@ -425,7 +426,7 @@
                // 마커 찍기 (중복 없이)
                Object.entries(markerInfoMap).forEach(([key, chargers]) => {
                      const [lat, lng] = key.split(',').map(Number);
-                     window.addMarker(lat, lng, chargers);
+                     window.addMarker_two(lat, lng, chargers);
                      // console.log("chargers => ", chargers);
                });
             })
