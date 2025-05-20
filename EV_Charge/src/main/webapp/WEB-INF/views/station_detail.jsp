@@ -30,8 +30,9 @@
             
             <!-- 충전소 기본 정보 -->
             <div class="detail-section">
-                <div id="station_lat"></div>
-                <div id="station_lng"></div>
+                <!-- <div id="station_lat"></div>
+                <div id="station_lng"></div> -->
+                <input type="text" id="station_lat" name="station_lat">
 
                 <div class="station-header">
                     <h2 id="station-name" class="station-title"></h2>
@@ -315,6 +316,7 @@
             console.log("성공", data.rapid_stat_three);
             rapid_count = data.rapid_stat_three;
             slow_count = data.slow_stat_three;
+            // $("#station_lat").val(first.lat);
     
             // 전부다 반복으로 꺼내기
             // chargerList.forEach(charger => {
@@ -343,8 +345,8 @@
             }
             document.getElementById("station-address").innerHTML = addressHtml;
             // 경도 위도
-            document.getElementById("station_lat").textContent = first.lat;
-            document.getElementById("station_lng").textContent = first.lng;
+            // document.getElementById("station_lat").textContent = first.lat;
+            // document.getElementById("station_lng").textContent = first.lng;
             // 충전기 종류
             const chger_type_map = {
                         "01": "B타입 (5핀, AC 완속)",
