@@ -72,7 +72,7 @@
                     <c:forEach var="station" items="${stationList}" varStatus="status">
                         <div class="station-item" data-id="${station.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
                             <div class="station-status ${status.index % 3 == 0 ? 'available' : (status.index % 3 == 1 ? 'busy' : 'offline')}">
-                                <i classㅋㅋer-alt"></i>
+								<i class="fa fa-search-location"></i>
                                     <span>${station.stationAddress}</span>
                                 </div>
                                 

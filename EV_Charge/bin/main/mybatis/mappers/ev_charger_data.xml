@@ -124,8 +124,10 @@
 			   traffic_yn,
 			   year
 		  FROM ev_charger_data
-		 WHERE lat BETWEEN #{lat} - 0.005 AND #{lat} + 0.005
-		   AND lng BETWEEN #{lng} - 0.01 AND #{lng} + 0.01;
+		 WHERE lat BETWEEN #{lat} - #{lat_n} AND #{lat} + #{lat_n}
+		   AND lng BETWEEN #{lng} - #{lng_n} AND #{lng} + #{lng_n}
+<!--		 WHERE lat BETWEEN #{lat} - 0.005 AND #{lat} + 0.005-->
+<!--		   AND lng BETWEEN #{lng} - 0.01 AND #{lng} + 0.01;-->
     </select>
             
 </mapper>

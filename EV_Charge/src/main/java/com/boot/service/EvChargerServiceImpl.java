@@ -26,13 +26,22 @@ public class EvChargerServiceImpl implements EvChargerService {
 		}
 	}
 
-	// 경도위도 근처 충전소 정보
 	@Override
-	public List<EvChargerDTO> ev_list(Double lat, Double lng) {
+	public List<EvChargerDTO> ev_list(Double lat, Double lng, Double lat_n, Double lng_n) {
 		EvChargerDAO dao = sqlSession.getMapper(EvChargerDAO.class);
 		List<EvChargerDTO> ev_list = new ArrayList<>();
-		ev_list = dao.ev_list(lat, lng);
-
+		ev_list = dao.ev_list(lat, lng, lat_n, lng_n);
+//
 		return ev_list;
 	}
+
+	// 경도위도 근처 충전소 정보
+//	@Override
+//	public List<EvChargerDTO> ev_list(Double lat, Double lng) {
+//		EvChargerDAO dao = sqlSession.getMapper(EvChargerDAO.class);
+//		List<EvChargerDTO> ev_list = new ArrayList<>();
+//		ev_list = dao.ev_list(lat, lng);
+//
+//		return ev_list;
+//	}
 }

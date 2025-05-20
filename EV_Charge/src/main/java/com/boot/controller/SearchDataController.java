@@ -38,11 +38,12 @@ public class SearchDataController {
 //		log.info("lat => " + map.get("lat"));
 		Double lat = map.get("lat");
 		Double lng = map.get("lng");
-		Double lat_n = 0.005;
-		Double lng_n = 0.01;
+		Double lat_n = map.get("lat_n");
+		Double lng_n = map.get("lng_n");
+//		log.info(lat_n + " / " + lng_n);
 
 		List<EvChargerDTO> ev_list = new ArrayList<>();
-		ev_list = chargerService.ev_list(lat, lng);
+		ev_list = chargerService.ev_list(lat, lng, lat_n, lng_n);
 //		log.info("ev_list => " + ev_list);
 
 		return ev_list;

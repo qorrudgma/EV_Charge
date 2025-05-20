@@ -247,7 +247,9 @@
                                  }
                                  ,body: JSON.stringify({
                                     lat: center_lat,
-                                    lng: center_lng
+                                    lng: center_lng,
+                                    lat_n: 0.0025,
+                                    lng_n: 0.005
                                  }) 
                               })
                               .then(response => response.json())
@@ -444,7 +446,9 @@
                }
                ,body: JSON.stringify({
                   lat: center_lat,
-                  lng: center_lng
+                  lng: center_lng,
+                  lat_n: 0.005,
+                  lng_n: 0.01
                }) 
             })
             .then(response => response.json())
