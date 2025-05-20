@@ -72,7 +72,7 @@
                         </div>
                         <div class="charger-details">
                             <h4>급속 충전기</h4>
-                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대<br>사용가능: <strong id="rapid_count"></strong></p>
+                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대<br>사용가능: <strong id="rapid_count"></p>
                         </div>
                     </div>
                     

@@ -151,6 +151,7 @@ public class SearchDataController {
 				stat_map.put("slow_stat_five", slow_stat_five);
 				stat_map.put("slow_stat_nine", slow_stat_nine);
 				stat_map.put("slow_stat_t", slow_stat_t);
+				log.info("!@#$!@#$!@#$" + slow_stat_nine);
 
 //				count_list.add(statMap);
 			}
