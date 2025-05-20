@@ -35,13 +35,15 @@ public class SearchDataController {
 	@RequestMapping("/search_data")
 	public List<EvChargerDTO> search_data(@RequestBody Map<String, Double> map) {
 		log.info("search_data()");
-		log.info("lat => " + map.get("lat"));
+//		log.info("lat => " + map.get("lat"));
 		Double lat = map.get("lat");
 		Double lng = map.get("lng");
+		Double lat_n = 0.005;
+		Double lng_n = 0.01;
 
 		List<EvChargerDTO> ev_list = new ArrayList<>();
 		ev_list = chargerService.ev_list(lat, lng);
-		log.info("ev_list => " + ev_list);
+//		log.info("ev_list => " + ev_list);
 
 		return ev_list;
 	}

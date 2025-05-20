@@ -1,51 +1,73 @@
 plugins {
-	id 'java'
-//	id 'org.springframework.boot' version '3.4.4'
-	id 'org.springframework.boot' version '2.7.13'
-	id 'io.spring.dependency-management' version '1.1.7'
+   id 'java'
+   id 'org.springframework.boot' version '2.7.13'
+   id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.boot'
 version = '0.0.1-SNAPSHOT'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
+   toolchain {
+      languageVersion = JavaLanguageVersion.of(17)
+   }
 }
 
-configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+ext {
+   jacksonVersion = '2.13.5'  // 되돌리기
+   sparkVersion = '3.3.3'     // 버전 낮춤
 }
 
 repositories {
-	mavenCentral()
+   mavenCentral()
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-//	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.4'
-	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
-	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
-	implementation 'javax.servlet:jstl:1.2'
-	implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
-	implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
-	implementation 'org.json:json:20210307'
+   implementation 'org.springframework.boot:spring-boot-starter-web'
+   implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.3.1'
+   implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+   implementation 'javax.servlet:jstl:1.2'
+   implementation group: 'net.coobird', name: 'thumbnailator', version: '0.4.20'
+//   implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4.1:1.16'
+   implementation 'org.json:json:20210307'
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.springframework.boot:spring-boot-starter-cache'
-    // redis
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
-	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+	implementation 'org.springframework.boot:spring-boot-starter-cache'
+	// redis
+   compileOnly 'org.projectlombok:lombok'
+   developmentOnly 'org.springframework.boot:spring-boot-devtools'
+   runtimeOnly 'com.mysql:mysql-connector-j'
+   annotationProcessor 'org.projectlombok:lombok'
+   testImplementation 'org.springframework.boot:spring-boot-starter-test'
+   testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.4'
+   testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+   implementation 'org.jfree:jfreechart:1.5.3'
+   implementation 'org.codehaus.janino:janino:3.1.9'
+   implementation 'org.codehaus.janino:commons-compiler:3.1.9'
+
+   // Spark - 버전 다운그레이드
+   implementation "org.apache.spark:spark-core_2.12:3.4.1"
+   implementation "org.apache.spark:spark-sql_2.12:$sparkVersion"
+   implementation 'org.apache.spark:spark-mllib_2.12:3.4.1'
+   implementation "com.fasterxml.jackson.module:jackson-module-scala_2.12:$jacksonVersion"
+   
+   // Jackson 호환 유지
+   implementation "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+   implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+   implementation "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+   
+   // logback 사용 시 필요한 SLF4J 바인딩 명시
+   implementation 'ch.qos.logback:logback-classic:1.2.12'
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+   useJUnitPlatform()
+}
+
+configurations.all {
+   resolutionStrategy {
+      force "com.fasterxml.jackson.core:jackson-core:$jacksonVersion"
+      force "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+      force "com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion"
+   }
 }
