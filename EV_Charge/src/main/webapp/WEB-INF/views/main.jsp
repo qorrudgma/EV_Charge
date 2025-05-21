@@ -459,7 +459,8 @@
                console.log("마커 클릭됨 =>", lat, lng, chargerList);
 
                map.setCenter(new kakao.maps.LatLng(lat, lng-0.001));
-               map.setLevel(3);
+               // map.setLevel(3);
+               map.setLevel(1);
 
                $(".station-sidebar").addClass("active");
                $(".station-sidebarA").addClass("active");
