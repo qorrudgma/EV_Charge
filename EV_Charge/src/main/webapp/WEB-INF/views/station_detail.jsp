@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/station_detail.css">
-
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=109dd4a6fbdf108d896544146388b47e&libraries=services"></script>
 <div id="station-detail-sidebar" class="station-sidebarA">
     <div class="sidebar-header">
         <div class="sidebar-title">
@@ -30,10 +30,6 @@
             
             <!-- 충전소 기본 정보 -->
             <div class="detail-section">
-                <!-- <div id="station_lat"></div>
-                <div id="station_lng"></div> -->
-                <input type="text" id="station_lat" name="station_lat">
-
                 <div class="station-header">
                     <h2 id="station-name" class="station-title"></h2>
                     <button id="toggle-favorite" class="favorite-btn" title="즐겨찾기">
@@ -46,8 +42,15 @@
                     <p id="station-address" class="station-address"></p>
                 </div>
                 
+                <form id="routeForm" method="get" action="${pageContext.request.contextPath}/findpath">
+                    <input type="hidden" id="startLat" name="startLat">
+                    <input type="hidden" id="startLng" name="startLng">
+                    <input type="hidden" id="station_lat" name="endLat">
+                    <input type="hidden" id="station_lng" name="endLng">
+                </form>
+
                 <div class="action-buttons">
-                    <button class="action-button primary" onclick="navigateToStation()">
+                    <button class="action-button primary" id="findpathBtn">
                         <i class="fas fa-directions"></i>
                         <span>길찾기</span>
                     </button>
@@ -56,6 +59,7 @@
                         <span>공유하기</span>
                     </button>
                 </div>
+                
             </div>
             
             <!-- 충전기 정보 -->
@@ -72,7 +76,7 @@
                         </div>
                         <div class="charger-details">
                             <h4>급속 충전기</h4>
-                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대<br>사용가능: <strong id="rapid_count"></p>
+                            <p id="fast-charger-count"><strong id="strong_rapid"></strong>대<br>사용가능: <strong id="rapid_count"></strong></p>
                         </div>
                     </div>
                     
@@ -250,15 +254,21 @@
             console.log(`충전소 ${stationId} 즐겨찾기 ${isFavorite ? '추가' : '제거'}`);
         });
     });
+
+    document.getElementById('findpathBtn').addEventListener('click', function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                document.getElementById('startLat').value = position.coords.latitude;
+                document.getElementById('startLng').value = position.coords.longitude;
+                document.getElementById('routeForm').submit();
+            }, function () {
+                alert("현재 위치를 가져올 수 없습니다.");
+            });
+        } else {
+            alert("이 브라우저는 위치 기능을 지원하지 않습니다.");
+        }
+    });
     
-    // 길찾기 함수
-    function navigateToStation() {
-        // 길찾기 로직 (사용자가 구현)
-        const lat = document.getElementById('station-name').getAttribute('data-lat');
-        const lng = document.getElementById('station-name').getAttribute('data-lng');
-        
-        console.log(`길찾기: 위도 ${lat}, 경도 ${lng}`);
-    }
     
     // 공유하기 함수
     function shareStation() {
@@ -281,10 +291,11 @@
 
         document.getElementById("station-name").textContent = name;
         document.getElementById("station-address").textContent = address;
-        document.getElementById("station_lat").textContent = lat;
-        document.getElementById("station_lng").textContent = lng;
+        // document.getElementById("station_lat").textContent = lat;
+        // document.getElementById("station_lng").textContent = lng;
         document.getElementById("strong_rapid").textContent = rapid;
         document.getElementById("strong_slow").textContent = slow;
+    
         // document.getElementById("supported-vehicles").textContent = car;
         const car_list = cars.split(",");
         console.log(car_list);
@@ -316,8 +327,9 @@
             console.log("성공", data.rapid_stat_three);
             rapid_count = data.rapid_stat_three;
             slow_count = data.slow_stat_three;
-            // $("#station_lat").val(first.lat);
-    
+            $("#station_lat").val(first.lat);
+            $("#station_lng").val(first.lng);
+
             // 전부다 반복으로 꺼내기
             // chargerList.forEach(charger => {
             //     console.log("전부 출력");

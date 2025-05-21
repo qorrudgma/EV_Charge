@@ -82,6 +82,49 @@
             console.log('현재 중심 좌표:', center_lat, center_lng);
          });
 
+         // 길찾기
+         // vertexJson이 있으면 경로 표시, 없으면 기본 지도
+         var vertexJson = '${vertexJson}';
+         if (vertexJson && vertexJson !== 'null' && vertexJson.length > 2) {
+            var vertexes = JSON.parse(vertexJson);
+            var centerLat = vertexes[1];
+            var centerLng = vertexes[0];
+
+            var pathCoordinates = [];
+            for (var i = 0; i < vertexes.length; i += 2) {
+                  var lng = vertexes[i];
+                  var lat = vertexes[i + 1];
+                  pathCoordinates.push(new kakao.maps.LatLng(lat, lng));
+            }
+
+            map = new kakao.maps.Map(mapContainer, {
+                  center: new kakao.maps.LatLng(centerLat, centerLng),
+                  level: 3
+            });
+
+            var polyline = new kakao.maps.Polyline({
+                  path: pathCoordinates,
+                  strokeWeight: 8,
+                  strokeColor: '#3B82F6',
+                  strokeOpacity: 1,
+                  strokeStyle: 'solid'
+            });
+            polyline.setMap(map);
+
+            new kakao.maps.Marker({
+                  position: pathCoordinates[0],
+                  map: map,
+                  title: '출발지'
+            });
+
+            new kakao.maps.Marker({
+                  position: pathCoordinates[pathCoordinates.length - 1],
+                  map: map,
+                  title: '도착지'
+            });
+
+         }
+
          // 읍/면/동 옵션 업데이트 함수
          function updatearea_emd_nm() {
             const area_ctpy_nm = document.getElementById("area_ctpy_nm").value;

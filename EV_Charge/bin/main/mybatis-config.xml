@@ -18,6 +18,9 @@
 		<mapper resource="mybatis/mappers/comment.xml"/>
 		<mapper resource="mybatis/mappers/upload.xml"/>
 		<mapper resource="mybatis/mappers/page.xml"/>
-
+		
+		<!--공지사항 mapper-->
+		<mapper resource="mybatis/mappers/notice_board.xml"/>
+		<mapper resource="mybatis/mappers/notice_page.xml"/>
 	</mappers>
 </configuration>

@@ -1,0 +1,61 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.noticeboard.dao.NoticePageDAO">
+
+    <!-- 검색 조건 SQL 조각 -->
+    <sql id="ev_criteria">
+        <if test='ev_type == "T"'>
+            WHERE ev_notice_boardTitle LIKE CONCAT('%', #{ev_keyword}, '%')
+        </if>
+        <if test='ev_type == "C"'>
+            WHERE ev_notice_boardContent LIKE CONCAT('%', #{ev_keyword}, '%')
+        </if>
+        <if test='ev_type == "W"'>
+            WHERE ev_notice_boardName LIKE CONCAT('%', #{ev_keyword}, '%')
+        </if>
+        <if test='ev_type == "TC"'>
+            WHERE ev_notice_boardTitle LIKE CONCAT('%', #{ev_keyword}, '%')
+               OR ev_notice_boardContent LIKE CONCAT('%', #{ev_keyword}, '%')
+        </if>
+        <if test='ev_type == "TW"'>
+            WHERE ev_notice_boardTitle LIKE CONCAT('%', #{ev_keyword}, '%')
+               OR ev_notice_boardName LIKE CONCAT('%', #{ev_keyword}, '%')
+        </if>
+        <if test='ev_type == "TCW"'>
+            WHERE ev_notice_boardTitle LIKE CONCAT('%', #{ev_keyword}, '%')
+               OR ev_notice_boardContent LIKE CONCAT('%', #{ev_keyword}, '%')
+               OR ev_notice_boardName LIKE CONCAT('%', #{ev_keyword}, '%')
+        </if>
+    </sql>
+
+    <!-- 페이징 처리 게시글 목록 조회 -->
+    <select id="notice_listWithPaging" resultType="com.boot.noticeboard.dto.NoticeBoardDTO">
+        <![CDATA[ 
+        SELECT ev_notice_boardNo, ev_notice_boardName, ev_notice_boardTitle, ev_notice_boardContent, ev_notice_boardDate, ev_notice_boardHit
+          FROM (
+              SELECT rownum, ev_notice_boardNo, ev_notice_boardName, ev_notice_boardTitle, ev_notice_boardContent, ev_notice_boardDate, ev_notice_boardHit
+                FROM (
+                    SELECT ROW_NUMBER() OVER (ORDER BY ev_notice_boardNo DESC) AS rownum,
+                           ev_notice_boardNo, ev_notice_boardName, ev_notice_boardTitle, ev_notice_boardContent, ev_notice_boardDate, ev_notice_boardHit
+                      FROM ev_notice_board
+        ]]>
+        <include refid="ev_criteria"/>
+        <![CDATA[
+                      ORDER BY ev_notice_boardNo DESC
+                ) a
+               WHERE rownum <= (#{ev_pageNum} * #{ev_amount})
+          ) aa
+         WHERE rownum > ((#{ev_pageNum} - 1) * #{ev_amount})
+        ]]>
+    </select>
+
+    <!-- 검색 포함 전체 게시글 수 조회 -->
+    <select id="notice_totalList" resultType="int">
+        SELECT COUNT(*) FROM ev_notice_board
+        
+        <include refid="ev_criteria"/>
+    </select>
+
+</mapper>

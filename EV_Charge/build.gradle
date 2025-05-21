@@ -33,7 +33,7 @@ dependencies {
 	// redis
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 	implementation 'org.springframework.boot:spring-boot-starter-cache'
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
+//	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	// redis
 	// Elasticsearch
 //	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
@@ -52,7 +52,7 @@ dependencies {
 
     // Spark - 버전 다운그레이드
     implementation "org.apache.spark:spark-core_2.12:3.4.1"
-    implementation "org.apache.spark:spark-sql_2.12:$sparkVersion"
+    implementation "org.apache.spark:spark-sql_2.12:3.4.1"
     implementation 'org.apache.spark:spark-mllib_2.12:3.4.1'
     implementation "com.fasterxml.jackson.module:jackson-module-scala_2.12:$jacksonVersion"
    

@@ -47,9 +47,19 @@
                     </c:otherwise>
                 </c:choose>
 
-                <a href="${pageContext.request.contextPath}/notice" class="ev-nav-item">
-                    <i class="fas fa-bell"></i>공지사항
-                </a>
+                <c:choose>
+                    <c:when test="${not empty sessionScope.user}">
+                        <a href="${pageContext.request.contextPath}/notice_list" class="ev-nav-item">
+                            <i class="fas fa-heart"></i>공지사항
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/login" class="ev-nav-item">
+                            <i class="fas fa-heart"></i>공지사항
+                        </a>
+                    </c:otherwise>
+                </c:choose>
+
 
                 <c:choose>
                     <c:when test="${not empty sessionScope.user}">

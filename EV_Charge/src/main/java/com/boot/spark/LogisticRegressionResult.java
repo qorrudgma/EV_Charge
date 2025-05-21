@@ -1,61 +1,68 @@
+/*==========================================================
+* 파일명     : LogisticRegressionResult.java
+* 작성자     : 임진우
+* 작성일자   : 2025-05-21
+* 설명       : 로지스틱 회귀 구현
+
+* 수정 이력 :
+* 날짜         수정자       내용
+* --------   ----------   ------------------------- 
+* 2025-05-20   임진우       완성
+============================================================*/
+
 package com.boot.spark;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
 
-import org.apache.spark.ml.classification.LogisticRegression;
 import org.apache.spark.ml.classification.LogisticRegressionModel;
-import org.apache.spark.ml.linalg.VectorUDT;
-import org.apache.spark.ml.linalg.Vectors;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.types.DataTypes;
-import org.apache.spark.sql.types.Metadata;
-import org.apache.spark.sql.types.StructField;
-import org.apache.spark.sql.types.StructType;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 public class LogisticRegressionResult {
 
-	public static void main(String[] args) {
-		SparkSession spark = SparkSession.builder().appName("Java Logistic Regression Result").master("local[*]")
-				.getOrCreate(); // 로컬모드
+	public Dataset<Row> executeLogRegression(JsonNode inputJson) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
 
-		// 학습 데이터 생성 (label, features)
-		List<Row> data = new ArrayList<>();
-		data.add(RowFactory.create(1.0, Vectors.dense(0.0, 1.1, 0.1)));
-		data.add(RowFactory.create(0.0, Vectors.dense(2.0, 1.0, -1.0)));
-		data.add(RowFactory.create(0.0, Vectors.dense(2.0, 1.3, 1.0)));
-		data.add(RowFactory.create(1.0, Vectors.dense(0.0, 1.2, -0.5)));
+		// 학습할 데이터가 담긴 json 파일은 여기서 변경
+		String learningJsonStr = new LogisticRegressionResult().JsonToStringConverter("station_charge_data.json");
+		JsonNode learningJson = mapper.readTree(learningJsonStr);
 
-		// 학습 스키마 설정
-		StructType schema = new StructType(
-				new StructField[] { new StructField("label", DataTypes.DoubleType, false, Metadata.empty()),
-						new StructField("features", new VectorUDT(), false, Metadata.empty()) });
+		// 스파크 세션객체 생성
+		SparkSession spark = new SparkSessionGenerator().makeSparkSession("station_analize", "local[*]");
 
-		Dataset<Row> training = spark.createDataFrame(data, schema);
+		// 스파크 객체와 학습데이터로 학습된 모델 생성
+		MachineLearning ML = new MachineLearning();
+		LogisticRegressionModel model = ML.LogMachineGenerator(spark, learningJson);
 
-		// 로지스틱 회귀 모델 생성 및 학습
-		LogisticRegression lr = new LogisticRegression().setMaxIter(10).setRegParam(0.01);
-
-		LogisticRegressionModel model = lr.fit(training);
-
-		// 모델 요약 정보 출력
-		System.out.println("Coefficients: " + model.coefficients());
-		System.out.println("Intercept: " + model.intercept());
-
-		// 테스트 데이터 생성
-		List<Row> testData = new ArrayList<>();
-		testData.add(RowFactory.create(Vectors.dense(-1.0, 1.5, 1.3)));
-		testData.add(RowFactory.create(Vectors.dense(3.0, 2.0, -0.1)));
-		Dataset<Row> test = spark.createDataFrame(testData, new StructType(
-				new StructField[] { new StructField("features", new VectorUDT(), false, Metadata.empty()) }));
-
-		// 예측 수행
-		Dataset<Row> predictions = model.transform(test);
+		// 예상 결과치 도출
+		Dataset<Row> predictions = ML.LogResultRow(model, spark, inputJson);
 		predictions.show(false);
+		log.info("로지스틱 회귀 모델 예측 완료, 결과 {}건", predictions.count());
 
-		spark.stop();
+		spark.close();
+
+		return predictions;
+	}
+
+	public String JsonToStringConverter(String filename) throws IOException {
+		// 1. JSON 파일 경로 (예: learning_data.json)
+		File jsonFile = new File("src/main/resources/json/" + filename);
+
+		// 2. ObjectMapper로 읽기
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode jsonNode = mapper.readTree(jsonFile);
+
+		// 3. JsonNode를 문자열로 변환 (줄바꿈 제거해서 한 줄로)
+		String JsonStr = jsonNode.toString();
+
+		return JsonStr;
 	}
 }
