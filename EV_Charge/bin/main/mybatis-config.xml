@@ -22,5 +22,8 @@
 		<!--공지사항 mapper-->
 		<mapper resource="mybatis/mappers/notice_board.xml"/>
 		<mapper resource="mybatis/mappers/notice_page.xml"/>
+		
+		<!-- elasticsearch -->
+		<mapper resource="mybatis/mappers/elasticsearch.xml"/>
 	</mappers>
 </configuration>

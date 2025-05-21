@@ -36,7 +36,7 @@ dependencies {
 //	implementation 'com.fasterxml.jackson.core:jackson-databind'
 	// redis
 	// Elasticsearch
-//	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
+	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 //	implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:8.9.0'
 	// Elasticsearch
     compileOnly 'org.projectlombok:lombok'
