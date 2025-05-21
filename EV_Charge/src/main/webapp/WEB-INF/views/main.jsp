@@ -415,7 +415,7 @@
             kakao.maps.event.addListener(marker, 'click', function () {
                console.log("마커 클릭됨 =>", lat, lng, chargerList);
 
-               map.setCenter(new kakao.maps.LatLng(lat, lng - 0.003));
+               map.setCenter(new kakao.maps.LatLng(lat, lng-0.001));
                map.setLevel(3);
 
                $(".station-sidebar").addClass("active");
@@ -438,6 +438,7 @@
          $(document).on("click", "#reset", function (e) {
             console.log("현 지도에서 검색 클릭");
             console.log(center_lat + " / " + center_lng);
+			   map.setLevel(3);
 
             fetch("/search_data", {
                 method: "POST"

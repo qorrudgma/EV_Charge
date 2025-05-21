@@ -1,5 +1,7 @@
 package com.boot.dto;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class EvChargerDTO {
+public class EvChargerDTO implements Serializable{
 	private int ev_charger_id; 		// 자동증가 기본키
 	private String stat_id; 		// 충전소ID
 	private String chger_id; 		// 충전기ID

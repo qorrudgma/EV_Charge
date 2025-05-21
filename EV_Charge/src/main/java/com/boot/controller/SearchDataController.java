@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,22 +30,61 @@ public class SearchDataController {
 	private String newkey;
 
 	@Autowired
+	private RedisTemplate<String, Object> redisTemplate;
+
+	@Autowired
 	private EvChargerService chargerService;
+
+//	@RequestMapping("/search_data")
+//	public List<EvChargerDTO> search_data(@RequestBody Map<String, Double> map) {
+//		log.info("search_data()");
+////		log.info("lat => " + map.get("lat"));
+//		Double lat = map.get("lat");
+//		Double lng = map.get("lng");
+//		Double lat_n = map.get("lat_n");
+//		Double lng_n = map.get("lng_n");
+////		log.info(lat_n + " / " + lng_n);
+//
+//		List<EvChargerDTO> ev_list = new ArrayList<>();
+//		ev_list = chargerService.ev_list(lat, lng, lat_n, lng_n);
+////		log.info("ev_list => " + ev_list);
+//
+//		return ev_list;
+//	}
 
 	@RequestMapping("/search_data")
 	public List<EvChargerDTO> search_data(@RequestBody Map<String, Double> map) {
 		log.info("search_data()");
-//		log.info("lat => " + map.get("lat"));
 		Double lat = map.get("lat");
 		Double lng = map.get("lng");
 		Double lat_n = map.get("lat_n");
 		Double lng_n = map.get("lng_n");
-//		log.info(lat_n + " / " + lng_n);
 
-		List<EvChargerDTO> ev_list = new ArrayList<>();
+		String cacheKey = String.format("search_data:%.6f:%.6f:%.6f:%.6f", lat, lng, lat_n, lng_n);
+
+		// 1) 캐시에서 먼저 조회 시도 (생략 가능, 없으면 DB에서 조회)
+		@SuppressWarnings("unchecked")
+		List<EvChargerDTO> ev_list = (List<EvChargerDTO>) redisTemplate.opsForValue().get(cacheKey);
+
+		if (lat_n == 0.0025) {
+			if (ev_list == null) {
+				// 2) 캐시에 없으면 DB 조회
+				ev_list = chargerService.ev_list(lat, lng, lat_n, lng_n);
+
+				// 3) 조회 결과를 캐시에 저장 (TTL 5분)
+//				redisTemplate.opsForValue().set(cacheKey, ev_list, Duration.ofMinutes(5));
+				// 시간 제한 없음
+				redisTemplate.opsForValue().set(cacheKey, ev_list);
+
+				log.info("DB 조회 후 캐시에 저장 완료");
+			} else {
+				log.info("캐시에서 데이터 조회 완료");
+			}
+			return ev_list;
+		}
 		ev_list = chargerService.ev_list(lat, lng, lat_n, lng_n);
-//		log.info("ev_list => " + ev_list);
 
+		// 4) 결과 리턴
 		return ev_list;
 	}
 

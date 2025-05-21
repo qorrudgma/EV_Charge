@@ -9,16 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.boot.dao.EvChargerDAO;
 import com.boot.dto.EvChargerDTO;
-import com.boot.elasticsearch.ElasticsearchDTO;
-import com.boot.elasticsearch.EvChargerRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service("EvChargerService")
 public class EvChargerServiceImpl implements EvChargerService {
-	@Autowired
-	private EvChargerRepository evChargerRepository;
+//	@Autowired
+//	private EvChargerRepository evChargerRepository;
 
 	@Autowired
 	private SqlSession sqlSession;
@@ -30,7 +28,7 @@ public class EvChargerServiceImpl implements EvChargerService {
 			// DB저장
 			dao.ev_charger_update(dto);
 			// Elasticsearch 색저장
-			evChargerRepository.save(new ElasticsearchDTO(dto));
+//			evChargerRepository.save(new ElasticsearchDTO(dto));
 		}
 	}
 
