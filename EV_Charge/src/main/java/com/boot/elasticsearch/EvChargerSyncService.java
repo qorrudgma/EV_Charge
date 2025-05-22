@@ -21,7 +21,7 @@ public class EvChargerSyncService {
 		// MyBatis에서 바로 ElasticsearchDTO 리스트 가져오기
 		List<ElasticsearchDTO> elasticsearchDTOList = evChargerMapper.selectAll();
 
-		int batchSize = 1;
+		int batchSize = 500;
 		for (int i = 0; i < elasticsearchDTOList.size(); i += batchSize) {
 			int end = Math.min(i + batchSize, elasticsearchDTOList.size());
 			List<ElasticsearchDTO> batch = elasticsearchDTOList.subList(i, end);
