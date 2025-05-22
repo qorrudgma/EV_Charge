@@ -5,8 +5,45 @@
 
 <mapper namespace="com.boot.elasticsearch.EvChargerMapper">
 
-	<select id="selectAll" resultType="com.boot.elasticsearch.ElasticsearchDTO">
-        SELECT * FROM ev_charger_data
-    </select>
+<!--	<select id="selectAll" resultType="com.boot.elasticsearch.ElasticsearchDTO">-->
+<!--        SELECT * FROM ev_charger_data-->
+<!--    </select>-->
+
+	<resultMap id="ElasticsearchMap" type="com.boot.elasticsearch.ElasticsearchDTO">
+	    <id column="id" property="id" />
+	    <result column="stat_id" property="stat_id" />
+	    <result column="chger_id" property="chger_id" />
+	    <result column="stat_name" property="statName" /> <!-- 핵심 부분 -->
+	    <result column="chger_type" property="chger_type" />
+	    <result column="addr" property="addr" />
+	    <result column="addr_detail" property="addr_detail" />
+	    <result column="location" property="location" />
+	    <result column="lat" property="lat" />
+	    <result column="lng" property="lng" />
+	    <result column="use_time" property="use_time" />
+	    <result column="busi_id" property="busi_id" />
+	    <result column="bnm" property="bnm" />
+	    <result column="busi_nm" property="busi_nm" />
+	    <result column="busi_call" property="busi_call" />
+	    <result column="output" property="output" />
+	    <result column="method" property="method" />
+	    <result column="zcode" property="zcode" />
+	    <result column="zscode" property="zscode" />
+	    <result column="kind" property="kind" />
+	    <result column="kind_detail" property="kind_detail" />
+	    <result column="parking_free" property="parking_free" />
+	    <result column="note" property="note" />
+	    <result column="limit_yn" property="limit_yn" />
+	    <result column="limit_detail" property="limit_detail" />
+	    <result column="del_yn" property="del_yn" />
+	    <result column="del_detail" property="del_detail" />
+	    <result column="traffic_yn" property="traffic_yn" />
+	    <result column="year" property="year" />
+	</resultMap>
+
+	<select id="selectAll" resultMap="ElasticsearchMap">
+	    SELECT * FROM ev_charger_data
+	</select>
+
 
 </mapper>

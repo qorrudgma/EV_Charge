@@ -1,4 +1,4 @@
-package com.boot.elasticsearch;
+package com.boot.evelasticsearch;
 
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 

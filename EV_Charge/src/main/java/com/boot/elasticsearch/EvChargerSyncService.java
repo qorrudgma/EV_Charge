@@ -20,17 +20,20 @@ public class EvChargerSyncService {
 	public void syncAllDataToElasticsearch() {
 		// MyBatis에서 바로 ElasticsearchDTO 리스트 가져오기
 		List<ElasticsearchDTO> elasticsearchDTOList = evChargerMapper.selectAll();
-		log.info("!@#$!@#$" + elasticsearchDTOList);
 
-		int batchSize = 100;
+		int batchSize = 1;
 		for (int i = 0; i < elasticsearchDTOList.size(); i += batchSize) {
 			int end = Math.min(i + batchSize, elasticsearchDTOList.size());
 			List<ElasticsearchDTO> batch = elasticsearchDTOList.subList(i, end);
+			if (i == 1) {
+				log.info("!@#$!@#$" + batch);
+			}
 			try {
 				elasticsearchRepository.saveAll(batch);
 			} catch (Exception e) {
-//				log.error("Error saving batch from {} to {}", i, end, e);
+				log.error("Error saving batch from {} to {}", i, end, e);
 			}
 		}
 	}
+
 }

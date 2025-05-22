@@ -1,4 +1,4 @@
-package com.boot.elasticsearch;
+package com.boot.evelasticsearch;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.elasticsearch.annotations.Document;
