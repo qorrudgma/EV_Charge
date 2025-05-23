@@ -305,7 +305,7 @@
 
 .station-name {
     margin: 0;
-    font-size: 1rem;
+    font-size: 20px;
     font-weight: 600;
     color: var(--gray-800);
 }

@@ -36,7 +36,8 @@
                 <button class="search-clear" id="clear-search">
                     <i id="x" class="fas fa-times-circle"></i>
                 </button>
-                <input type="button" class="ev-search-button" value="검색" onclick="search()">
+<!--                <input type="button" class="ev-search-button" value="검색" onclick="search()">-->
+                <input type="button" class="ev-search-button" value="검색">
             </div>
         </div>
     </form>
@@ -45,7 +46,7 @@
         <div class="filter-chips">
             <button class="filter-chip active" data-filter="all">
                 <span>전체</span>
-                <span class="count">${stationList.size()}</span>
+                <span class="count">0</span>
             </button>
             <button class="filter-chip" data-filter="available">
                 <span>사용가능</span>
@@ -129,6 +130,100 @@
     </div>
 </div>
 <script>
+	// 검색 기능 elasticsearch
+	$(".ev-search-button").on("click", function (e) {
+        e.preventDefault();
+
+        const search_val = $("#station-search").val().trim();
+        if (!search_val) {
+            alert("검색할 충전소 정보를 입력해주세요.");
+            return;
+        }
+
+        fetch("/search", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ keyword: search_val })
+        })
+        .then(response => response.json())
+        .then(search_list => {
+            const $list = $('#station-list');
+            $list.empty();
+
+            if (!search_list || search_list.length === 0) {
+                $list.html(
+                    '<div class="empty-state">' +
+                        '<div class="empty-icon"><i class="fas fa-search"></i></div>' +
+                        '<h4>검색 결과가 없습니다</h4>' +
+                        '<p>검색 반경을 넓히거나 다른 위치에서 검색해보세요.</p>' +
+                        '<button class="action-button primary" onclick="resetSearch()">' +
+                            '<i class="fas fa-redo"></i><span>검색 초기화</span>' +
+                        '</button>' +
+                    '</div>'
+                );
+                $(".count").text("0");
+                $(".results-count").text("0");
+                return;
+            }
+
+            $(".count").text(search_list.length);
+            $(".results-count").text(search_list.length);
+
+            const searchInfoMap = {};
+
+            // 그룹화
+            search_list.forEach(item => {
+                const key = item.lat + "," + item.lng;
+                if (!searchInfoMap[key]) {
+                    searchInfoMap[key] = [];
+                }
+                searchInfoMap[key].push(item);
+            });
+
+            Object.entries(searchInfoMap).forEach(([key, items]) => {
+                const sample = items[0];
+                const lat = sample.lat;
+                const lng = sample.lng;
+                const name = sample.statName;
+                const addr = sample.addr;
+
+                const html = `
+                    <div class="station-item" data-lat="' + lat + '" data-lng="' + lng + '">
+                        <div class="station-content">
+                            <div class="station-header">
+                                <h3 class="station-name">` + name + `</h3>
+                                <button class="favorite-btn" onclick="saveFavorite(event)">
+                                    <i class="fas fa-star"></i>
+                                </button>
+                            </div>
+                            <div class="station-address">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>` + addr + `</span>
+                            </div>
+                        </div>
+                        <div class="station-actions">
+                            <button class="action-button primary" onclick="navigateToStation('` + lat + `', '` + lng + `')">
+                                <i class="fas fa-directions"></i>
+                                <span>길찾기</span>
+                            </button>
+                            <button class="action-button secondary" onclick="showStationDetail()">
+                                <i class="fas fa-info-circle"></i>
+                                <span>상세정보</span>
+                            </button>
+                        </div>
+                    </div>`;
+                
+                $list.append(html);
+            });
+        })
+        .catch(err => {
+            console.error("검색 중 오류 발생", err);
+        });
+    });
+
+
+	
+	
 
     document.addEventListener('DOMContentLoaded', function() {
         // // 사이드바 토글

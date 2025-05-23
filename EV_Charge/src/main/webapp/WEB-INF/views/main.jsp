@@ -301,13 +301,6 @@
                                  for (var i = 0; i < markers.length; i++) {
                                     markers[i].setMap(null);
                                  }
-                                 // data.forEach(charger => {
-                                 //    window.addMarker(
-                                 //              charger.lat,
-                                 //              charger.lng,
-                                 //              charger.stat_name
-                                 //          );
-                                 // });
                                  markers = [];
                                  markerInfoMap = {};  // 초기화
 
@@ -340,42 +333,6 @@
                            console.error("Error:", error);
                            alert("위도 경도 변환 중 오류가 발생했습니다.");
                         });
-                     //----------------------------------
-                     //  두 번째 fetch 요청
-                     // 검색 클릭 이벤트 핸들러 내부의 updateMapCoordinates_two 응답 처리 부분
-
-                     // fetch('/updateMapCoordinates_two', {
-                     //    method: 'POST',
-                     //    headers: {
-                     //       'Content-Type': 'application/json'
-                     //    },
-                     //    body: JSON.stringify(addr_place_list)
-                     // }).then(response => response.json())
-                     //    .then(data => {
-                     //       console.log("@# 2단계");
-                     //       console.log("@# 서버 응답 데이터:", data);
-                     //       // 기존 마커 제거 (추가하기)
-                     //       for (var i = 0; i < markers.length; i++) {
-                     //          markers[i].setMap(null);
-                     //       }
-                     //       markers = [];
-                           
-                     //       // 새로운 응답 형식 처리
-                     //       if (data.coordinates && data.coordinates.length > 0) {
-                     //          // 모든 좌표에 대해 마커 추가
-                     //          data.coordinates.forEach(coord => {
-                     //             // console.log(`@#@# 마커 추가: ${coord.latitude}, ${coord.longitude}`);
-                     //             console.log("@#@# 마커 추가: ", coord.latitude, ", "+coord.longitude);
-                     //             addMarker(coord.address, coord.latitude, coord.longitude, coord.name, coord.rapid, coord.slow, coord.car);
-                     //          });
-                     //       } else {
-                     //          alert("해당 정보는 없는 정보입니다.(two)");
-                     //       }
-                     //    }).catch(error => {
-                     //       console.error("Error:", error);
-                     //       alert("위도 경도 변환 중 오류가 발생했습니다.(two)");
-                     //    });
-                     
                   },
                   error: function () {
                      alert("1단계 오류");
@@ -383,63 +340,6 @@
                });
             });
          });
-
-         // 현 지도에서 검색
-         // window.addMarker = function(lat, lng, stat_name) {
-         //    console.log("새로운 마커");
-         //    const position = new kakao.maps.LatLng(lat, lng);
-         //    const marker = new kakao.maps.Marker({
-         //       position: position,
-         //       map: map,
-         //       name: stat_name
-         //    });
-         //    console.log("마커를 찍었습니다. => "+lat+", "+lng);
-         //    markers.push(marker); // 마커 배열에 추가
-
-         //    var infowindow = new kakao.maps.InfoWindow({
-         //       content: '<div style="padding:5px;font-size:12px;">'+name+'</div>'
-         //    });
-
-         //    let isOpen = false;
-
-         //    // 마커 클릭
-         //    kakao.maps.event.addListener(marker, 'click', function() {
-         //       console.log("마커를 클릭했습니다. 위치: " + lat + ", " + lng + ", 이름: " + stat_name);
-      
-         //       map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
-         //       map.setLevel(3);
-
-         //       infowindow.open(map, marker);
-
-         //       $("#close-detail-sidebar,#close-sidebar").on("click", function () {
-         //          infowindow.close();
-         //       });
-               
-         //       // 마커 클릭했을때 사이드바 생성 및 데이터 전달
-         //       $(".station-sidebar").addClass("active");
-         //       $(".station-sidebarA").addClass("active");
-         //       var markerData = {
-         //          name: stat_name
-         //          ,lat: lat
-         //          ,lng: lng
-         //       }
-               
-         //       console.log(markerData);
-         //       // 충전소 상세 정보 업데이트
-         //       updateStationDetail(markerData);
-         //    });
-
-			//    // 지도 클릭 액션
-         //    kakao.maps.event.addListener(map, 'click', function() {
-         //       infowindow.close();
-         //       isOpen = false;
-               
-         //       $(".station-sidebarA").removeClass("active");
-         //    });
-         //    return marker;
-         // };
-         // let markers = [];
-         // let markerInfoMap = {};
 
          window.addMarker_two = function(lat, lng, chargerList) {
             console.log("마커찍기");
@@ -502,13 +402,6 @@
                for (var i = 0; i < markers.length; i++) {
                   markers[i].setMap(null);
                }
-               // data.forEach(charger => {
-               //    window.addMarker(
-               //              charger.lat,
-               //              charger.lng,
-               //              charger.stat_name
-               //          );
-               // });
                markers = [];
                markerInfoMap = {};  // 초기화
 
@@ -522,7 +415,6 @@
                      // console.log(markerInfoMap[key]);
                });
 
-               // 마커 찍기 (중복 없이)
                Object.entries(markerInfoMap).forEach(([key, chargers]) => {
                      const [lat, lng] = key.split(',').map(Number);
                      window.addMarker_two(lat, lng, chargers);
