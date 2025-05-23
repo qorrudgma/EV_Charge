@@ -73,9 +73,9 @@
                         </a>
                     </c:otherwise>
                 </c:choose>
-                 <!-- <a href="${pageContext.request.contextPath}/update_data" class="ev-nav-item">
+                  <a href="${pageContext.request.contextPath}/update_data" class="ev-nav-item">
                     <i class="fa-solid fa-comment"></i>정보 업데이트
-                </a>  -->
+                </a>  
             </nav>
             
             <!-- 검색, 로그인, 프로필 섹션 -->
