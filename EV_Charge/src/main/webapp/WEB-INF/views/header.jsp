@@ -25,6 +25,7 @@
             <!-- 로고 및 브랜드 -->
             <a href="${pageContext.request.contextPath}/main" class="ev-brand">
                 <i class="fas fa-charging-station"></i>
+<!--				<img src="${pageContext.request.contextPath}/image/EV_Charge.png">-->
                 <span>EV충전소</span>
             </a>
             

@@ -30,8 +30,19 @@ public class EvChargerSearchService {
 	@Autowired
 	private ElasticsearchOperations elasticsearchOperations;
 
+	@Autowired
+	private KeyboardMapper keyboardMapper;
+
+	@Autowired
+	private HangulComposer hangulComposer;
+
 	public List<ElasticsearchDTO> searchStatNameWithFuzziness(String keyword) {
 		log.info("keyword(입력한 데이터) => " + keyword);
+
+		// 한영키
+		keyword = keyboardMapper.convertEngToKor(keyword);
+		// 위에서 변환한거 합치기
+		keyword = hangulComposer.combine(keyword);
 
 		// 형태소 분석
 		CharSequence normalized = OpenKoreanTextProcessorJava.normalize(keyword);
