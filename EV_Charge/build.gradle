@@ -1,6 +1,7 @@
 plugins {
    id 'java'
    id 'org.springframework.boot' version '2.7.13'
+//   id 'org.springframework.boot' version '2.7.18'
    id 'io.spring.dependency-management' version '1.1.7'
 }
 
@@ -38,6 +39,11 @@ dependencies {
 	// Elasticsearch
 	implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 	// Elasticsearch
+	// 형태소 분석기
+//	implementation files('libs/KOMORAN-3.3.4.jar')
+	implementation 'org.openkoreantext:open-korean-text:2.1.0'
+	implementation 'org.apache.commons:commons-text:1.10.0'
+	// 형태소 분석기
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'com.mysql:mysql-connector-j'

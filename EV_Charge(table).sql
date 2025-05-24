@@ -433,36 +433,48 @@ CREATE TABLE ev_user_favorites (
       ON UPDATE CASCADE
 );
 
--- 충전소 위치 테이블
+-- 충전소 위치 테이블 (공간 인덱스 추가 포함)
 CREATE TABLE ev_charger_data (
-    ev_charger_id INT AUTO_INCREMENT PRIMARY KEY,		-- 자동증가 기본키
-    stat_id VARCHAR(20) NOT NULL, 						-- 충전소ID
-    chger_id VARCHAR(10) NOT NULL, 						-- 충전기ID
-    stat_name VARCHAR(100), 							-- 충전소명
-    chger_type VARCHAR(10), 							-- 충전기타입
-    addr VARCHAR(200), 									-- 주소
-    addr_detail VARCHAR(200), 							-- 주소상세
-    location VARCHAR(200), 								-- 상세위치
-    lat DOUBLE, 										-- 위도
-    lng DOUBLE, 										-- 경도
-    use_time VARCHAR(100), 								-- 이용가능시간
-    busi_id VARCHAR(10), 								-- 기관 아이디
-    bnm VARCHAR(100), 									-- 기관명
-    busi_nm VARCHAR(100), 								-- 운영기관명
-    busi_call VARCHAR(50), 								-- 운영기관연락처
-    output VARCHAR(10), 								-- 충전용량
-    method VARCHAR(20), 								-- 충전방식
-    zcode VARCHAR(10), 									-- 지역코드
-    zscode VARCHAR(10), 								-- 지역구분 상세 코드
-    kind VARCHAR(10), 									-- 충전소 구분 코드
-    kind_detail VARCHAR(10), 							-- 충전소 구분 상세코드
-    parking_free CHAR(1), 								-- 주차료무료 (Y/N)
-    note TEXT, 											-- 충전소 안내
-    limit_yn CHAR(1), 									-- 이용자 제한 여부 (Y/N)
-    limit_detail TEXT, 									-- 이용제한 사유
-    del_yn CHAR(1), 									-- 삭제 여부 (Y/N)
-    del_detail TEXT,									-- 삭제 사유
-    traffic_yn CHAR(1),									-- 편의제공 여부 (Y/N)
-    year INT, 											-- 설치년도
-    UNIQUE KEY unique_stat_chger (stat_id, chger_id)  	-- stat_id와 chger_id 유니크키
-);
+    ev_charger_id INT AUTO_INCREMENT PRIMARY KEY,             -- 자동증가 기본키
+    stat_id VARCHAR(20) NOT NULL,                             -- 충전소 ID
+    chger_id VARCHAR(10) NOT NULL,                            -- 충전기 ID
+    stat_name VARCHAR(100),                                   -- 충전소명
+    chger_type VARCHAR(10),                                   -- 충전기 타입
+    addr VARCHAR(200),                                        -- 주소
+    addr_detail VARCHAR(200),                                 -- 주소 상세
+    location VARCHAR(200),                                    -- 상세 위치
+    lat DOUBLE,                                               -- 위도
+    lng DOUBLE,                                               -- 경도
+	-- 공간 좌표 (공간 인덱스를 위한 POINT 타입)
+    location_point POINT NOT NULL SRID 4326,
+    use_time VARCHAR(100),                                    -- 이용가능 시간
+    busi_id VARCHAR(10),                                      -- 기관 ID
+    bnm VARCHAR(100),                                         -- 기관명
+    busi_nm VARCHAR(100),                                     -- 운영기관명
+    busi_call VARCHAR(50),                                    -- 운영기관 연락처
+    output VARCHAR(10),                                       -- 충전 용량
+    method VARCHAR(20),                                       -- 충전 방식
+    zcode VARCHAR(10),                                        -- 지역 코드
+    zscode VARCHAR(10),                                       -- 지역 상세 코드
+    kind VARCHAR(10),                                         -- 충전소 구분 코드
+    kind_detail VARCHAR(10),                                  -- 충전소 상세 코드
+    parking_free CHAR(1),                                     -- 주차료 무료 여부
+    note TEXT,                                                -- 충전소 안내
+    limit_yn CHAR(1),                                         -- 이용 제한 여부
+    limit_detail TEXT,                                        -- 이용 제한 상세
+    del_yn CHAR(1),                                           -- 삭제 여부
+    del_detail TEXT,                                          -- 삭제 상세
+    traffic_yn CHAR(1),                                       -- 편의 제공 여부
+    year INT,                                                 -- 설치년도
+    
+    -- 유니크 키
+    UNIQUE KEY unique_stat_chger (stat_id, chger_id),
+
+    -- 공간 인덱스
+    SPATIAL INDEX idx_location_point (location_point)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+select count(*) from ev_charger_data;
+select location_point from ev_charger_data;
+SELECT ST_AsText(location_point) FROM ev_charger_data;
+SELECT ST_SRID(location_point) FROM ev_charger_data LIMIT 1;
