@@ -308,7 +308,7 @@
     }
 	function updateStationDetailTwo(markerData) {
         var chargerList = markerData.chargerList;
-        console.log(chargerList);
+        console.log("!@#$!#@$", chargerList);
         const first = markerData.chargerList[0];
         var rapid_count;
         var slow_count;
@@ -347,6 +347,9 @@
 
             // 이름
             document.getElementById("station-name").textContent = first.stat_name;
+            if (first.stat_name == null) {
+                document.getElementById("station-name").textContent = first.statName;
+            }
             // 주소
             let addressHtml = first.addr;
             if (first.addr_detail !== "null") {

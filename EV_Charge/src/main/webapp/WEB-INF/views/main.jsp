@@ -381,6 +381,7 @@
 
          $(document).on("click", "#reset", function (e) {
             console.log("현 지도에서 검색 클릭");
+            $(".station-sidebarA").removeClass("active");
             console.log(center_lat + " / " + center_lng);
 			   map.setLevel(3);
 

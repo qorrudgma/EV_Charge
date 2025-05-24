@@ -186,6 +186,7 @@
                 const lng = sample.lng;
                 const name = sample.statName;
                 const addr = sample.addr;
+                const chargers = items;
 
                 const html = `
                     <div class="station-item" data-lat="' + lat + '" data-lng="' + lng + '">
@@ -206,7 +207,7 @@
                                 <i class="fas fa-directions"></i>
                                 <span>길찾기</span>
                             </button>
-                            <button class="action-button secondary" onclick="showStationDetail()">
+                            <button class="action-button" data-lat="`+lat+`" data-lng="`+lng+`" data-chargers='`+JSON.stringify(chargers)+`'>
                                 <i class="fas fa-info-circle"></i>
                                 <span>상세정보</span>
                             </button>
@@ -215,13 +216,48 @@
                 
                 $list.append(html);
             });
+            
+            $list.on("click", ".action-button", function() {
+                console.log("상세정보를 눌렀어요");
+                console.log(markers);
+
+                // 마커 지우기
+                if (window.markers && window.markers.length > 0) {
+                    window.markers.forEach(marker => marker.setMap(null));
+                }
+                // 마커비우기
+                markers = [];
+                // window.addMarker_two(lat, lng, chargers);
+                const lat = $(this).data("lat");
+                const lng = $(this).data("lng");
+                // const chargers = JSON.parse($(this).attr("data-chargers"));
+                const chargers =  $(this).data("chargers");
+                console.log(lat," ",lng," ",chargers);
+                // map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
+                // map.setLevel(3);
+                window.addMarker_two(lat, lng, chargers);
+                map.setCenter(new kakao.maps.LatLng(lat, lng-0.001));
+                map.setLevel(1);
+                $(".station-sidebarA").addClass("active");
+                const markerData = {
+                    lat: lat,
+                    lng: lng,
+                    chargerList: chargers
+                };
+
+                updateStationDetailTwo(markerData);
+            });
         })
         .catch(err => {
             console.error("검색 중 오류 발생", err);
         });
     });
 
+    function stationDetail(lat, lng, chargers) {
+        console.log("stationDetail()");
 
+        window.addMarker_two(lat, lng, chargers);
+    }
 	
 	
 
