@@ -80,6 +80,7 @@ public class EvChargerSearchService {
 				if (candidate.length() >= 2) {
 //					log.info("두글자 이상");
 					MatchQueryBuilder matchQuery = QueryBuilders.matchQuery("name", candidate)
+//							.fuzziness(Fuzziness.fromEdits(1));
 							.fuzziness(Fuzziness.fromEdits(1));
 
 					Pageable limit = PageRequest.of(0, 1);

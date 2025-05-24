@@ -38,6 +38,7 @@
                 </button>
 <!--                <input type="button" class="ev-search-button" value="검색" onclick="search()">-->
                 <input type="button" class="ev-search-button" value="검색">
+<!--                <button class="ev-search-button">검색</button>-->
             </div>
         </div>
     </form>
@@ -130,152 +131,151 @@
     </div>
 </div>
 <script>
-	// 검색 기능 elasticsearch
-	$(".ev-search-button").on("click", function (e) {
+	$(document).on("submit","#station_searchfrm",function (e) {
         e.preventDefault();
-
-        const search_val = $("#station-search").val().trim();
-        if (!search_val) {
-            alert("검색할 충전소 정보를 입력해주세요.");
-            return;
-        }
-
-        fetch("/search", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ keyword: search_val })
-        })
-        .then(response => response.json())
-        .then(search_list => {
-            const $list = $('#station-list');
-            $list.empty();
-
-            if (!search_list || search_list.length === 0) {
-                $list.html(
-                    '<div class="empty-state">' +
-                        '<div class="empty-icon"><i class="fas fa-search"></i></div>' +
-                        '<h4>검색 결과가 없습니다</h4>' +
-                        '<p>검색 반경을 넓히거나 다른 위치에서 검색해보세요.</p>' +
-                        '<button class="action-button primary" onclick="resetSearch()">' +
-                            '<i class="fas fa-redo"></i><span>검색 초기화</span>' +
-                        '</button>' +
-                    '</div>'
-                );
-                $(".count").text("0");
-                $(".results-count").text("0");
-                return;
-            }
-
-            $(".count").text(search_list.length);
-            $(".results-count").text(search_list.length);
-
-            const searchInfoMap = {};
-
-            // 그룹화
-            search_list.forEach(item => {
-                const key = item.lat + "," + item.lng;
-                if (!searchInfoMap[key]) {
-                    searchInfoMap[key] = [];
-                }
-                searchInfoMap[key].push(item);
-            });
-
-            Object.entries(searchInfoMap).forEach(([key, items]) => {
-                const sample = items[0];
-                const lat = sample.lat;
-                const lng = sample.lng;
-                const name = sample.statName;
-                const addr = sample.addr;
-                const chargers = items;
-
-                const html = `
-                    <div class="station-item" data-lat="' + lat + '" data-lng="' + lng + '">
-                        <div class="station-content">
-                            <div class="station-header">
-                                <h3 class="station-name">` + name + `</h3>
-                                <button class="favorite-btn" onclick="saveFavorite(event)">
-                                    <i class="fas fa-star"></i>
-                                </button>
-                            </div>
-                            <div class="station-address">
-                                <i class="fas fa-map-marker-alt"></i>
-                                <span>` + addr + `</span>
-                            </div>
-                        </div>
-                        <div class="station-actions">
-                            <button class="action-button primary" onclick="navigateToStation('` + lat + `', '` + lng + `')">
-                                <i class="fas fa-directions"></i>
-                                <span>길찾기</span>
-                            </button>
-                            <button class="action-button" data-lat="`+lat+`" data-lng="`+lng+`" data-chargers='`+JSON.stringify(chargers)+`'>
-                                <i class="fas fa-info-circle"></i>
-                                <span>상세정보</span>
-                            </button>
-                        </div>
-                    </div>`;
+        // performSearch();
+    })
+    // $(".ev-search-button").on("click", function () {
+    //     performSearch();
+    // });
+	// 엔터시 리로드 방지
+	// 검색 기능 elasticsearch
+	$(".ev-search-button").on("click keydown", function (e) {
+        // function performSearch() {
+		if (e.type === "click" || (e.type === "keydown" && e.key === "Enter")) {
+	        const search_val = $("#station-search").val().trim();
+            console.log(search_val);
+	        if (!search_val) {
+	            alert("검색할 충전소 정보를 입력해주세요.");
+	            return;
+	        }
+	
+	        fetch("/search", {
+	            method: "POST",
+	            headers: { "Content-Type": "application/json" },
+	            body: JSON.stringify({ keyword: search_val })
+	        })
+	        .then(response => response.json())
+	        .then(search_list => {
+	            const $list = $('#station-list');
+	            $list.empty();
+	
+	            if (!search_list || search_list.length === 0) {
+	                $list.html(
+	                    '<div class="empty-state">' +
+	                        '<div class="empty-icon"><i class="fas fa-search"></i></div>' +
+	                        '<h4>검색 결과가 없습니다</h4>' +
+	                        '<p>검색 반경을 넓히거나 다른 위치에서 검색해보세요.</p>' +
+	                        '<button class="action-button primary" onclick="resetSearch()">' +
+	                            '<i class="fas fa-redo"></i><span>검색 초기화</span>' +
+	                        '</button>' +
+	                    '</div>'
+	                );
+	                $(".count").text("0");
+	                $(".results-count").text("0");
+	                return;
+	            }
+	
+	            // $(".count").text(search_list.length);
+	            // $(".results-count").text(search_list.length);
+	
+	            const searchInfoMap = {};
                 
-                $list.append(html);
-            });
-            
-            $list.on("click", ".action-button", function() {
-                console.log("상세정보를 눌렀어요");
-                console.log(markers);
+                let count = 0;
+	            // 그룹화
+	            search_list.forEach(item => {
+	                const key = item.lat + "," + item.lng;
+	                if (!searchInfoMap[key]) {
+	                    searchInfoMap[key] = [];
+                        count++;
+	                }
+	                searchInfoMap[key].push(item);
+	            });
 
-                // 마커 지우기
-                if (window.markers && window.markers.length > 0) {
-                    window.markers.forEach(marker => marker.setMap(null));
-                }
-                // 마커비우기
-                markers = [];
-                // window.addMarker_two(lat, lng, chargers);
-                const lat = $(this).data("lat");
-                const lng = $(this).data("lng");
-                // const chargers = JSON.parse($(this).attr("data-chargers"));
-                const chargers =  $(this).data("chargers");
-                console.log(lat," ",lng," ",chargers);
-                // map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
-                // map.setLevel(3);
-                window.addMarker_two(lat, lng, chargers);
-                map.setCenter(new kakao.maps.LatLng(lat, lng-0.001));
-                map.setLevel(1);
-                $(".station-sidebarA").addClass("active");
-                const markerData = {
-                    lat: lat,
-                    lng: lng,
-                    chargerList: chargers
-                };
-
-                updateStationDetailTwo(markerData);
-            });
-        })
-        .catch(err => {
-            console.error("검색 중 오류 발생", err);
-        });
+                $(".count").text(count);
+	            $(".results-count").text(count);
+	
+	            Object.entries(searchInfoMap).forEach(([key, items]) => {
+	                const sample = items[0];
+	                const lat = sample.lat;
+	                const lng = sample.lng;
+	                const name = sample.statName;
+	                const addr = sample.addr;
+	                const chargers = items;
+	
+	                const html = `
+	                    <div class="station-item" data-lat="' + lat + '" data-lng="' + lng + '">
+	                        <div class="station-content">
+	                            <div class="station-header">
+	                                <h3 class="station-name">` + name + `</h3>
+	                                <button class="favorite-btn" onclick="saveFavorite(event)">
+	                                    <i class="fas fa-star"></i>
+	                                </button>
+	                            </div>
+	                            <div class="station-address">
+	                                <i class="fas fa-map-marker-alt"></i>
+	                                <span>` + addr + `</span>
+	                            </div>
+	                        </div>
+	                        <div class="station-actions">
+	                            <button class="action-button primary" onclick="navigateToStation('` + lat + `', '` + lng + `')">
+	                                <i class="fas fa-directions"></i>
+	                                <span>길찾기</span>
+	                            </button>
+	                            <button class="action-button" data-lat="`+lat+`" data-lng="`+lng+`" data-chargers='`+JSON.stringify(chargers)+`'>
+	                                <i class="fas fa-info-circle"></i>
+	                                <span>상세정보</span>
+	                            </button>
+	                        </div>
+	                    </div>`;
+	                
+	                $list.append(html);
+	            });
+	            
+	            $list.on("click keydown", ".action-button", function() {
+	                console.log("상세정보를 눌렀어요");
+	                console.log(markers);
+	
+	                // 마커 지우기
+	                if (window.markers && window.markers.length > 0) {
+	                    window.markers.forEach(marker => marker.setMap(null));
+	                }
+	                // 마커비우기
+	                markers = [];
+	                // window.addMarker_two(lat, lng, chargers);
+	                const lat = $(this).data("lat");
+	                const lng = $(this).data("lng");
+	                // const chargers = JSON.parse($(this).attr("data-chargers"));
+	                const chargers =  $(this).data("chargers");
+	                console.log(lat," ",lng," ",chargers);
+	                // map.setCenter(new kakao.maps.LatLng(lat, lng-0.003));
+	                // map.setLevel(3);
+	                window.addMarker_two(lat, lng, chargers);
+	                map.setCenter(new kakao.maps.LatLng(lat, lng-0.001));
+	                map.setLevel(1);
+	                $(".station-sidebarA").addClass("active");
+	                const markerData = {
+	                    lat: lat,
+	                    lng: lng,
+	                    chargerList: chargers
+	                };
+	
+	                updateStationDetailTwo(markerData);
+	            });
+	        })
+	        .catch(err => {
+	            console.error("검색 중 오류 발생", err);
+	        });
+		}
     });
 
     function stationDetail(lat, lng, chargers) {
         console.log("stationDetail()");
 
         window.addMarker_two(lat, lng, chargers);
-    }
-	
-	
+    }	
 
-    document.addEventListener('DOMContentLoaded', function() {
-        // // 사이드바 토글
-        // const sidebar = document.getElementById('station-sidebar');
-        // const closeSidebarBtn = document.getElementById('close-sidebar');
-        
-        // // 사이드바 열기 함수 (외부에서 호출 가능)
-        // window.openSidebar = function() {
-        //     sidebar.classList.add('active');
-        // };
-        
-        // // 사이드바 닫기
-        // closeSidebarBtn.addEventListener('click', function() {
-        //     sidebar.classList.remove('active');
-        // });
-        
+    document.addEventListener('DOMContentLoaded', function() {        
         // 검색 입력 지우기
         const searchInput = document.getElementById('station-search');
         const clearSearchBtn = document.getElementById('clear-search');
@@ -556,15 +556,6 @@
         window.open(url, '_blank');
     }
     
-    // 충전소 상세정보 표시 함수
-    // function showStationDetail(stationId) {
-    //     console.log(`충전소 상세정보: ${stationId}`);
-    //     // 상세정보 모달 또는 새 페이지로 이동
-    //     // 예시: 모달 표시
-    //     if (window.showStationDetailModal) {
-    //         window.showStationDetailModal(stationId);
-    //     }
-    // }
     function showStationDetail(lat, lng, name, rapid, slow, car) {
         console.log("충전소 상세정보 => "+lat+", "+lng+", "+ name+", "+rapid+", "+slow+", "+car);
         
@@ -631,190 +622,6 @@
     }
 </script>
 <script>
-    $(document).ready(function() {
-        // 폼 제출 이벤트 처리
-        $("#station_searchfrm").on("submit", function(e) {
-            e.preventDefault();
-            search();
-            return false;
-        });
-        
-        // 검색 입력 필드에서 엔터 키 처리
-        $("#station-search").on("keydown", function(e) {
-            if (e.key === "Enter") {
-                e.preventDefault();
-                search();
-                return false;
-            }
-        });
-    });
-
-    function search() {
-    const address = $('#station-search').val();
-    const radiusKm = $('input[name="radiusKm"]').val();
-
-    $.ajax({
-        type: "get",
-        url: "sidebar",
-        data: { address, radiusKm },
-        dataType: "json", // 응답 데이터 타입을 JSON으로 지정
-        success: function(stationList) {
-            console.log("서버 응답:", stationList); // 응답 데이터 확인용
-			console.log("결과 확인용"+stationList[0].evseLocationLatitude+", "+stationList[0].evseLocationLongitude);
-
-            // 지역 중심으로 이동
-            map.setCenter(new kakao.maps.LatLng(stationList[0].evseLocationLatitude, stationList[0].evseLocationLongitude));
-            map.setLevel(5);
-            //----------------//
-            
-            const $list = $('#station-list');
-            $list.empty();
-
-            if (!stationList || stationList.length === 0) {
-                $list.html(`
-                    <div class="empty-state">
-                        <div class="empty-icon">
-                            <i class="fas fa-search"></i>
-                        </div>
-                        <h4>검색 결과가 없습니다</h4>
-                        <p>검색 반경을 넓히거나 다른 위치에서 검색해보세요.</p>
-                        <button class="action-button primary" onclick="resetSearch()">
-                            <i class="fas fa-redo"></i>
-                            <span>검색 초기화</span>
-                        </button>
-                    </div>
-                `);
-                
-                // 결과 카운트 업데이트
-                document.querySelector('.results-count').textContent = '0개';
-                return;
-            }
-
-            // 결과 카운트 업데이트
-            document.querySelector('.results-count').textContent = stationList.length + '개';
-
-            stationList.forEach((station, index) => {
-                const statusIndex = index % 3;
-                const statusClass = statusIndex === 0 ? 'available' : (statusIndex === 1 ? 'busy' : 'offline');
-                const statusText = statusIndex === 0 ? '사용가능' : (statusIndex === 1 ? '사용중' : '점검중');
-                const statusIcon = statusIndex === 0 ? 'fa-check-circle' : (statusIndex === 1 ? 'fa-clock' : 'fa-exclamation-circle');
-                const favoriteActive = index % 5 === 0 ? 'active' : '';
-                const availableText = index % 2 === 0 ? '2/4' : '1/2';
-                const distance = (index * 0.5 + 0.5).toFixed(1);
-
-                console.log(stationList[index].stationName);
-
-                const html = `
-                <div class="station-item" data-id="${stationList.stationId}" data-lat="${station.evseLocationLatitude}" data-lng="${station.evseLocationLongitude}">
-                    <div class="station-status ${statusClass}">
-                        <i class="fas ${statusIcon}"></i>
-                        <span>${statusText}</span>  
-                    </div>
-                    
-                    <div class="station-content">
-                        <div class="station-header">
-                            <h4 class="station-name">` + stationList[index].stationName + `</h4>
-							
-							    <button 
-							        class="favorite-btn ${station.favoriteActive}"
-									data-stnaddr="` + stationList[index].stationAddress + `"
-									data-stnplace="` + stationList[index].stationName + `"
-									data-rapidcnt="` + stationList[index].rapid + `"
-									data-slowcnt="` + stationList[index].slow + `"
-									data-cartype="` + stationList[index].car + `"
-							        onclick="saveFavorite(event)">
-							        <i class="fas fa-star"></i>
-							    </button>
-
-                        </div>
-                        
-                        <div class="station-address">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>` + stationList[index].stationAddress + `</span>
-                        </div>
-                        
-                        <div class="station-details">
-                            <div class="detail-item">
-                                <i class="fas fa-bolt"></i>
-                                <span>DC콤보 (100kW)</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-plug"></i>
-                                <span>${availableText} 사용가능</span>
-                            </div>
-                            <div class="detail-item">
-                                <i class="fas fa-route"></i>
-                                <span>${distance}km</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="station-actions">
-                        <button class="action-button primary" onclick="navigateToStation('${station.evseLocationLatitude}', '${station.evseLocationLongitude}')">
-                            <i class="fas fa-directions"></i>
-                            <span>길찾기</span>
-                        </button>
-                        <button class="action-button secondary" onclick="showStationDetail('`+stationList[index].evseLocationLatitude+`', '`+stationList[index].evseLocationLongitude+`', '`+stationList[index].stationName+`', ` + stationList[index].rapid + `, ` + stationList[index].slow + `, '` + stationList[index].car + `')">
-                            <i class="fas fa-info-circle"></i>
-                            <span>상세정보</span>
-                        </button>
-                    </div>
-                </div>`;
-                
-                // <button class="action-button secondary" onclick="showStationDetail('${station.stationId}')">
-                $list.append(html);
-				
-                console.log("사이드바 마커 찍기~");
-                console.log("index => "+stationList[index].stationAddress);
-                
-                var address = stationList[index].stationAddress;
-                var lat = stationList[index].evseLocationLatitude;
-                var lng = stationList[index].evseLocationLongitude;
-                var name = stationList[index].stationName;
-                var rapid = stationList[index].rapid;
-                var slow = stationList[index].slow;
-                var car = stationList[index].car;
-                console.log(address);
-	            // window.addMarker(stationList[index].stationAddress, stationList[index].evseLocationLatitude, stationList[index].evseLocationLongitude, stationList[index].stationName, "0", "0", "0");
-	            window.addMarker(address, lat, lng, name, rapid, slow, car);
-
-            });
-            
-            // 이벤트 리스너 다시 연결
-            // 즐겨찾기 토글
-            const favoriteButtons = document.querySelectorAll('.favorite-btn');
-            favoriteButtons.forEach(btn => {
-                btn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    this.classList.toggle('active');
-                    
-                    const stationId = this.closest('.station-item').getAttribute('data-id');
-                    const isFavorite = this.classList.contains('active');
-                    
-                    console.log(`충전소 ${stationId} 즐겨찾기 ${isFavorite ? '추가' : '제거'}`);
-                    
-                    const activeFilter = document.querySelector('.filter-chip.active');
-                    if (activeFilter && activeFilter.getAttribute('data-filter') === 'favorite') {
-                        applyFilter('favorite');
-                    }
-                });
-            });
-            
-            // 사용 가능한 충전소 수 업데이트
-            const availableStations = document.querySelectorAll('.station-status.available');
-            document.getElementById('available-count').textContent = availableStations.length;
-
-            alert("성공적으로 검색되었습니다.");
-        },
-        error: function(xhr, status, error) {
-            console.error("AJAX 오류:", status, error);
-            console.log("응답 텍스트:", xhr.responseText);
-            alert("서버 요청 중 오류가 발생했습니다.");
-        }
-    });
-}
-
-
 // 모든 즐겨찾기 버튼에 클릭 이벤트를 추가
 document.querySelectorAll('.filter-chip').forEach(button => {
     button.addEventListener('click', function() {

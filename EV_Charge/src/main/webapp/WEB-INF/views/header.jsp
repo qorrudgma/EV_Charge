@@ -14,6 +14,8 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="${pageContext.request.contextPath}/css/header.css">
+	<!-- Bootstrap JS 및 Popper.js -->
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
 
@@ -219,50 +221,8 @@
         </div>
     </div>
 </header>
-
-<!-- Bootstrap JS 및 Popper.js -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
 <!-- 자바스크립트 -->
 <script>
-	// ------------------------------------------------------------------
-	// 페이지 로드 시 시/도 데이터 가져오기
-	// $(document).ready(function() {
-	//     // 서버에서 시/도 데이터 가져오기
-	//     $.ajax({
-	//         type: "get",
-	//         url: "/provinces_list", // ProvincesController에 정의된 엔드포인트
-	//         success: function(data) {
-    //             console.log("시/도 데이터 가져왔음");
-	//             var area_ctpy_nmSelect = $("#area_ctpy_nm");
-	//             // 기본 옵션
-	//             area_ctpy_nmSelect.html('<option value="">시/도</option>');
-	            
-	//             // 받아온 데이터로 옵션 추가 (코드를 value로, 이름을 텍스트로)
-	//             $.each(data, function(index, province) {
-	//                 area_ctpy_nmSelect.append($('<option>', {
-	//                     value: province.provinces_code, // 시/도 코드를 value로
-	//                     text: province.provinces_name   // 시/도 이름을 텍스트로
-	//                 }));
-	//             });
-	            
-	//             // 모바일 버전도 동일하게 적용
-	//             var area_ctpy_nm_mobileSelect = $("#area_ctpy_nm_mobile");
-	//             area_ctpy_nm_mobileSelect.html('<option value="">시/도 선택</option>');
-	            
-	//             $.each(data, function(index, province) {
-	//                 area_ctpy_nm_mobileSelect.append($('<option>', {
-	//                     value: province.provinces_code,
-	//                     text: province.provinces_name
-	//                 }));
-	//             });
-	//         },
-	//         error: function(xhr, status, error) {
-	//             console.error("시/도 데이터를 가져오는 중 오류가 발생했습니다:", error);
-	//         }
-	//     });
-	// });
-
     $(document).ready(function(e) {
     // 서버에서 시/도 데이터 가져오기
         $.ajax({
@@ -367,14 +327,7 @@
 
 
 // 모바일 버전 함수도 동일하게 구현
-function updatearea_sgg_nm_mobile(provinces_code) {
-    // 위와 유사한 구현...
-}
 
-
-	// ------------------------------------------------------------------
-	
-    // 모바일 메뉴 토글
     const mobileMenuButton = document.getElementById('mobileMenuButton');
     const mobileMenu = document.getElementById('mobileMenu');
     
@@ -473,16 +426,7 @@ function updatearea_sgg_nm_mobile(provinces_code) {
         mobileMenuButton.querySelector('i').classList.remove('fa-times');
         mobileMenuButton.querySelector('i').classList.add('fa-bars');
     });
-    
-    // function searchChargingStations(area_ctpy_nm, area_sgg_nm, area_emd_nm) {
-//     function searchChargingStations(area_ctpy_nm, area_sgg_nm) {
-//         // 충전소 검색 API 호출 함수
-//         console.log(`지역 검색: ${area_ctpy_nm} ${area_sgg_nm}`);
-        
-//         // 여기에 실제 API 호출 코드 추가
-//         // 예: fetch('/findStationsNear', {...})
-//     }
-// </script>
+</script>
 
 </body>
 </html>
