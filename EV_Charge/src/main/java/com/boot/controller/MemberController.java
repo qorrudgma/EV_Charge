@@ -1,6 +1,8 @@
 package com.boot.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.boot.dto.MemberDTO;
+import com.boot.favorite.service.FavoriteService;
 import com.boot.service.MemberService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +26,11 @@ public class MemberController {
 
 	@Autowired
 	private MemberService memberService;
-
+	
+	@Autowired
+	private FavoriteService favoriteService;
+	
+	
 	// main.jsp
 	@RequestMapping("/main")
 	public String main() {
@@ -48,19 +55,42 @@ public class MemberController {
 	// 로그인 가능여부
 	@RequestMapping("/login_yn")
 	public String login_yn(@RequestParam("user_id") String user_id, @RequestParam("user_password") String user_password,
-			HttpServletRequest request) {
+			HttpServletRequest request, Model model) { // Model 추가 (로그인 실패 메시지 전달용)
+		log.info("login_yn 시도: 사용자 ID = {}", user_id);
 		int result = memberService.login(user_id, user_password);
-		log.info("@# result =>" + result);
-		if (result != 0) {
-			System.out.println(user_id);
-			HttpSession session = request.getSession();
-			MemberDTO dto = memberService.member_find(user_id);
-			session.setAttribute("user", dto);
+		log.info("@# 로그인 결과 (0이면 실패): {}", result);
 
-			log.info("@# user => " + session.getAttribute("user"));
-			return "redirect:/main";
+		if (result != 0) { // 로그인 성공
+			// System.out.println("로그인 성공한 사용자 ID: " + user_id);
+			HttpSession session = request.getSession(); // 세션이 없으면 새로 생성
+			MemberDTO dto = memberService.member_find(user_id);
+			
+			if (dto != null) {
+			    session.setAttribute("user", dto);
+			    log.info("@# 사용자 정보 세션에 저장됨: {}", dto);
+
+			    try {
+			        Set<String> favoriteStationIds = favoriteService.getFavoriteStationIdsByUserNo(dto.getUser_no());
+			        session.setAttribute("userFavoriteStationIds", favoriteStationIds);
+			        log.info("@# 사용자 {}의 즐겨찾기 ID 목록 ({}개) 세션에 저장됨: {}", user_id, favoriteStationIds.size(), favoriteStationIds);
+			    } catch (Exception e) {
+			        log.error("@# 사용자 {}의 즐겨찾기 목록 조회 중 오류 발생", user_id, e);
+			        // 즐겨찾기 목록 조회에 실패하더라도 로그인은 계속 진행하도록 빈 Set 저장
+			        session.setAttribute("userFavoriteStationIds", Collections.emptySet());
+			    }
+			    
+			    return "redirect:/main";
+			} else {
+			    log.warn("@# 로그인 성공했으나 사용자 ID '{}'에 해당하는 회원 정보를 찾을 수 없습니다.", user_id);
+			    model.addAttribute("loginError", "사용자 정보를 가져오는 데 실패했습니다. 다시 시도해주세요.");
+			    return "login"; // 로그인 페이지로 다시 이동 (에러 메시지와 함께)
+			}
 		}
-		return "redirect:/login";
+		
+		// 로그인 실패
+		log.warn("@# 사용자 ID '{}' 로그인 실패", user_id);
+		model.addAttribute("loginError", "아이디 또는 비밀번호가 일치하지 않습니다.");
+		return "login"; // 로그인 페이지로 다시 이동 (에러 메시지와 함께)
 	}
 
 	// 로그아웃

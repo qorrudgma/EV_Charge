@@ -1,13 +1,16 @@
 package com.boot.findpath;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.boot.board.controller.BoardController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,12 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 @Controller
 public class NaviController {
 
+	private final BoardController boardController;
+
 	private final KakaoNaviClient kakaoNaviClient;
 	private final ObjectMapper objectMapper;
 
-	public NaviController(KakaoNaviClient kakaoNaviClient, ObjectMapper objectMapper) {
+	public NaviController(KakaoNaviClient kakaoNaviClient, ObjectMapper objectMapper, BoardController boardController) {
 		this.kakaoNaviClient = kakaoNaviClient;
 		this.objectMapper = objectMapper;
+		this.boardController = boardController;
 	}
 
 	@GetMapping("/findpath")
@@ -35,25 +41,17 @@ public class NaviController {
 			model.addAttribute("vertexJson", "[]");
 			return "/main";
 		}
-		log.info("@# Param startLat =>" + startLat);
-		log.info("@# Param startLng =>" + startLng);
 
-//		if (startLat == null || startLng == null) {
-//			// 기본값 (서울 시청 좌표)
-//			startLat = 37.5665;
-//			startLng = 126.9780;
-//		}
+		List<Map<String, Object>> routeInfoList = new ArrayList<>();
+
 		String startCoord = startLng + "," + startLat;
 		String endCoord = endLng + "," + endLat;
 		// 1) 출발지, 목적지를 위경도로 변환 (예: Kakao Local API 또는 직접 구현)
-		// 여기서는 kakaoNaviClient에서 출발지/목적지를 받아서 경로 정보를 리턴하도록 수정 필요
 		String response = kakaoNaviClient.getDirections(startCoord, endCoord);
 
 		log.info("@# showMap response =>" + response);
 		int distance = 0;
 		JsonNode root = objectMapper.readTree(response);
-		log.info("@# showMap root =>" + root);
-
 		List<Double> vertexList = new ArrayList<>();
 		JsonNode routesNode = root.get("routes");
 		if (routesNode != null && routesNode.isArray()) {
@@ -78,6 +76,18 @@ public class NaviController {
 										vertexList.add(vertex.asDouble());
 									}
 								}
+
+								Map<String, Object> routeInfo = new HashMap<>();
+								routeInfo.put("name", road.path("name").asText("이름 없음"));
+								routeInfo.put("distance", road.path("distance").asInt(-1));
+								routeInfo.put("duration", road.path("duration").asInt(-1));
+								routeInfo.put("turnType", road.path("turnType").asInt(-1));
+								routeInfo.put("roadType", road.path("roadType").asInt(-1));
+								routeInfo.put("guidance", road.path("guidance").asText(""));
+								routeInfo.put("trafficSpeed", road.path("trafficSpeed").asInt(-1));
+								routeInfo.put("trafficState", road.path("trafficState").asInt(-1));
+								routeInfoList.add(routeInfo);
+
 							}
 						}
 					}
@@ -86,14 +96,11 @@ public class NaviController {
 		}
 
 		String vertexJson = objectMapper.writeValueAsString(vertexList);
-		log.info("@# showMap vertexJson =>" + vertexJson);
-		log.info("@# showMap distance =>" + distance);
-		log.info("@# showMap startLat =>" + startLat);
-		log.info("@# showMap startLng =>" + startLng);
-		log.info("@# showMap startLat =>" + endLat);
-		log.info("@# showMap startLng =>" + endLng);
+		model.addAttribute("routeInfoList", routeInfoList);
 		model.addAttribute("vertexJson", vertexJson);
 		model.addAttribute("findpath", "findpath_ok");
+
+		log.info("@# showMap routeInfoList =>" + routeInfoList);
 
 		return "/main";
 	}

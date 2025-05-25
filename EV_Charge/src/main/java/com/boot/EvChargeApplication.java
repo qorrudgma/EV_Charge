@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.EnableCaching;
 @EnableCaching
 @SpringBootApplication
 @MapperScan("com.boot.elasticsearch")
+@MapperScan("com.boot.favorite.dao")
 public class EvChargeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EvChargeApplication.class, args);

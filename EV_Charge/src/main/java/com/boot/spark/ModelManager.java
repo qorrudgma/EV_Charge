@@ -5,7 +5,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 import org.apache.spark.ml.classification.LogisticRegressionModel;
+import org.apache.spark.ml.regression.LinearRegressionModel;
 
+import lombok.Data;
+
+@Data
 public class ModelManager {
 
 	private final String modelPath;
@@ -33,6 +37,22 @@ public class ModelManager {
 		}
 	}
 
+	public void saveModel(LinearRegressionModel model) {
+		try {
+			// 디렉토리 존재 여부 확인 후 없으면 생성
+			java.nio.file.Path path = Paths.get(modelPath);
+			if (!Files.exists(path)) {
+				model.save(modelPath);
+				System.out.println("모델이 저장되었습니다: " + modelPath);
+			} else {
+				System.out.println("모델 경로가 이미 존재합니다. 덮어쓰지 않음.");
+			}
+		} catch (IOException e) {
+			System.err.println("모델 저장 중 오류 발생: " + e.getMessage());
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * 저장된 모델이 존재하는지 확인
 	 */
@@ -43,9 +63,20 @@ public class ModelManager {
 	/**
 	 * 저장된 모델 불러오기
 	 */
-	public LogisticRegressionModel loadModel() {
+	// 로지스틱
+	public LogisticRegressionModel loadModelLog() {
 		try {
 			return LogisticRegressionModel.load(modelPath);
+		} catch (Exception e) {
+			System.err.println("모델 로드 중 오류 발생: " + e.getMessage());
+			return null;
+		}
+	}
+
+	// 선형
+	public LinearRegressionModel loadModelLinear() {
+		try {
+			return LinearRegressionModel.load(modelPath);
 		} catch (Exception e) {
 			System.err.println("모델 로드 중 오류 발생: " + e.getMessage());
 			return null;

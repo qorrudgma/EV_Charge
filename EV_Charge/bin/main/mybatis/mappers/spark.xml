@@ -1,0 +1,50 @@
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.boot.spark.SparkDAO">
+	<select id="select_data_by_stat" resultType="com.boot.dto.EvChargerDTO">
+    	SELECT ev_charger_id,
+		 	   stat_id,
+			   chger_id,
+			   stat_name,
+			   chger_type,
+			   addr,
+			   addr_detail,
+			   location,
+			   lat,
+			   lng,
+			   use_time,
+			   busi_id,
+			   bnm,
+			   busi_nm,
+			   busi_call,
+			   output,
+			   method,
+			   zcode,
+			   zscode,
+			   kind,
+			   kind_detail,
+			   parking_free,
+			   note,
+			   limit_yn,
+			   limit_detail,
+			   del_yn,
+			   del_detail,
+			   traffic_yn,
+			   year
+		  FROM ev_charger_data
+          where stat_id = #{stat_id}
+    </select>
+    
+    <select id="select_stats_by_addr" resultType="com.boot.dto.EvChargerDTO">
+    	select ev_charger_id, stat_id, chger_id, stat_name, chger_type, addr, addr_detail, location, lat, lng, use_time, busi_id, bnm, busi_nm, busi_call, output, method, zcode, zscode, kind, kind_detail, parking_free, note, limit_yn, limit_detail, del_yn, del_detail, traffic_yn, year from ev_charger_data where addr like CONCAT('%', #{addr}, '%')
+    
+    </select>
+    
+    <select id="select_reserve_by_stat_id" resultType="com.boot.reservation.dto.ReservationDTO">
+    	select reservation_id, stat_id, user_no, reservation_date, reservation_time, duration_minutes, status, created_at, updated_at from ev_reservation where stat_id = #{stat_id};
+    </select>
+</mapper>
+
+

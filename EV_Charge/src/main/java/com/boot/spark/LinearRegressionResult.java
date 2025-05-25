@@ -16,36 +16,23 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LinearRegressionResult {
 
+	private final SparkSessionGenerator sparkGen = new SparkSessionGenerator();
+
 	// 새 모델 생성 후 학습과 예측 둘다 수행
 	public Dataset<Row> executeLinearRegression(JsonNode inputJson) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 
 		// 학습할 데이터가 담긴 json 파일은 여기서 변경
-		String learningJsonStr = new LogisticRegressionResult().JsonToStringConverter("station_charge_data.json");
+		String learningJsonStr = new LogisticRegressionResult().JsonToStringConverter("station_reservation_data.json");
 		JsonNode learningJson = mapper.readTree(learningJsonStr);
 
-		SparkSession spark = new SparkSessionGenerator().makeSparkSession("Reservatrion_analize", "local[*]");
+		SparkSession spark = sparkGen.makeSparkSession("reservatrion_analize", "local[*]");
 
 		MachineLearning ML = new MachineLearning();
 		LinearRegressionModel model = ML.LinearMachineGenerator(spark, learningJson);
 
 		Dataset<Row> predictions = ML.LinearResultRow(model, spark, inputJson);
 		predictions.show(false);
-
-		spark.close();
-
-		return predictions;
-	}
-
-	// 기존 모델 이용해서 예측 수행
-	public Dataset<Row> existingLinearModel(LinearRegressionModel model, JsonNode inputJson) {
-		SparkSession spark = new SparkSessionGenerator().makeSparkSession("Reservatrion_analize", "local[*]");
-
-		MachineLearning ML = new MachineLearning();
-
-		Dataset<Row> predictions = ML.LinearResultRow(model, spark, inputJson);
-		predictions.show(false);
-		log.info("선형 회귀 모델 예측 완료, 결과 {}건", predictions.count());
 
 		spark.close();
 

@@ -6,7 +6,6 @@
 	<mappers>
 		<mapper resource="mybatis/mappers/member.xml"/>
 		<mapper resource="mybatis/mappers/FavoriteMapper.xml"/>
-		
 		<mapper resource="mybatis/mappers/provinces.xml"/>
 		<mapper resource="mybatis/mappers/districts.xml"/>
 		
@@ -18,11 +17,17 @@
 		<mapper resource="mybatis/mappers/comment.xml"/>
 		<mapper resource="mybatis/mappers/upload.xml"/>
 		<mapper resource="mybatis/mappers/page.xml"/>
-		
+
 		<!--공지사항 mapper-->
 		<mapper resource="mybatis/mappers/notice_board.xml"/>
 		<mapper resource="mybatis/mappers/notice_page.xml"/>
 		
+		<!--예약 mapper-->
+		<mapper resource="mybatis/mappers/reservation.xml"/>
+		
+		<!--회귀분석 mapper-->
+		<mapper resource="mybatis/mappers/spark.xml"/>
+
 		<!-- elasticsearch -->
 		<mapper resource="mybatis/mappers/elasticsearch.xml"/>
 	</mappers>

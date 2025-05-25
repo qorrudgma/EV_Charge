@@ -1,16 +1,13 @@
 package com.boot.spark;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import com.boot.dto.EvChargerDTO;
+import com.boot.reservation.dto.ReservationDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,23 +15,29 @@ import lombok.extern.slf4j.Slf4j;
 @Service("SparkService")
 public class SparkServiceImpl implements SparkService {
 
-	private SparkSession spark;
-	private JavaSparkContext sparkContext;
+	@Autowired
+	private SqlSession sqlSession;
 
-	public SparkServiceImpl(SparkSession spark) {
-		this.spark = spark;
-		this.sparkContext = new JavaSparkContext(spark.sparkContext());
+	@Override
+	public List<EvChargerDTO> select_data_by_stat(String stat_id) {
+		SparkDAO dao = sqlSession.getMapper(SparkDAO.class);
+		List<EvChargerDTO> dtos = dao.select_data_by_stat(stat_id);
+
+		return dtos;
 	}
 
 	@Override
-	public void JSONtest(JsonNode jsonNode) {
-		List<String> jsonElements = new ArrayList<>();
-		jsonNode.forEach(node -> jsonElements.add(node.toString()));
-
-		JavaRDD<String> rdd = sparkContext.parallelize(jsonElements);
-
-		Dataset<Row> df = spark.read().json(rdd.rdd());
-		df.show();
-		df.printSchema();
+	public List<EvChargerDTO> select_stats_by_addr(String addr) {
+		SparkDAO dao = sqlSession.getMapper(SparkDAO.class);
+		List<EvChargerDTO> dtos = dao.select_stats_by_addr(addr);
+		return dtos;
 	}
+
+	@Override
+	public List<ReservationDTO> select_reserve_by_stat_id(String stat_id) {
+		SparkDAO dao = sqlSession.getMapper(SparkDAO.class);
+		List<ReservationDTO> dtos = dao.select_reserve_by_stat_id(stat_id);
+		return dtos;
+	}
+
 }

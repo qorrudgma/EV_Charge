@@ -300,6 +300,7 @@ body {
 
 .content-card {
     background-color: var(--white);
+	padding: 20px;
     border-radius: 1rem;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
     overflow: hidden;

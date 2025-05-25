@@ -1,35 +1,182 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper
-  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.boot.favorite.dao.FavoriteDAO">
 
-<mapper namespace="FavoriteMapper">
+    <select id="findFavorite" parameterType="map" resultType="com.boot.favorite.dto.FavoriteDTO">
+        SELECT favorite_id, user_no, stat_id, addr, addr_detail, stat_name, location, lat, lng, created_at
+        FROM ev_user_favorites
+        WHERE user_no = #{user_no} AND stat_id = #{stat_id}
+    </select>
 
-    <insert id="insertFavorite" parameterType="com.boot.dto.FavoriteDTO">
-        INSERT INTO ev_favorite (
-            user_no, stnAddr, stnPlace, rapidCnt, slowCnt, carType
-        ) VALUES (
-            #{user_no}, #{stnAddr}, #{stnPlace}, #{rapidCnt}, #{slowCnt}, #{carType}
-        )
+    <insert id="insertFavorite" parameterType="com.boot.favorite.dto.FavoriteDTO" useGeneratedKeys="true" keyProperty="favorite_id">
+        INSERT INTO ev_user_favorites (user_no, stat_id, stat_name, addr, addr_detail, location, lat, lng)
+        VALUES (#{user_no}, #{stat_id}, #{stat_name}, #{addr}, #{addr_detail}, #{location}, #{lat}, #{lng})
     </insert>
-    
-    <!-- 삭제 쿼리 추가 -->
-	<delete id="deleteFavorite" parameterType="com.boot.dto.FavoriteDTO">
-	DELETE FROM ev_favorite
-	 WHERE user_no = #{user_no}
-	   AND stnAddr = #{stnAddr}
-	   AND stnPlace = #{stnPlace}
-	</delete>
-	
-	<select id="getFavoritesByUserNo" parameterType="int" resultType="com.boot.dto.FavoriteDTO">
-		select user_no
-			 , stnAddr
-			 , stnPlace
-			 , rapidCnt
-		     , slowCnt
-		     , carType
-		  from EV_favorite
-		 where user_no = #{user_no}
+
+    <delete id="deleteFavorite" parameterType="map">
+        DELETE FROM ev_user_favorites
+        WHERE user_no = #{user_no} AND stat_id = #{stat_id}
+    </delete>
+
+    <select id="findAllFavoritesByUserNo" parameterType="int" resultType="com.boot.favorite.dto.FavoriteDTO">
+        SELECT
+            favorite_id,
+            user_no,
+            stat_id,
+            addr,
+            addr_detail,
+            stat_name,
+            location,
+            lat,
+            lng,
+            created_at
+        FROM
+            ev_user_favorites
+        WHERE
+            user_no = #{user_no} 
 	</select>
 
+     <select id="getFavoriteDetailByStatId" resultType="com.boot.favorite.dto.FavoriteDTO">
+	    SELECT
+	        f.favorite_id,
+	        f.user_no,
+	        f.stat_id,
+	        f.created_at,
+	        f.addr AS favorite_addr,
+	        f.addr_detail AS favorite_addr_detail,
+	        f.location AS favorite_location,
+	        f.lat AS favorite_lat,
+	        f.lng AS favorite_lng,
+	
+	        MAX(ecd.stat_name) AS stat_name,
+	        MAX(ecd.addr) AS addr,
+	        MAX(ecd.addr_detail) AS addr_detail,
+	        MAX(ecd.location) AS location,
+	        MAX(ecd.lat) AS lat,
+	        MAX(ecd.lng) AS lng,
+	        MAX(ecd.use_time) AS use_time,
+	        MAX(ecd.parking_free) AS parking_free,
+	        MAX(ecd.bnm) AS bnm,
+	        MAX(ecd.busi_nm) AS busi_nm,
+	        MAX(ecd.busi_call) AS busi_call,
+	
+	        -- 총 충전기 대수 (chger_type 기준)
+	        COUNT(CASE WHEN ecd.chger_type IN ('01', '03', '04', '06', '07') /* 실제 급속 코드들 */ THEN ecd.chger_id ELSE NULL END) AS fastChargerCount,
+	        COUNT(CASE WHEN ecd.chger_type NOT IN ('01', '03', '04', '06', '07') /* 실제 완속 코드들 */ THEN ecd.chger_id ELSE NULL END) AS slowChargerCount,
+	
+	        -- 사용 가능 대수는 FavoriteDTO에서 제거하거나, 이 SQL에서는 채우지 않음 (또는 임시 조건만 사용)
+	        -- 아래는 임시 조건만 사용한 예 (정확한 실시간 정보 아님)
+	        COUNT(CASE WHEN ecd.chger_type IN ('01', '03', '04', '06', '07') AND ecd.del_yn = 'N' AND ecd.limit_yn = 'N' THEN ecd.chger_id ELSE NULL END) AS availableFastChargers,
+	        COUNT(CASE WHEN ecd.chger_type NOT IN ('01', '03', '04', '06', '07') AND ecd.del_yn = 'N' AND ecd.limit_yn = 'N' THEN ecd.chger_id ELSE NULL END) AS availableSlowChargers,
+	
+	        -- 충전기 타입 상세 정보
+	        (SELECT GROUP_CONCAT(DISTINCT CONCAT(
+	            CASE type_info.chger_type
+	                WHEN '01' THEN 'DC차데모'
+	                WHEN '03' THEN 'DC콤보'
+	                WHEN '04' THEN 'BC타입(7핀)' -- 실제 명칭 및 코드 매핑 확인 필요
+	                WHEN '06' THEN 'DC차데모+DC콤보'
+	                WHEN '07' THEN 'DC차데모+AC3상+DC콤보'
+	                ELSE type_info.chger_type
+	            END,
+	            COALESCE(CONCAT(' (', type_info.output, 'kW)'), ''))
+	            ORDER BY type_info.chger_type SEPARATOR ', ')
+	         FROM ev_charger_data type_info
+	         WHERE type_info.stat_id = f.stat_id
+	           AND type_info.chger_type IN ('01', '03', '04', '06', '07') -- 실제 급속 코드
+	           AND type_info.del_yn = 'N'
+	        ) AS fastChargerTypeInfo,
+	
+	        (SELECT GROUP_CONCAT(DISTINCT CONCAT(
+	            CASE type_info.chger_type
+	                WHEN '02' THEN 'C타입(5핀), AC완속' -- 실제 명칭 및 코드 매핑 확인 필요
+	                WHEN '05' THEN 'DC차데모+AC3상'
+	                ELSE CONCAT(type_info.chger_type, ', AC완속')
+	            END,
+	            COALESCE(CONCAT(' (', type_info.output, 'kW)'), ''))
+	            ORDER BY type_info.chger_type SEPARATOR ', ')
+	         FROM ev_charger_data type_info
+	         WHERE type_info.stat_id = f.stat_id
+	           AND type_info.chger_type NOT IN ('01', '03', '04', '06', '07') -- 실제 완속 코드
+	           AND type_info.del_yn = 'N'
+	        ) AS slowChargerTypeInfo
+	    FROM
+	        ev_user_favorites f
+	    LEFT JOIN
+	        ev_charger_data ecd ON f.stat_id = ecd.stat_id
+	    WHERE
+	        f.user_no = #{userNo}
+	      AND f.stat_id = #{statId}
+	    GROUP BY
+	        f.favorite_id, f.user_no, f.stat_id, f.created_at,
+	        f.addr, f.addr_detail, f.location, f.lat, f.lng;
+	</select>
+	
+	
+	<select id="getStationDetailByStatId" resultType="com.boot.favorite.dto.FavoriteDTO">
+          SELECT
+              null AS favorite_id,
+              null AS user_no, ecd.stat_id AS stat_id,
+              null AS created_at,
+
+              MAX(ecd.stat_name) AS stat_name,
+              MAX(ecd.addr) AS addr,
+              MAX(ecd.addr_detail) AS addr_detail,
+              MAX(ecd.location) AS location,
+              MAX(ecd.lat) AS lat,
+              MAX(ecd.lng) AS lng,
+              MAX(ecd.use_time) AS use_time,
+              MAX(ecd.parking_free) AS parking_free,
+              MAX(ecd.bnm) AS bnm,
+              MAX(ecd.busi_nm) AS busi_nm,
+              MAX(ecd.busi_call) AS busi_call,
+
+              COUNT(CASE WHEN ecd.chger_type IN ('01', '03', '04', '06', '07') THEN ecd.chger_id ELSE NULL END) AS fastChargerCount,
+              COUNT(CASE WHEN ecd.chger_type IN ('01', '03', '04', '06', '07') AND ecd.del_yn = 'N' AND ecd.limit_yn = 'N' THEN ecd.chger_id ELSE NULL END) AS availableFastChargers,
+              COUNT(CASE WHEN ecd.chger_type NOT IN ('01', '03', '04', '06', '07') THEN ecd.chger_id ELSE NULL END) AS slowChargerCount,
+              COUNT(CASE WHEN ecd.chger_type NOT IN ('01', '03', '04', '06', '07') AND ecd.del_yn = 'N' AND ecd.limit_yn = 'N' THEN ecd.chger_id ELSE NULL END) AS availableSlowChargers,
+
+              (SELECT GROUP_CONCAT(DISTINCT CONCAT(
+                  CASE type_info.chger_type
+                      WHEN '01' THEN 'DC차데모'
+                      WHEN '03' THEN 'DC콤보'
+                      WHEN '04' THEN 'BC타입(7핀)'
+                      WHEN '06' THEN 'DC차데모+DC콤보'
+                      WHEN '07' THEN 'DC차데모+AC3상+DC콤보'
+                      ELSE type_info.chger_type
+                  END,
+                  COALESCE(CONCAT(' (', type_info.output, 'kW)'), ''))
+                  ORDER BY type_info.chger_type SEPARATOR ', ')
+               FROM ev_charger_data type_info
+               WHERE type_info.stat_id = ecd.stat_id -- 이 부분은 메인 쿼리의 ecd를 참조
+                 AND type_info.chger_type IN ('01', '03', '04', '06', '07')
+                 AND type_info.del_yn = 'N'
+              ) AS fastChargerTypeInfo, -- AS 앞, 서브쿼리 괄호 뒤에 쉼표가 잘 있는지 확인
+
+              (SELECT GROUP_CONCAT(DISTINCT CONCAT(
+                  CASE type_info.chger_type
+                      WHEN '02' THEN 'C타입(5핀), AC완속'
+                      WHEN '05' THEN 'DC차데모+AC3상'
+                      ELSE CONCAT(type_info.chger_type, ', AC완속')
+                  END,
+                  COALESCE(CONCAT(' (', type_info.output, 'kW)'), ''))
+                  ORDER BY type_info.chger_type SEPARATOR ', ')
+               FROM ev_charger_data type_info
+               WHERE type_info.stat_id = ecd.stat_id -- 이 부분은 메인 쿼리의 ecd를 참조
+                 AND type_info.chger_type NOT IN ('01', '03', '04', '06', '07')
+                 AND type_info.del_yn = 'N'
+              ) AS slowChargerTypeInfo
+          FROM
+              ev_charger_data ecd
+          WHERE
+              ecd.stat_id = #{statId}
+          GROUP BY
+              ecd.stat_id;
+      </select>
+      
+      <select id="findFavoriteStationIdsByUserNo" parameterType="int" resultType="string">
+	    SELECT stat_id
+	    FROM ev_user_favorites
+	    WHERE user_no = #{userNo}
+	</select>
 </mapper>

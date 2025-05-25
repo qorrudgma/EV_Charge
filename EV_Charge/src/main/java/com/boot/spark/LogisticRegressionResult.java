@@ -28,6 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LogisticRegressionResult {
 
+	private final SparkSessionGenerator sparkGen = new SparkSessionGenerator();
+
 	public Dataset<Row> executeLogRegression(JsonNode inputJson) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 
@@ -36,16 +38,16 @@ public class LogisticRegressionResult {
 		JsonNode learningJson = mapper.readTree(learningJsonStr);
 
 		// 스파크 세션객체 생성
-		SparkSession spark = new SparkSessionGenerator().makeSparkSession("station_analize", "local[*]");
+		SparkSession spark = sparkGen.makeSparkSession("station_analize", "local[*]");
 
 		// 스파크 객체와 학습데이터로 학습된 모델 생성
 		MachineLearning ML = new MachineLearning();
 		LogisticRegressionModel model = ML.LogMachineGenerator(spark, learningJson);
 
-		// 예상 결과치 도출
+		// 예측
 		Dataset<Row> predictions = ML.LogResultRow(model, spark, inputJson);
+
 		predictions.show(false);
-		log.info("로지스틱 회귀 모델 예측 완료, 결과 {}건", predictions.count());
 
 		spark.close();
 

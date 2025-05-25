@@ -15,6 +15,7 @@ public class MemberDTO {
 	private String user_password;
 	private String user_name;
 	private String user_email;
+	private String user_role;
 	private String area_ctpy_nm;
 	private String area_sgg_nm;
 	private String area_emd_nm;

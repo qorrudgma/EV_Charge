@@ -8,7 +8,7 @@ create table EV_user (
 			user_province VARCHAR(50),                  -- 도
 			user_city VARCHAR(50)                    	-- 시
 		);
-
+select * from EV_user;
 -- 시/도 테이블
 CREATE TABLE provinces (
     provinces_code VARCHAR(2) PRIMARY KEY,
@@ -414,23 +414,21 @@ CREATE TABLE EV_charger (
 );
 
 -- 즐겨찾기 테이블
+drop table ev_user_favorites;
 CREATE TABLE ev_user_favorites (
-    favorite_id   INT AUTO_INCREMENT PRIMARY KEY,
-    user_no       INT          NOT NULL,
-    user_id       VARCHAR(50)  NOT NULL,
-    station_id    INT          NOT NULL,
-   
-    UNIQUE KEY uq_ev_user_favorites_user_station (user_no, station_id),
+  favorite_id INT AUTO_INCREMENT PRIMARY KEY,
+  user_no INT NOT NULL,
+  stat_id VARCHAR(20) NOT NULL,              -- ev_charger_data 테이블의 stat_id (문자열)
+  stat_name varchar(200),
+  addr VARCHAR(200),                            -- 주소
+  addr_detail VARCHAR(200),                      -- 주소상세
+    location VARCHAR(200),                         -- 상세위치
+    lat DOUBLE,                               -- 위도
+    lng DOUBLE,                               -- 경도
+created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 즐겨찾기 추가 일시
 
-    FOREIGN KEY (user_no)
-      REFERENCES EV_user(user_no)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE,
-
-    FOREIGN KEY (station_id)
-      REFERENCES EV_station(station_id)
-      ON DELETE CASCADE
-      ON UPDATE CASCADE
+  UNIQUE KEY uq_user_station (user_no, stat_id), -- 사용자별 충전소 즐겨찾기 중복 방지
+  FOREIGN KEY (user_no) REFERENCES EV_user(user_no) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 -- 충전소 위치 테이블 (공간 인덱스 추가 포함)
@@ -474,7 +472,93 @@ CREATE TABLE ev_charger_data (
     SPATIAL INDEX idx_location_point (location_point)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+select zcode, zscode from ev_charger_data;
+
 select count(*) from ev_charger_data;
 select location_point from ev_charger_data;
 SELECT ST_AsText(location_point) FROM ev_charger_data;
 SELECT ST_SRID(location_point) FROM ev_charger_data LIMIT 1;
+
+create table ev_notice_board(
+ev_notice_boardNo int primary key auto_increment, 
+ev_notice_boardName varchar(20),
+ev_notice_boardTitle varchar(100),
+ev_notice_boardContent varchar(300),
+ev_notice_boardDate timestamp default current_timestamp,
+ev_notice_boardHit int default 0,
+user_no int default 0
+);
+
+CREATE TABLE ev_reservation (
+    reservation_id       INT AUTO_INCREMENT PRIMARY KEY,  -- 예약 고유 ID
+    stat_id              VARCHAR(20) NOT NULL,                    -- 충전소 ID (충전소 테이블 외래키)
+    user_no              INT NOT NULL,                    -- 사용자 ID (회원 테이블 외래키)
+    reservation_date     DATE NOT NULL,                      -- 예약 날짜 (yyyy-MM-dd)
+    reservation_time     TIME NOT NULL,                      -- 예약 시간 (HH:mm, 30분 단위)
+    duration_minutes     INT DEFAULT 30,                     -- 예약 시간 (기본 30분)
+    status               VARCHAR(20) DEFAULT 'PENDING',      -- 예약 상태: PENDING, CONFIRMED, CANCELLED, COMPLETED
+    created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+CREATE TABLE tbl_board (
+	boardNo int auto_increment primary key,
+	boardName varchar(20),
+	boardTitle varchar(100),
+	boardContent varchar(300),
+	boardDate datetime,
+	boardHit int
+);
+call proc_generate_random_reservations_random_time('2025-05-25');
+
+DELIMITER //
+
+CREATE PROCEDURE proc_generate_random_reservations_random_time(
+    IN in_date DATE     -- 예약 날짜 (예: '2025-05-23')
+)
+BEGIN
+    DECLARE i INT DEFAULT 0;
+    DECLARE total_count INT DEFAULT 500;
+
+    DECLARE rand_hour INT;
+    DECLARE rand_minute INT;
+    DECLARE rand_user INT;
+    DECLARE rand_stat_id INT;
+    DECLARE rand_duration INT;
+    DECLARE time_slot TIME;
+
+    WHILE i < total_count DO
+        -- 랜덤 시간 (0~23시) + (0 또는 30분)
+        SET rand_hour = FLOOR(RAND() * 24);             -- 0 ~ 23
+        SET rand_minute = IF(RAND() < 0.5, 0, 30);       -- 0 or 30
+        SET time_slot = MAKETIME(rand_hour, rand_minute, 0);
+
+        SET rand_user = FLOOR(RAND() * 1000) + 1;        -- user_no 1~1000
+        SET rand_stat_id = FLOOR(RAND() * 10) + 1;       -- stat_id 1~10
+        SET rand_duration = (FLOOR(RAND() * 3) + 1) * 30;-- 30, 60, 90분
+
+        INSERT INTO ev_reservation (
+            stat_id,
+            user_no,
+            reservation_date,
+            reservation_time,
+            duration_minutes,
+            status,
+            created_at,
+            updated_at
+        ) VALUES (
+            rand_stat_id,
+            rand_user,
+            in_date,
+            time_slot,
+            rand_duration,
+            '예약됨',
+            NOW(),
+            NOW()
+        );
+
+        SET i = i + 1;
+    END WHILE;
+END //
+
+DELIMITER ;
