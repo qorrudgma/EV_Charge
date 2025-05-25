@@ -63,7 +63,7 @@ public class SearchDataController {
 
 		if (lat_n == 0.0025) {
 			String cacheKey = String.format("search_data:%.6f:%.6f", lat, lng);
-			// 1) 캐시에서 먼저 조회 시도 (생략 가능, 없으면 DB에서 조회)
+			// 1) 캐시에서 먼저 조회 시도
 			@SuppressWarnings("unchecked")
 			List<EvChargerDTO> ev_list = (List<EvChargerDTO>) redisTemplate.opsForValue().get(cacheKey);
 			if (ev_list == null) {
@@ -82,19 +82,14 @@ public class SearchDataController {
 			return ev_list;
 		} else {
 			String cacheKey = String.format("search_data:%.2f:%.2f", lat, lng);
-
-			// 1) 캐시에서 먼저 조회 시도 (생략 가능, 없으면 DB에서 조회)
+			// 1) 캐시에서 먼저 조회 시도
 			@SuppressWarnings("unchecked")
 			List<EvChargerDTO> ev_list = (List<EvChargerDTO>) redisTemplate.opsForValue().get(cacheKey);
 			if (ev_list == null) {
 				// 2) 캐시에 없으면 DB 조회
 				ev_list = chargerService.ev_list(lat, lng, lat_n, lng_n);
-
-				// 3) 조회 결과를 캐시에 저장 (TTL 5분)
-//				redisTemplate.opsForValue().set(cacheKey, ev_list, Duration.ofMinutes(5));
 				// 시간 제한 없음
 				redisTemplate.opsForValue().set(cacheKey, ev_list);
-
 				log.info("DB 조회 후 캐시에 저장 완료");
 			} else {
 				log.info("캐시에서 데이터 조회 완료");

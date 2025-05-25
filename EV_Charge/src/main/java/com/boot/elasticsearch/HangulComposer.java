@@ -25,7 +25,7 @@ public class HangulComposer {
 	public String combine(String jamos) {
 		StringBuilder result = new StringBuilder();
 
-		int state = 0; // 0: 초성, 1: 중성, 2: 종성 대기
+		int state = 0; // 0 => 초성, 1 => 중성, 2 => 종성 대기
 		int cho = -1, jung = -1, jong = 0;
 
 		for (int i = 0; i < jamos.length(); i++) {
@@ -35,7 +35,7 @@ public class HangulComposer {
 			int jungIndex = indexOf(JUNGSUNG, ch);
 			int jongIndex = indexOf(JONGSUNG, ch);
 
-			// 다음 글자 확인 (범위 체크)
+			// 다음 글자 확인
 			char nextChar = (i + 1) < jamos.length() ? jamos.charAt(i + 1) : '\0';
 			int nextJungIndex = indexOf(JUNGSUNG, nextChar);
 
@@ -68,24 +68,23 @@ public class HangulComposer {
 
 			case 2: // 종성 대기
 				if (jongIndex != -1) {
-					// 여기서 조건 추가: 다음 글자가 모음이면 종성이 아니라 초성임
+					// 다음 글자가 모음이면 종성이 아니라 초성
 					if (nextJungIndex != -1) {
-						// 다음 글자가 모음 → 지금 글자는 초성으로 처리하고 현재 완성
+						// 다음 글자가 모음 => 초성으로 처리하고 현재 완성
 						char syllable = (char) (0xAC00 + (cho * 21 * 28) + (jung * 28));
 						result.append(syllable);
-						// 현재 글자는 다음 글자의 초성 역할
+						// 초성으로 사용
 						cho = indexOf(CHOSUNG, ch);
 						if (cho == -1) {
-							// 만약 초성이 아니면 그냥 붙임
 							result.append(ch);
 							state = 0;
 							cho = -1;
 						} else {
-							state = 1; // 중성 대기로
+							state = 1; // 중성 대기
 						}
 						jong = 0;
 					} else {
-						// 다음 글자가 모음 아님 → 정상 종성 처리
+						// 다음 글자가 모음 아님 => 종성
 						jong = jongIndex;
 						char syllable = (char) (0xAC00 + (cho * 21 * 28) + (jung * 28) + jong);
 						result.append(syllable);
@@ -95,7 +94,7 @@ public class HangulComposer {
 						jong = 0;
 					}
 				} else {
-					// 종성 후보 아님 → 종성 없이 초성+중성 완성
+					// 종성 없이 초성 + 중성
 					char syllable = (char) (0xAC00 + (cho * 21 * 28) + (jung * 28));
 					result.append(syllable);
 					if (choIndex != -1) {

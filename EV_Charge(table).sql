@@ -506,8 +506,8 @@ CREATE TABLE tbl_board (
 	boardName varchar(20),
 	boardTitle varchar(100),
 	boardContent varchar(300),
-	boardDate datetime,
-	boardHit int
+	boardDate datetime default current_timestamp,
+	boardHit int default 0
 );
 call proc_generate_random_reservations_random_time('2025-05-25');
 

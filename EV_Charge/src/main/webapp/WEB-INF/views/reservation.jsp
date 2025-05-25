@@ -10,28 +10,25 @@
         }
 
         .reservation-sidebar {
-            position: absolute;
-            top: 80px;
+            position: fixed;
+            top: 140px;
             right: 0;
             width: 360px;
-            height: 88%;
             background-color: #fff;
             border: #11C287 solid 4px;
-            border-right: none;
             box-shadow: 0 0 10px rgba(0,0,0,0.15);
-            border-radius: 20px 0 0 20px;
-            z-index: 1010;
+            border-radius: 20px;
+            z-index: 1011;
             /* display: flex; */
             flex-direction: column;
             padding: 20px;
-            transform: translateX(100%);
-            transition: transform 0.3s ease-in-out;
             display: flex;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
         }
 
         .reservation-sidebar.active {
-            display: flex;
-            transform: translateX(0);
+            transform: translateX(-10%);
         }
 
         #close-reservation {

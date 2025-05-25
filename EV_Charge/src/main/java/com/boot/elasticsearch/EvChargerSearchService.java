@@ -132,7 +132,7 @@ public class EvChargerSearchService {
 //		List<ElasticsearchDTO> results = new ArrayList<>();
 //		searchHits.forEach(hit -> results.add(hit.getContent()));
 //		return results;
-		// 📌 지역 필터 쿼리
+		// 지역 필터
 		BoolQueryBuilder regionShouldQuery = QueryBuilders.boolQuery();
 		for (String region : matchedRegions) {
 //			regionShouldQuery.should(QueryBuilders.matchQuery("addr", region).fuzziness(Fuzziness.fromEdits(1)));
@@ -140,7 +140,7 @@ public class EvChargerSearchService {
 
 		}
 
-		// 📌 stat_name 필터 쿼리 (나머지 키워드를 하나의 문장으로 결합해서 검색)
+		// stat_name 필터 (나머지 키워드를 하나의 문장으로 결합해서 검색)
 		BoolQueryBuilder boolQuery = QueryBuilders.boolQuery().must(regionShouldQuery);
 
 //		if (!remainingKeywords.isEmpty()) {
@@ -151,7 +151,7 @@ public class EvChargerSearchService {
 			boolQuery.must(QueryBuilders.matchQuery("stat_name", keyword).fuzziness(Fuzziness.fromEdits(1)));
 		}
 
-		// 📌 쿼리 실행
+		// 실행
 		Pageable limit = PageRequest.of(0, 100);
 		NativeSearchQuery searchQuery = new NativeSearchQueryBuilder().withQuery(boolQuery).withPageable(limit).build();
 

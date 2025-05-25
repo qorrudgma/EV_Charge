@@ -284,6 +284,7 @@
                 document.getElementById('startLat').value = position.coords.latitude;
                 document.getElementById('startLng').value = position.coords.longitude;
                 document.getElementById('routeForm').submit();
+                findpathAddActive();
             }, function () {
                 alert("현재 위치를 가져올 수 없습니다.");
             });
