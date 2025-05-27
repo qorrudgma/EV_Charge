@@ -271,6 +271,7 @@
     // 예약 사이드바 열기
     function reservationStation() {
         document.getElementById("reservationSidebar").classList.add("active");
+		console.log("예약 버튼 누름");
     }
 
     // 예약 사이드바 닫기

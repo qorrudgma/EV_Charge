@@ -49,11 +49,12 @@
 	  <!-- 사이드바 -->
       <jsp:include page="/WEB-INF/views/favorites_sidebar.jsp"/>
       <jsp:include page="/WEB-INF/views/station_detail.jsp"/>
+      <jsp:include page="/WEB-INF/views/reservation.jsp"/>
+	  <jsp:include page="/WEB-INF/views/findpath.jsp"/>
       <!-- 지도 표시 -->
       <div id="map" style="width:100%;height:93%;"></div>
 
-      <div id="reset"><i class="fas fa-sync-alt"></i> &nbsp;현 지도에서 검색</i>
-</div>
+      <div id="reset"><i class="fas fa-sync-alt"></i> &nbsp;현 지도에서 검색</i></div>
 
       <!-- 추후에 사용자 세션 받아서 blind 및 display 처리 요망. -->
       <!-- 사용자 세션 받으면 center_lat과 center_lng는 사용자 가입시 설정되는 area 값으로 지정 -->

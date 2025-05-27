@@ -22,12 +22,6 @@
     
     <div class="sidebar-content">
         <div class="station-detail-container">
-            <!-- 충전소 상태 배지 -->
-            <!-- <div class="status-badge available"> -->
-                <!-- <i class="fas fa-check-circle"></i> -->
-                <!-- <span>사용가능</span> -->
-            <!-- </div> -->
-            
             <!-- 충전소 기본 정보 -->
             <div class="detail-section">
                 <div class="station-header">
@@ -48,15 +42,16 @@
                     <input type="hidden" id="station_lat" name="endLat">
                     <input type="hidden" id="station_lng" name="endLng">
                 </form>
+				<input type="hidden" id="stat_id" name="stat_id">
 
                 <div class="action-buttons">
                     <button class="action-button primary" id="findpathBtn">
                         <i class="fas fa-directions"></i>
                         <span>길찾기</span>
                     </button>
-                    <button class="action-button secondary" onclick="shareStation()">
-                        <i class="fas fa-share-alt"></i>
-                        <span>공유하기</span>
+					<button class="action-button secondary" onclick="reservationStation()">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>예약하기</span>
                     </button>
                 </div>
                 
@@ -90,38 +85,16 @@
                         </div>
                     </div>
                 </div>
-                
-				<!-- 충전기 현황 -->
-                <!-- <div class="charger-status">
-                    <div class="status-item available">
-                        <span class="status-dot"></span>
-                        <span class="status-label">사용가능</span>
-                        <span id="available-count" class="status-count">3</span>
-                    </div>
-                    <div class="status-item charging">
-                        <span class="status-dot"></span>
-                        <span class="status-label">충전중</span>
-                        <span id="charging-count" class="status-count">2</span>
-                    </div>
-                    <div class="status-item offline">
-                        <span class="status-dot"></span>
-                        <span class="status-label">점검중</span>
-                        <span id="offline-count" class="status-count">1</span>
-                    </div>
-                </div> -->
             </div>
             
-            <!-- 지원 차종 정보 -->
             <!-- 충전 가능 자리 정보 -->
             <div class="detail-section">
                 <h3 class="section-title">
                     <i class="fas fa-car"></i>
-                    <!-- <span>지원 차종</span> -->
                     <span>충전기 타입</span>
                 </h3>
                 
                 <div id="supported-vehicles" class="supported-vehicles">
-                    <!-- <div class="vehicle-chip">현대</div>-->
                     <div class="charger-type rapid_div">
                         <div class="charger-icon fast">
                             <i class="fas fa-bolt"></i>
@@ -143,36 +116,7 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- 충전기 상세 목록 -->
-<!--            <div class="detail-section">-->
-<!--                <h3 class="section-title">-->
-<!--                    <i class="fas fa-list"></i>-->
-<!--                    <span>충전기 목록</span>-->
-<!--                </h3>-->
-                
-<!--                <div class="charger-list">-->
-<!--                    <div class="charger-item available">-->
-<!--                        <div class="charger-header">-->
-<!--                            <div class="charger-name">-->
-<!--                                <span class="charger-number">01</span>-->
-<!--                                <span class="charger-type">DC콤보</span>-->
-<!--                            </div>-->
-<!--                            <div class="charger-status">사용가능</div>-->
-<!--                        </div>-->
-<!--                        <div class="charger-specs">-->
-<!--                            <div class="spec-item">-->
-<!--                                <i class="fas fa-bolt"></i>-->
-<!--                                <span>100kW</span>-->
-<!--                            </div>-->
-<!--                            <div class="spec-item">-->
-<!--                                <i class="fas fa-dollar-sign"></i>-->
-<!--                                <span>292.9원/kWh</span>-->
-<!--                            </div>-->
-<!--                        </div>-->
-<!--                    </div>-->
-<!--                </div>-->
-            </div>
+        </div>
             
             <!-- 운영 정보 -->
             <div class="detail-section">
@@ -198,17 +142,17 @@
                         <div class="info-label">연락처</div>
                         <div id="contact-number" class="info-value"></div>
                     </div>
-                    <!-- <div class="info-item">
-                        <div class="info-label">최근 업데이트</div>
-                        <div id="last-updated" class="info-value">2023-10-25 14:30</div>
-                    </div> -->
                 </div>
             </div>
         </div>
     <div class="sidebar-footer">
+<!--        <button id="report-issue" class="report-btn">-->
+<!--            <i class="fas fa-exclamation-triangle"></i>-->
+<!--            <span>오류 신고하기</span>-->
+<!--        </button>-->
         <button id="report-issue" class="report-btn">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span>오류 신고하기</span>
+            <i class="fas fa-chart-line"></i>
+            <span>실시간 분석하기</span>
         </button>
     </div>
 </div>
@@ -255,7 +199,8 @@
         });
     });
 
-    document.getElementById('findpathBtn').addEventListener('click', function () {
+    // 길찾기
+	document.getElementById('findpathBtn').addEventListener('click', function () {
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(function (position) {
                 document.getElementById('startLat').value = position.coords.latitude;
@@ -268,16 +213,10 @@
             alert("이 브라우저는 위치 기능을 지원하지 않습니다.");
         }
     });
-    
-    
-    // 공유하기 함수
-    function shareStation() {
-        // 공유하기 로직 (사용자가 구현)
-        const stationName = document.getElementById('station-name').textContent;
-        const stationAddress = document.getElementById('station-address').textContent;
-        
-        console.log(`공유하기: ${stationName} (${stationAddress})`);
-    }
+	
+	$(document).on("click", "#close-reservation", function () {
+        $(".reservation-sidebar").removeClass("active");
+    });
 	
 	// 마커 클릭
 	function updateStationDetail(markerData) {
@@ -327,8 +266,10 @@
             console.log("성공", data.rapid_stat_three);
             rapid_count = data.rapid_stat_three;
             slow_count = data.slow_stat_three;
+			// hidden input
             $("#station_lat").val(first.lat);
             $("#station_lng").val(first.lng);
+			$("#stat_id").val(first.stat_id);
 
             // 전부다 반복으로 꺼내기
             // chargerList.forEach(charger => {
@@ -421,7 +362,6 @@
             // 충전기 타입
             document.getElementById("rapid_type").textContent = charger_type_rapid.join(", ");
             document.getElementById("slow_type").textContent = charger_type_slow.join(", ");
-
 
             // 운영 정보
             let parking_free;
