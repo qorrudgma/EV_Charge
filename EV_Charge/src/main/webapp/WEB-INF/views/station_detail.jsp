@@ -379,4 +379,23 @@
             console.log(error);
         });
     }
+	let chartLoaded = false;
+
+	$('#report-issue').on('click', function () {
+	    if (!chartLoaded) {
+	        $.ajax({
+	            url: '/getChart',
+	            method: 'GET',
+	            success: function (response) {
+	                $('#chartContainer').hide().html(response).fadeIn();
+	                chartLoaded = true;
+	            },
+	            error: function () {
+	                alert('분석 데이터를 불러오지 못했습니다.');
+	            }
+	        });
+	    } else {
+	        $('#chartContainer').fadeToggle();
+	    }
+	});
 </script>

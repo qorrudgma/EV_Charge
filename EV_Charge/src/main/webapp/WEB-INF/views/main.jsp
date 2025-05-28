@@ -51,6 +51,7 @@
       <jsp:include page="/WEB-INF/views/station_detail.jsp"/>
       <jsp:include page="/WEB-INF/views/reservation.jsp"/>
 	  <jsp:include page="/WEB-INF/views/findpath.jsp"/>
+	  <div id="chartContainer" style="display: none;"></div>
       <!-- 지도 표시 -->
       <div id="map" style="width:100%;height:93%;"></div>
 
