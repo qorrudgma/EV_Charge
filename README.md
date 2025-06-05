@@ -56,3 +56,11 @@
 ## ERD
 ![image](https://github.com/user-attachments/assets/f5c43908-7c2a-4d65-a080-eb0821ac3b8c)
 
+
+---
+
+## 화면 설명
+![image](https://github.com/user-attachments/assets/1e83b888-6e2c-4794-8b65-a0082a7c33da)
+
+
+
