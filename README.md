@@ -59,8 +59,34 @@
 
 ---
 
-## 화면 설명
+## 주요 화면 설명
+메인화면
 ![image](https://github.com/user-attachments/assets/1e83b888-6e2c-4794-8b65-a0082a7c33da)
 
+로그인
+![image](https://github.com/user-attachments/assets/3ac0aa19-adc2-42dd-b76a-6b827453e50d)
+
+회원가입
+![image](https://github.com/user-attachments/assets/5a03242a-ffa3-4c5a-abbc-d7842d8dfda2)
+![image](https://github.com/user-attachments/assets/65e79261-605e-4a20-b0e4-84d2ac728bde)
+![image](https://github.com/user-attachments/assets/6be4515c-ab76-44b4-86a9-6183dcbc5b1f)
+
+상단 지역 기반 검색
+![image](https://github.com/user-attachments/assets/72ce9e03-f8c7-4079-9efe-484493fbc2dc)
+
+현위치 기반 검색
+![image](https://github.com/user-attachments/assets/c0a795f1-c9ed-426f-80b3-e874dede9be1)
+
+검색어 기반 검색
+![image](https://github.com/user-attachments/assets/a78f9dd6-2d4b-4e3e-8481-c1466e165e37)
+
+상세정보 클릭
+![image](https://github.com/user-attachments/assets/c5346d40-c8ae-4200-a440-3d8b4862e984)
+
+예약하기 클릭
+![image](https://github.com/user-attachments/assets/a366b26a-792d-4609-82b2-01b502196f0e)
+
+길찾기 클릭
+![image](https://github.com/user-attachments/assets/deb0db30-6e8a-4edf-9770-51861889b22b)
 
 
