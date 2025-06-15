@@ -1,3 +1,5 @@
 /.metadata/
 .env
 EV_Charge_ERD.txt
+EV_Charge/src/main/resources/application-secret.properties
+EV_Charge/bin/main/application-secret.properties
