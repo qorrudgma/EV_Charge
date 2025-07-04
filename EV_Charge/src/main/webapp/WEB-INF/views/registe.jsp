@@ -316,8 +316,8 @@
                     $("#confirm_name").text($("#user_name").val());
                     $("#confirm_email").text($("#user_email").val());
                     $("#confirm_address").text(
-                        $("#register_area_ctpy_nm").val() + " " + 
-                        $("#register_area_sgg_nm").val() + " " + 
+                        $("#register_area_ctpy_nm option:selected").text() + " " + 
+                        $("#register_area_sgg_nm option:selected").text() + " " + 
                         $("#register_area_emd_nm").val()
                     );
                 }

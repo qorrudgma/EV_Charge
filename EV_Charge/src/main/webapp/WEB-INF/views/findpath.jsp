@@ -136,6 +136,7 @@
         }
     </style>
 </head>
+<!--class="active"-->
 <div id="findpath_list" role="region" aria-label="경로 정보 리스트">
     <div>
         <c:if test="${not empty routeInfoList}">
@@ -206,6 +207,7 @@
 
     // 닫기 버튼 또는 바깥 클릭 시 숨기기
     function hideFindPathSidebar() {
+		
         sidebar.classList.add("active");
     }
 
